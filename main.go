@@ -121,16 +121,18 @@ const inputDict = `
 }
 `
 
-func main(){
+func main() {
 	params, err := parser.GetInputParamsFromString(input)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("%+v", params.Queries[0].Conditions[0].Table.Attributes[0])
-
+	fmt.Println("%+v", params.Queries[0].ConditionsMap["1_11"])
 	fmt.Printf("%+v", params)
 	fmt.Printf("%+v", math.L)
+
+
 
 	result, err := math.MakeMath(params)
 	if err != nil {
@@ -143,16 +145,18 @@ func main(){
 	//math.GetMax(3,2,11)
 	//math.GetMax(1,2,3)
 
-
 	dict := map[int]string{}
 
 	dict[0] = "zero"
 	var query = params.Queries[0]
 
+
+	var queryTablesTemp = map[string]bool{}
+
 	for _, js := range query.Joins {
 		for _, j := range js.Join {
 			var t = *j.Table
-			Z,Z_io, err := math.TableScan(t)
+			Z, Z_io, err := math.TableScan(t)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -160,7 +164,7 @@ func main(){
 			fmt.Println(t.Name, "C1", Z, Z_io)
 			for _, v := range query.Conditions {
 				if v.Table == j.Table {
-					C2,C2_io, err := math.IndexScan(t, v.P)
+					C2, C2_io, err := math.IndexScan(t, v.P)
 					if err != nil {
 						log.Fatal(err)
 					}
@@ -175,6 +179,19 @@ func main(){
 			fmt.Println(t.Name, "Best", Z, Z_io)
 		}
 	}
+
+
+	for _, jsm := range query.JoinsMap {
+		for _, jm := range jsm.JoinMap {
+			queryTablesTemp[jm.TableId] = true
+		}
+	}
+	var queryTables = []string{}
+	for iut, _ := range queryTablesTemp {
+		queryTables = append(queryTables, iut)
+	}
+	fmt.Println("%+v", queryTablesTemp)
+	fmt.Println("%+v", queryTables)
 	//C1,_, err := math.TableScan(*params.Tables[2])
 	//if err != nil {
 	//	log.Fatal(err)
@@ -188,4 +205,3 @@ func main(){
 	//
 	//}
 }
-
