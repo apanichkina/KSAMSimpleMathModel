@@ -1,38 +1,36 @@
 package math
 
 import (
-	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"fmt"
+	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"math"
 )
 
 type Str struct {
-	W string	// имя подзапроса
-	X string	// левый аргумент соединения
-	Y string	// правый аргумент соединения
-	Z float64	// оценка стоимости выполнения подзапроса
-	ZIO float64	// оценка стоимости составляющей ввода-вывода подзапроса
-	V VOptions	// опции
+	W   string   // имя подзапроса
+	X   string   // левый аргумент соединения
+	Y   string   // правый аргумент соединения
+	Z   float64  // оценка стоимости выполнения подзапроса
+	ZIO float64  // оценка стоимости составляющей ввода-вывода подзапроса
+	V   VOptions // опции
 }
 
 type VOptions struct {
-	T float64				// оценка числа записей в подзапросе = T(Qi)
-	B float64				// оценка числа блоков в подзапросе = B(Qi)
-	I map[string]float64	// мощности атрибутов, которые участвуют в соединении
-	k string			// индексируемый атрибут
+	T float64            // оценка числа записей в подзапросе = T(Qi)
+	B float64            // оценка числа блоков в подзапросе = B(Qi)
+	I map[string]float64 // мощности атрибутов, которые участвуют в соединении
+	k string             // индексируемый атрибут
 }
 
-func AccessPlan(Table parser.Table, Q parser.Query, Str *Str) (error) {
+func AccessPlan(Table parser.Table, Q parser.Query, Str *Str) error {
 	if Table.Id == "" || Q.Id == "" {
 		return fmt.Errorf("can't use empty query: %+v or table: %+v", Q, Table)
 	}
-
 
 	// result = Table.T * C_filter + Table.T * C_b / Table.L
 
 	return nil
 }
-
 
 func TableScan(Table parser.Table) (float64, float64, error) {
 	var C_cpu float64 = Table.T * C_filter
@@ -44,7 +42,7 @@ func TableScan(Table parser.Table) (float64, float64, error) {
 
 func IndexScan(Table parser.Table, p float64) (float64, float64, error) {
 	var C_cpu float64 = Table.T * C_filter * p
-	var C_io float64 = (math.Ceil(Table.T * p / Table.L) + math.Ceil(Table.T * p)) * C_b
+	var C_io float64 = (math.Ceil(Table.T*p/Table.L) + math.Ceil(Table.T*p)) * C_b
 	var C = C_cpu + C_io
 
 	return C, C_io, nil

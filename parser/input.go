@@ -6,15 +6,30 @@ import (
 )
 
 type InputParams struct {
-	Input int `json:"input"`
-	Tables []*Table `json:"Tables"`
-	Queries []*Query `json:"Queries"`
+	Input     int      `json:"input"`
+	Tables    []*Table `json:"Tables"`
+	TablesMap map[string]*Table
+
+	Queries    []*Query `json:"Queries"`
+	QueriesMap map[string]*Query
+}
+
+func (p *InputParams) setMaps() {
+	p.TablesMap = make(map[string]*Table)
+	for _, t := range p.Tables {
+		p.TablesMap[t.GetID()] = t
+	}
+
+	p.QueriesMap = make(map[string]*Query)
+	for _, q := range p.Queries {
+		p.QueriesMap[q.GetID()] = q
+	}
 }
 
 func (p InputParams) findTable(id string) (*Table, error) {
 	for _, v := range p.Tables {
 		if v.Id == id {
-			return  v, nil
+			return v, nil
 		}
 	}
 	return nil, fmt.Errorf("can't get table %q in params", id)
@@ -22,16 +37,25 @@ func (p InputParams) findTable(id string) (*Table, error) {
 
 type Table struct {
 	Object
-	Name string `json:"Name"` // имя
-	T float64 `json:"T"` // количество записей
-	L float64 `json:"L"` // количество записей в блоке
-	Attributes []*Attribute `json:"Attributes"`
+	Name string  `json:"Name"` // имя
+	T    float64 `json:"T"`    // количество записей
+	L    float64 `json:"L"`    // количество записей в блоке
+
+	Attributes    []*Attribute `json:"Attributes"`
+	AttributesMap map[string]*Attribute
+}
+
+func (t *Table) setMaps() {
+	t.AttributesMap = make(map[string]*Attribute)
+	for _, a := range t.Attributes {
+		t.AttributesMap[a.GetID()] = a
+	}
 }
 
 func (t Table) findAttr(id string) (*Attribute, error) {
 	for _, v := range t.Attributes {
 		if v.Id == id {
-			return  v, nil
+			return v, nil
 		}
 	}
 	return nil, fmt.Errorf("can't get attribute %q in table %q", id, t.Id)
@@ -39,29 +63,65 @@ func (t Table) findAttr(id string) (*Attribute, error) {
 
 type Attribute struct {
 	Object
-	Name string `json:"Name"` // имя
-	I float64 `json:"I"` // мощность
+	Name string  `json:"Name"` // имя
+	I    float64 `json:"I"`    // мощность
 }
 
-type Query struct{
+type Query struct {
 	Object
 	Name string `json:"Name"` // имя
-	Joins []*Join `json:"Joins"`
-	Projections []*TableAttribute `json:"Projections"`
-	Conditions []*Condition `json:"Conditions"`
+
+	Joins    []*Join `json:"Joins"`
+	JoinsMap map[string]*Join
+
+	Projections    []*TableAttribute `json:"Projections"`
+	ProjectionsMap map[string]*TableAttribute
+
+	Conditions    []*Condition `json:"Conditions"`
+	ConditionsMap map[string]*Condition
 }
 
-type Join struct{
+func (q *Query) setMaps() {
+	q.JoinsMap = make(map[string]*Join)
+	for _, j := range q.Joins {
+		q.JoinsMap[j.GetID()] = j
+	}
+
+	q.ProjectionsMap = make(map[string]*TableAttribute)
+	for _, pr := range q.Projections {
+		q.ProjectionsMap[pr.GetID()] = pr
+	}
+
+	q.ConditionsMap = make(map[string]*Condition)
+	for _, c := range q.Conditions {
+		q.ConditionsMap[c.GetID()] = c
+	}
+}
+
+type Join struct {
 	Object
-	Join []*TableAttribute `json:"Join"`
+
+	Join    []*TableAttribute `json:"Join"`
+	JoinMap map[string]*TableAttribute
 }
 
-type TableAttribute struct{
+func (q *Join) setMaps() {
+	q.JoinMap = make(map[string]*TableAttribute)
+	for _, j := range q.Join {
+		q.JoinMap[j.GetID()] = j
+	}
+}
+
+type TableAttribute struct {
 	TableId string `json:"TableId"`
-	Table *Table `json:"-"`
+	Table   *Table `json:"-"`
 
-	AttributeId string `json:"AttributeId"`
-	Attribute *Attribute `json:"-"`
+	AttributeId string     `json:"AttributeId"`
+	Attribute   *Attribute `json:"-"`
+}
+
+func (c TableAttribute) GetID() string {
+	return fmt.Sprintf("%s_%s", c.TableId, c.AttributeId)
 }
 
 func (c *TableAttribute) setPointers(ip InputParams) error {
@@ -90,57 +150,12 @@ type Object struct {
 }
 
 func (o Object) GetID() string {
-	return  o.Id
+	return o.Id
 }
 
 type UniqObject interface {
 	GetID() string
 }
-
-//func ArrayToDict(arr []UniqObject) (map[string]UniqObject, error) {
-//	dict := map[string]UniqObject{}
-//
-//	for _, v := range arr {
-//		key := v.GetID()
-//
-//		if _, ok := dict[key]; ok {
-//			return nil, fmt.Errorf("key %q already exists in dict", key)
-//		}
-//
-//		dict[key] = v
-//	}
-//
-//	return dict, nil
-//}
-//
-//func TableDict(arr []UniqObject) (map[string]Table, error)  {
-//	temp, err := ArrayToDict(arr)
-//	if err != nil {
-//		return nil, err
-//	}
-//	result := map[string]Table{}
-//
-//	for k,v := range temp {
-//		if value, ok := v.(Table); ok {
-//			result[k] = value
-//		}
-//	}
-//	return result, nil
-//}
-
-//func (obj InputParams) FindTableById(id string) Table{
-//	for _, v := range obj.Tables[:] {
-//		if v.Id == id {
-//			return v
-//		}
-//	}
-//
-//	return Table{}
-//}
-//
-//func (p *InputParams) ChangeInputToZero() {
-//	p.Input = 0
-//}
 
 func GetInputParamsFromString(input string) (InputParams, error) {
 	data := []byte(input)
@@ -159,8 +174,14 @@ func GetInputParamsFromString(input string) (InputParams, error) {
 }
 
 func (p *InputParams) PrepareData() error {
+	p.setMaps()
+
 	for _, q := range p.Queries {
+		q.setMaps()
+
 		for _, j := range q.Joins {
+			j.setMaps()
+
 			for _, join := range j.Join {
 				err := join.setPointers(*p)
 				if err != nil {
@@ -183,5 +204,10 @@ func (p *InputParams) PrepareData() error {
 			}
 		}
 	}
+
+	for _, t := range p.Tables {
+		t.setMaps()
+	}
+
 	return nil
 }
