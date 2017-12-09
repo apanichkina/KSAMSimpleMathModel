@@ -121,7 +121,10 @@ const inputDict = `
 }
 `
 
-func main() {
+
+func main(){
+	fmt.Println(math.PermutationsOfN(8))
+
 	params, err := parser.GetInputParamsFromString(input)
 	if err != nil {
 		log.Fatal(err)
