@@ -3,6 +3,7 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 type InputParams struct {
@@ -45,6 +46,16 @@ type Table struct {
 	AttributesMap map[string]*Attribute
 }
 
+type TableIDs []*Table
+func (arr TableIDs) String() string {
+	var result []string
+	for _, v := range arr {
+		result = append(result, v.Id)
+	}
+
+	return strings.Join(result, ",")
+}
+
 func (t *Table) setMaps() {
 	t.AttributesMap = make(map[string]*Attribute)
 	for _, a := range t.Attributes {
@@ -59,6 +70,63 @@ func (t Table) findAttr(id string) (*Attribute, error) {
 		}
 	}
 	return nil, fmt.Errorf("can't get attribute %q in table %q", id, t.Id)
+}
+
+func (q Query) FindJoin(leftTableId string, rightTableId string) (bool, string, string) {
+	for _, js := range q.Joins {
+		var hasLeft = false
+		var hasRight = false
+		var attrIdLeft = ""
+		var attrIdRight = ""
+		for _, j := range js.Join {
+			if j.TableId == leftTableId {
+				hasLeft = true
+				attrIdLeft = j.AttributeId
+			}
+			if j.TableId == rightTableId {
+				hasRight = true
+				attrIdRight = j.AttributeId
+			}
+		}
+		if hasLeft && hasRight {
+			return true, attrIdLeft, attrIdRight
+		}
+	}
+	return false, "", ""
+}
+//
+// правая таблица может быть указана в нескольких джоинах с таблицами их X, поэтому нужно учесть все условия
+func (q Query) GetJoinI(x []*Table, rightTable Table) (float64, float64, error) {
+	var I float64 = 1
+	var I_x float64 = 1
+	for _, leftTable := range x {
+		var hasJoin, attrIdLeft, attrIdRight= q.FindJoin(leftTable.Id, rightTable.Id)
+		if hasJoin {
+			var joinAttrLeft, okL = leftTable.AttributesMap[attrIdLeft]
+			if !okL {
+				return 0, 0, fmt.Errorf("can`t find leftattr with id: %s for join tables %s and %s", attrIdLeft, leftTable.Id, rightTable.Id)
+			}
+
+			var joinAttrRight, okR = rightTable.AttributesMap[attrIdRight]
+			if !okR {
+				return 0, 0, fmt.Errorf("can`t find rightattr with id: %s for join tables %s and %s", attrIdRight, leftTable.Id, rightTable.Id)
+			}
+			I *= joinAttrRight.I
+			I_x *= joinAttrLeft.I
+		}
+	}
+	return I, I_x, nil
+}
+
+
+func (q Query) GetAllCondition(table Table) (float64, error) {
+	var result float64 = 1
+	for _, c := range q.Conditions {
+		if c.TableId == table.Id {
+			result *= c.P
+		}
+	}
+	return result, nil
 }
 
 type Attribute struct {

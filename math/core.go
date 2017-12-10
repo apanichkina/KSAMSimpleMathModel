@@ -34,18 +34,37 @@ func AccessPlan(Table parser.Table, Q parser.Query, Str *Str) error {
 
 func TableScan(Table parser.Table) (float64, float64, error) {
 	var C_cpu float64 = Table.T * C_filter
-	var C_io float64 = Table.T * C_b / Table.L
+	var C_io float64 = (Table.T / Table.L) * C_b
 	var C = C_cpu + C_io
 
 	return C, C_io, nil
 }
 
-func IndexScan(Table parser.Table, p float64) (float64, float64, error) {
-	var C_cpu float64 = Table.T * C_filter * p
+func IndexScan(Table parser.Table, p float64) (float64, float64, float64, error) {
+	var T = Table.T * p
+	var C_cpu float64 = T * C_filter
 	var C_io float64 = (math.Ceil(Table.T*p/Table.L) + math.Ceil(Table.T*p)) * C_b
 	var C = C_cpu + C_io
 
+	return C, C_io, T, nil
+}
+
+
+func CartesianProduct(TL float64, BL float64, TableRight parser.Table) (float64, float64, error) {
+	var C_cpu float64 = TL * TableRight.T * C_filter
+	var C_io float64 = BL * (TableRight.T / TableRight.L) * C_b
+	var C = C_cpu + C_io
+
 	return C, C_io, nil
+}
+
+func JoinScan(Table parser.Table, p float64) (float64, float64, float64, error) {
+	var T = Table.T * p
+	var C_cpu float64 = T * C_filter
+	var C_io float64 = (math.Ceil(Table.T*p/Table.L) + math.Ceil(Table.T*p)) * C_b
+	var C = C_cpu + C_io
+
+	return C, C_io, T, nil
 }
 
 func MakeMath(a parser.InputParams) (int, error) {
