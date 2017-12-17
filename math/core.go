@@ -1,7 +1,6 @@
 package math
 
 import (
-	"fmt"
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"math"
 )
@@ -22,69 +21,22 @@ type VOptions struct {
 	k string             // индексируемый атрибут
 }
 
-func AccessPlan(Table parser.Table, Q parser.Query, Str *Str) error {
-	if Table.Id == "" || Q.Id == "" {
-		return fmt.Errorf("can't use empty query: %+v or table: %+v", Q, Table)
-	}
-
-	// result = Table.T * C_filter + Table.T * C_b / Table.L
-
-	return nil
-}
-
 func TableScan(Table parser.Table) (float64, float64, error) {
-	var C_cpu float64 = Table.T * C_filter
-	var C_io float64 = (Table.T / Table.L) * C_b
+	var T float64 = Table.T
+	var B float64 = Table.T / Table.L
+	var C_cpu float64 = T * C_filter
+	var C_io float64 = B * C_b
 	var C = C_cpu + C_io
 
 	return C, C_io, nil
 }
 
 func IndexScan(Table parser.Table, p float64) (float64, float64, float64, error) {
-	var T = Table.T * p
+	var T float64 = Table.T * p
+	var B float64 = Table.T / Table.L
 	var C_cpu float64 = T * C_filter
-	var C_io float64 = (math.Ceil(Table.T*p/Table.L) + math.Ceil(Table.T*p)) * C_b
+	var C_io float64 = (math.Ceil(B * p) + math.Ceil(Table.T * p)) * C_b
 	var C = C_cpu + C_io
 
 	return C, C_io, T, nil
-}
-
-
-func CartesianProduct(TL float64, BL float64, TableRight parser.Table) (float64, float64, error) {
-	var C_cpu float64 = TL * TableRight.T * C_filter
-	var C_io float64 = BL * (TableRight.T / TableRight.L) * C_b
-	var C = C_cpu + C_io
-
-	return C, C_io, nil
-}
-
-func JoinScan(Table parser.Table, p float64) (float64, float64, float64, error) {
-	var T = Table.T * p
-	var C_cpu float64 = T * C_filter
-	var C_io float64 = (math.Ceil(Table.T*p/Table.L) + math.Ceil(Table.T*p)) * C_b
-	var C = C_cpu + C_io
-
-	return C, C_io, T, nil
-}
-
-func MakeMath(a parser.InputParams) (int, error) {
-	if a.Input < 0 {
-		return 0, fmt.Errorf("can't use negative input: %d", a.Input)
-	}
-
-	return a.Input + 10, nil
-}
-
-func GetMax(arr ...float64) {
-	if len(arr) == 0 {
-		return
-	}
-
-	tempMax := arr[0]
-	for _, v := range arr[1:] {
-		if v > tempMax {
-			tempMax = v
-		}
-	}
-	fmt.Println(tempMax)
 }

@@ -95,10 +95,11 @@ func (q Query) FindJoin(leftTableId string, rightTableId string) (bool, string, 
 	return false, "", ""
 }
 //
-// правая таблица может быть указана в нескольких джоинах с таблицами их X, поэтому нужно учесть все условия
+// правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
+// не учитывает, что в X могжет содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))
 func (q Query) GetJoinI(x []*Table, rightTable Table) (float64, float64, error) {
-	var I float64 = 1
-	var I_x float64 = 1
+	var I float64 = 1 // I для Y по атрибуту соединения a
+	var I_x float64 = 1 // I для X по атрибуту a
 	for _, leftTable := range x {
 		var hasJoin, attrIdLeft, attrIdRight= q.FindJoin(leftTable.Id, rightTable.Id)
 		if hasJoin {
