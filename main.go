@@ -6,64 +6,10 @@ import (
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"log"
 	Math "math"
+	"flag"
 )
 
-const input = `
-{
-	"input":3,
-	"Tables": [
-		{"Id": "4", "Name": "J", "T": 10000, "L": 500, "Attributes": [
-			{"Id": "41", "Name": "город", "I": 50},
-			{"Id": "42", "Name": "ном_изд", "I": 10000}
-		]},
-		{"Id": "1", "Name": "S", "T": 10000, "L": 500, "Attributes": [
-			{"Id": "11", "Name": "город", "I": 50},
-			{"Id": "12", "Name": "ном_пост", "I": 10000},
-			{"Id": "13", "Name": "имя", "I": 9000}
-		]},
-		{"Id": "2", "Name": "P", "T": 100000, "L": 500, "Attributes": [
-			{"Id": "21", "Name": "название", "I": 100000},
-			{"Id": "22", "Name": "ном_дет", "I": 100000},
-			{"Id": "23", "Name": "цвет", "I": 20}
-		]},
-		{"Id": "3", "Name": "SPJ", "T": 1000000, "L": 1000, "Attributes": [
-			{"Id": "31", "Name": "ном_изд", "I": 10000},
-			{"Id": "32", "Name": "ном_дет", "I": 100000},
-			{"Id": "33", "Name": "ном_пост", "I": 5000}
-		]}
-	],
-	"Queries": [
-		{
-			"Id": "013",
-			"Name": "Q13",
-			"Joins": [
-				{
-					"Id": "101",
-					"Join": [
-						{"TableId": "1", "AttributeId": "12"},
-						{"TableId": "3", "AttributeId": "33"}
-					]
-				},
-				{
-					"Id": "102",
-					"Join": [
-						{"TableId": "2", "AttributeId": "22"},
-						{"TableId": "3", "AttributeId": "32"}
-					]
-				}
-			],
-			"Projections": [
-				{"TableId": "1", "AttributeId": "13"}
-			],
-			"Conditions": [
-				{"TableId": "1", "AttributeId": "11", "P": 0.02},
-				{"TableId": "3", "AttributeId": "31", "P": 0.0001},
-				{"TableId": "2", "AttributeId": "23", "P": 0.00001}
-			]
-		}
-	]
-}
-`
+var fileInput = flag.String("in", "./data/input.json", "in - input model file")
 
 const inputDict = `
 {
@@ -123,8 +69,10 @@ const inputDict = `
 `
 
 func main(){
+	flag.Parse()
+
 	// парсинг входного json
-	params, err := parser.GetInputParamsFromString(input)
+	params, err := parser.GetInputParamsFromFile(*fileInput)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -133,7 +81,7 @@ func main(){
 	}
 	// проход по всем запоросам
 	for _, query := range params.Queries {
-		fmt.Println("query", query.Name)
+		fmt.Println("query", query.Name, query.GetID())
 
 		// выбор уникальных id таблиц, участвующих во всех join //этот шаг нужен чтобы таблицы не повторялись
 		var queryTablesTemp= map[string]bool{}

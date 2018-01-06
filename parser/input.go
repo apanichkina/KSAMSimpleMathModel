@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"io/ioutil"
 )
 
 type InputParams struct {
@@ -29,7 +30,7 @@ func (p *InputParams) setMaps() {
 
 func (p InputParams) findTable(id string) (*Table, error) {
 	for _, v := range p.Tables {
-		if v.Id == id {
+		if v.GetID() == id {
 			return v, nil
 		}
 	}
@@ -50,7 +51,7 @@ type TableIDs []*Table
 func (arr TableIDs) String() string {
 	var result []string
 	for _, v := range arr {
-		result = append(result, v.Id)
+		result = append(result, v.GetID())
 	}
 
 	return strings.Join(result, ",")
@@ -65,11 +66,11 @@ func (t *Table) setMaps() {
 
 func (t Table) findAttr(id string) (*Attribute, error) {
 	for _, v := range t.Attributes {
-		if v.Id == id {
+		if v.GetID() == id {
 			return v, nil
 		}
 	}
-	return nil, fmt.Errorf("can't get attribute %q in table %q", id, t.Id)
+	return nil, fmt.Errorf("can't get attribute %q in table %q", id, t.GetID())
 }
 
 func (q Query) FindJoin(leftTableId string, rightTableId string) (bool, string, string) {
@@ -101,16 +102,16 @@ func (q Query) GetJoinI(x []*Table, rightTable Table) (float64, float64, error) 
 	var I float64 = 1 // I для Y по атрибуту соединения a
 	var I_x float64 = 1 // I для X по атрибуту a
 	for _, leftTable := range x {
-		var hasJoin, attrIdLeft, attrIdRight= q.FindJoin(leftTable.Id, rightTable.Id)
+		var hasJoin, attrIdLeft, attrIdRight= q.FindJoin(leftTable.GetID(), rightTable.GetID())
 		if hasJoin {
 			var joinAttrLeft, okL = leftTable.AttributesMap[attrIdLeft]
 			if !okL {
-				return 0, 0, fmt.Errorf("can`t find leftattr with id: %s for join tables %s and %s", attrIdLeft, leftTable.Id, rightTable.Id)
+				return 0, 0, fmt.Errorf("can`t find leftattr with id: %s for join tables %s and %s", attrIdLeft, leftTable.GetID(), rightTable.GetID())
 			}
 
 			var joinAttrRight, okR = rightTable.AttributesMap[attrIdRight]
 			if !okR {
-				return 0, 0, fmt.Errorf("can`t find rightattr with id: %s for join tables %s and %s", attrIdRight, leftTable.Id, rightTable.Id)
+				return 0, 0, fmt.Errorf("can`t find rightattr with id: %s for join tables %s and %s", attrIdRight, leftTable.GetID(), rightTable.GetID())
 			}
 			I *= joinAttrRight.I
 			I_x *= joinAttrLeft.I
@@ -123,7 +124,7 @@ func (q Query) GetJoinI(x []*Table, rightTable Table) (float64, float64, error) 
 func (q Query) GetAllCondition(table Table) (float64, error) {
 	var result float64 = 1
 	for _, c := range q.Conditions {
-		if c.TableId == table.Id {
+		if c.TableId == table.GetID() {
 			result *= c.P
 		}
 	}
@@ -214,32 +215,47 @@ type Condition struct {
 	P float64 `json:"P"`
 }
 
-type Object struct {
-	Id string `json:"Id"`
+type ID struct {
+	ID string `json:"$oid"`
 }
 
-func (o Object) GetID() string {
-	return o.Id
+func (o ID) GetID() string {
+	return o.ID
+}
+
+type Object struct {
+	ID `json:"Id"`
 }
 
 type UniqObject interface {
 	GetID() string
 }
 
-func GetInputParamsFromString(input string) (InputParams, error) {
-	data := []byte(input)
-
+func GetInputParamsFromByteSlice(input []byte) (InputParams, error) {
 	var result InputParams
-	err := json.Unmarshal(data, &result)
+	err := json.Unmarshal(input, &result)
 	if err != nil {
-		return InputParams{}, err
+		return InputParams{}, fmt.Errorf("can't unmarshal: %s", err)
 	}
 
 	err = result.PrepareData()
 	if err != nil {
-		return InputParams{}, err
+		return InputParams{}, fmt.Errorf("can't prepare data: %s", err)
 	}
 	return result, nil
+}
+
+func GetInputParamsFromString(input string) (InputParams, error) {
+	data := []byte(input)
+	return GetInputParamsFromByteSlice(data)
+}
+
+func GetInputParamsFromFile(inputFile string) (InputParams, error) {
+	raw, err := ioutil.ReadFile(inputFile)
+	if err != nil {
+		return InputParams{}, fmt.Errorf("can't get file from %q: %s", inputFile, err)
+	}
+	return GetInputParamsFromByteSlice(raw)
 }
 
 func (p *InputParams) PrepareData() error {
