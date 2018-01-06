@@ -7,12 +7,28 @@ import (
 	"io/ioutil"
 )
 
+type ID struct {
+	ID string `json:"$oid"`
+}
+
+func (o ID) GetID() string {
+	return o.ID
+}
+
+type Object struct {
+	ID `json:"id"`
+}
+
+type UniqObject interface {
+	GetID() string
+}
+
 type InputParams struct {
 	Input     int      `json:"input"`
-	Tables    []*Table `json:"Tables"`
+	Tables    []*Table `json:"tables"`
 	TablesMap map[string]*Table
 
-	Queries    []*Query `json:"Queries"`
+	Queries    []*Query `json:"queries"`
 	QueriesMap map[string]*Query
 }
 
@@ -28,26 +44,25 @@ func (p *InputParams) setMaps() {
 	}
 }
 
-func (p InputParams) findTable(id string) (*Table, error) {
-	for _, v := range p.Tables {
-		if v.GetID() == id {
-			return v, nil
-		}
-	}
-	return nil, fmt.Errorf("can't get table %q in params", id)
-}
-
 type Table struct {
 	Object
-	Name string  `json:"Name"` // имя
-	T    float64 `json:"T"`    // количество записей
-	L    float64 `json:"L"`    // количество записей в блоке
+	Name string  `json:"name"`		// имя
+	T    float64 `json:"nrows"`  	// количество записей
+	L    float64 `json:"L"`    		// количество записей в блоке
 
-	Attributes    []*Attribute `json:"Attributes"`
+	Attributes    []*Attribute `json:"attributes"`
 	AttributesMap map[string]*Attribute
 }
 
-type TableIDs []*Table
+type Attribute struct {
+	Object
+	Name string  `json:"name"` // имя
+	I    float64 `json:"I"`    // мощность
+}
+
+
+type TableIDs []*TableInQuery
+
 func (arr TableIDs) String() string {
 	var result []string
 	for _, v := range arr {
@@ -64,150 +79,50 @@ func (t *Table) setMaps() {
 	}
 }
 
-func (t Table) findAttr(id string) (*Attribute, error) {
-	for _, v := range t.Attributes {
-		if v.GetID() == id {
-			return v, nil
-		}
-	}
-	return nil, fmt.Errorf("can't get attribute %q in table %q", id, t.GetID())
-}
-
-func (q Query) FindJoin(leftTableId string, rightTableId string) (bool, string, string) {
-	for _, js := range q.Joins {
-		var hasLeft = false
-		var hasRight = false
-		var attrIdLeft = ""
-		var attrIdRight = ""
-		for _, j := range js.Join {
-			if j.TableId == leftTableId {
-				hasLeft = true
-				attrIdLeft = j.AttributeId
-			}
-			if j.TableId == rightTableId {
-				hasRight = true
-				attrIdRight = j.AttributeId
-			}
-		}
-		if hasLeft && hasRight {
-			return true, attrIdLeft, attrIdRight
-		}
-	}
-	return false, "", ""
-}
-//
-// правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
-// не учитывает, что в X могжет содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))
-func (q Query) GetJoinI(x []*Table, rightTable Table) (float64, float64, error) {
-	var I float64 = 1 // I для Y по атрибуту соединения a
-	var I_x float64 = 1 // I для X по атрибуту a
-	for _, leftTable := range x {
-		var hasJoin, attrIdLeft, attrIdRight= q.FindJoin(leftTable.GetID(), rightTable.GetID())
-		if hasJoin {
-			var joinAttrLeft, okL = leftTable.AttributesMap[attrIdLeft]
-			if !okL {
-				return 0, 0, fmt.Errorf("can`t find leftattr with id: %s for join tables %s and %s", attrIdLeft, leftTable.GetID(), rightTable.GetID())
-			}
-
-			var joinAttrRight, okR = rightTable.AttributesMap[attrIdRight]
-			if !okR {
-				return 0, 0, fmt.Errorf("can`t find rightattr with id: %s for join tables %s and %s", attrIdRight, leftTable.GetID(), rightTable.GetID())
-			}
-			I *= joinAttrRight.I
-			I_x *= joinAttrLeft.I
-		}
-	}
-	return I, I_x, nil
-}
-
-
-func (q Query) GetAllCondition(table Table) (float64, error) {
-	var result float64 = 1
-	for _, c := range q.Conditions {
-		if c.TableId == table.GetID() {
-			result *= c.P
-		}
-	}
-	return result, nil
-}
-
-type Attribute struct {
-	Object
-	Name string  `json:"Name"` // имя
-	I    float64 `json:"I"`    // мощность
-}
-
 type Query struct {
 	Object
-	Name string `json:"Name"` // имя
+	Name string `json:"name"` // имя
 
-	Joins    []*Join `json:"Joins"`
-	JoinsMap map[string]*Join
+	TablesInQuery []*TableInQuery `json:"tables"` //таблицы с псевдонимами и без, участвующие в запросе
+	TablesInQueryMap map[string]*TableInQuery
 
-	Projections    []*TableAttribute `json:"Projections"`
-	ProjectionsMap map[string]*TableAttribute
+	Joins    []*Join `json:"joins"`
+	Projections    []*TableAttribute `json:"projection"`
+	Conditions    []*Condition `json:"condition"`
+}
 
-	Conditions    []*Condition `json:"Conditions"`
-	ConditionsMap map[string]*Condition
+type TableInQuery struct {
+	Object
+	Pseudoname string  `json:"pseudoname"` // имя
+
+	TableId string `json:"tableid"`
+	Table *Table
 }
 
 func (q *Query) setMaps() {
-	q.JoinsMap = make(map[string]*Join)
-	for _, j := range q.Joins {
-		q.JoinsMap[j.GetID()] = j
-	}
-
-	q.ProjectionsMap = make(map[string]*TableAttribute)
-	for _, pr := range q.Projections {
-		q.ProjectionsMap[pr.GetID()] = pr
-	}
-
-	q.ConditionsMap = make(map[string]*Condition)
-	for _, c := range q.Conditions {
-		q.ConditionsMap[c.GetID()] = c
+	q.TablesInQueryMap = make(map[string]*TableInQuery)
+	for _, t := range q.TablesInQuery {
+		q.TablesInQueryMap[t.GetID()] = t
 	}
 }
 
 type Join struct {
 	Object
-
-	Join    []*TableAttribute `json:"Join"`
-	JoinMap map[string]*TableAttribute
+	Join    []*TableAttributes `json:"join"`
 }
 
-func (q *Join) setMaps() {
-	q.JoinMap = make(map[string]*TableAttribute)
-	for _, j := range q.Join {
-		q.JoinMap[j.GetID()] = j
-	}
+type TableAttributes struct {
+	TableId string `json:"tableid"`
+	Attributes []string     `json:"attributes"`
 }
 
 type TableAttribute struct {
-	TableId string `json:"TableId"`
-	Table   *Table `json:"-"`
-
-	AttributeId string     `json:"AttributeId"`
-	Attribute   *Attribute `json:"-"`
+	TableId string `json:"tableid"`
+	AttributeId string     `json:"attributeId"`
 }
 
 func (c TableAttribute) GetID() string {
 	return fmt.Sprintf("%s_%s", c.TableId, c.AttributeId)
-}
-
-func (c *TableAttribute) setPointers(ip InputParams) error {
-	table, err := ip.findTable(c.TableId)
-	if err != nil {
-		return fmt.Errorf("can't set pointers [table = %q]: %q", c.TableId, err)
-	}
-	c.Table = table
-
-	attr, err := table.findAttr(c.AttributeId)
-	if err != nil {
-		return fmt.Errorf("can't set pointers [attribute = %q]: %q", c.AttributeId, err)
-	}
-	c.Attribute = attr
-
-	return nil
 }
 
 type Condition struct {
@@ -215,20 +130,94 @@ type Condition struct {
 	P float64 `json:"P"`
 }
 
-type ID struct {
-	ID string `json:"$oid"`
+func (q Query) FindJoin(leftTableId string, rightTableId string) (bool, []string, []string, error) {
+	for _, js := range q.Joins {
+		var hasLeft = false
+		var hasRight = false
+		var attrsIdLeft []string
+		var attrsIdRight []string
+		for _, j := range js.Join {
+			if j.TableId == leftTableId {
+				hasLeft = true
+				attrsIdLeft = j.Attributes
+				if len(attrsIdLeft) < 1 {
+					return false, nil, nil, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
+				}
+			}
+			if j.TableId == rightTableId {
+				hasRight = true
+				attrsIdRight = j.Attributes
+				if len(attrsIdRight) < 1 {
+					return false, nil, nil, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
+				}
+			}
+		}
+		if hasLeft && hasRight {
+			return true, attrsIdLeft, attrsIdRight, nil
+		}
+	}
+	return false, nil, nil, nil
+}
+//
+// правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
+// не учитывает, что в X могжет содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))
+func (q Query) GetJoinI(x []*TableInQuery, rightTable TableInQuery) (float64, float64, error) {
+	var I float64 = 1 // I для Y по атрибуту соединения a
+	var I_x float64 = 1 // I для X по атрибуту a
+	for _, leftTable := range x {
+		var hasJoin, attrIdLeft, attrIdRight, err = q.FindJoin(leftTable.GetID(), rightTable.GetID())
+		if err != nil {
+			return 0, 0, err
+		}
+		if hasJoin {
+			for _, id := range attrIdLeft {
+				var joinAttrLeft, okL = leftTable.Table.AttributesMap[id]
+				if !okL {
+					return 0, 0, fmt.Errorf("can`t find leftattr with id: %s for join tables %s and %s", id, leftTable.Table.GetID(), rightTable.Table.GetID())
+				}
+				I_x *= joinAttrLeft.I
+			}
+
+			for _, id := range attrIdRight {
+				var joinAttrRight, okR = rightTable.Table.AttributesMap[id]
+				if !okR {
+					return 0, 0, fmt.Errorf("can`t find rightattr with id: %s for join tables %s and %s", id, leftTable.Table.GetID(), rightTable.Table.GetID())
+				}
+				I *= joinAttrRight.I
+			}
+		}
+	}
+	return I, I_x, nil
 }
 
-func (o ID) GetID() string {
-	return o.ID
+
+func (q Query) GetAllCondition(tableId string) (float64, error) {
+	var result float64 = 1
+	for _, c := range q.Conditions {
+		if c.TableId == tableId {
+			result *= c.P
+		}
+	}
+	return result, nil
 }
 
-type Object struct {
-	ID `json:"Id"`
+func (p InputParams) findTable(id string) (*Table, error) {
+	var table, ok = p.TablesMap[id]
+	if ok {
+		return table, nil
+	}
+
+	return nil, fmt.Errorf("can't get table %q in params", id)
 }
 
-type UniqObject interface {
-	GetID() string
+func (c *TableInQuery) setPointers(ip InputParams) error {
+	table, err := ip.findTable(c.TableId)
+	if err != nil {
+		return fmt.Errorf("can't set pointers [table = %q]: %q", c.TableId, err)
+	}
+	c.Table = table
+
+	return nil
 }
 
 func GetInputParamsFromByteSlice(input []byte) (InputParams, error) {
@@ -264,30 +253,30 @@ func (p *InputParams) PrepareData() error {
 	for _, q := range p.Queries {
 		q.setMaps()
 
-		for _, j := range q.Joins {
-			j.setMaps()
-
-			for _, join := range j.Join {
-				err := join.setPointers(*p)
-				if err != nil {
-					return err
-				}
-			}
-		}
-
-		for _, cond := range q.Conditions {
-			err := cond.setPointers(*p)
+		//for _, j := range q.Joins {
+		//	j.setMaps()
+		//
+		//	for _, join := range j.Join {
+		//		err := join.setPointers(*p)
+		//		if err != nil {
+		//			return err
+		//		}
+		//	}
+		//}
+		//
+		for _, tq := range q.TablesInQuery {
+			err := tq.setPointers(*p)
 			if err != nil {
 				return err
 			}
 		}
 
-		for _, proj := range q.Projections {
-			err := proj.setPointers(*p)
-			if err != nil {
-				return err
-			}
-		}
+		//for _, proj := range q.Projections {
+		//	err := proj.setPointers(*p)
+		//	if err != nil {
+		//		return err
+		//	}
+		//}
 	}
 
 	for _, t := range p.Tables {

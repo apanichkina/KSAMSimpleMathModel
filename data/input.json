@@ -1,183 +1,213 @@
 {
   "input": 3,
-  "Tables": [
+  "tables": [
     {
-      "Id": {
+      "id": {
         "$oid": "4"
       },
-      "Name": "J",
-      "T": 10000,
+      "name": "J",
+      "nrows": 10000,
       "L": 500,
-      "Attributes": [
+      "attributes": [
         {
-          "Id": {
+          "id": {
             "$oid": "41"
           },
-          "Name": "город",
+          "name": "город",
           "I": 50
         },
         {
-          "Id": {
+          "id": {
             "$oid": "42"
           },
-          "Name": "ном_изд",
+          "name": "ном_изд",
           "I": 10000
         }
       ]
     },
     {
-      "Id": {
+      "id": {
         "$oid": "1"
       },
-      "Name": "S",
-      "T": 10000,
+      "name": "S",
+      "nrows": 10000,
       "L": 500,
-      "Attributes": [
+      "attributes": [
         {
-          "Id": {
+          "id": {
             "$oid": "11"
           },
-          "Name": "город",
+          "name": "город",
           "I": 50
         },
         {
-          "Id": {
+          "id": {
             "$oid": "12"
           },
-          "Name": "ном_пост",
+          "name": "ном_пост",
           "I": 10000
         },
         {
-          "Id": {
+          "id": {
             "$oid": "13"
           },
-          "Name": "имя",
+          "name": "имя",
           "I": 9000
         }
       ]
     },
     {
-      "Id": {
+      "id": {
         "$oid": "2"
       },
-      "Name": "P",
-      "T": 100000,
+      "name": "P",
+      "nrows": 100000,
       "L": 500,
-      "Attributes": [
+      "attributes": [
         {
-          "Id": {
+          "id": {
             "$oid": "21"
           },
-          "Name": "название",
+          "name": "название",
           "I": 100000
         },
         {
-          "Id": {
+          "id": {
             "$oid": "22"
           },
-          "Name": "ном_дет",
+          "name": "ном_дет",
           "I": 100000
         },
         {
-          "Id": {
+          "id": {
             "$oid": "23"
           },
-          "Name": "цвет",
+          "name": "цвет",
           "I": 20
         }
       ]
     },
     {
-      "Id": {
+      "id": {
         "$oid": "3"
       },
-      "Name": "SPJ",
-      "T": 1000000,
+      "name": "SPJ",
+      "nrows": 1000000,
       "L": 1000,
-      "Attributes": [
+      "attributes": [
         {
-          "Id": {
+          "id": {
             "$oid": "31"
           },
-          "Name": "ном_изд",
+          "name": "ном_изд",
           "I": 10000
         },
         {
-          "Id": {
+          "id": {
             "$oid": "32"
           },
-          "Name": "ном_дет",
+          "name": "ном_дет",
           "I": 100000
         },
         {
-          "Id": {
+          "id": {
             "$oid": "33"
           },
-          "Name": "ном_пост",
+          "name": "ном_пост",
           "I": 5000
         }
       ]
     }
   ],
-  "Queries": [
+  "queries": [
     {
-      "Id": {
+      "id": {
         "$oid": "013"
       },
-      "Name": "Q13",
-      "Joins": [
+      "name": "Q13",
+      "joins": [
         {
-          "Id": {
+          "id": {
             "$oid": "101"
           },
-          "Join": [
+          "join": [
             {
-              "TableId": "1",
-              "AttributeId": "12"
+              "tableid": "101",
+              "attributes": ["12"]
             },
             {
-              "TableId": "3",
-              "AttributeId": "33"
+              "tableid": "103",
+              "attributes": ["33"]
             }
           ]
         },
         {
-          "Id": {
+          "id": {
             "$oid": "102"
           },
-          "Join": [
+          "join": [
             {
-              "TableId": "2",
-              "AttributeId": "22"
+              "tableid": "102",
+              "attributes": ["22"]
             },
             {
-              "TableId": "3",
-              "AttributeId": "32"
+              "tableid": "103",
+              "attributes": ["32"]
             }
           ]
         }
       ],
-      "Projections": [
+      "projection": [
         {
-          "TableId": "1",
-          "AttributeId": "13"
+          "tableid": "101",
+          "attributeid": "13"
         }
       ],
-      "Conditions": [
+      "condition": [
         {
-          "TableId": "1",
-          "AttributeId": "11",
+          "tableid": "101",
+          "attributeid": "11",
           "P": 0.02
         },
         {
-          "TableId": "3",
-          "AttributeId": "31",
+          "tableid": "103",
+          "attributeid": "31",
           "P": 0.0001
         },
         {
-          "TableId": "2",
-          "AttributeId": "23",
+          "tableid": "102",
+          "attributeid": "23",
           "P": 0.00001
+        }
+      ],
+      "tables": [
+        {
+          "id": {
+            "$oid": "104"
+          },
+          "pseudoname": "J",
+          "tableid": "4"
+        },
+        {
+          "id": {
+            "$oid": "101"
+          },
+          "pseudoname": "S",
+          "tableid": "1"
+        },
+        {
+          "id": {
+            "$oid": "102"
+          },
+          "pseudoname": "P",
+          "tableid": "2"
+        },
+        {
+          "id": {
+            "$oid": "103"
+          },
+          "pseudoname": "SPJ",
+          "tableid": "3"
         }
       ]
     }
