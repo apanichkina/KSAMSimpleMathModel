@@ -1,15 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/apanichkina/KSAMSimpleMathModel/math"
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
+	"github.com/gocarina/gocsv"
 	"log"
 	Math "math"
-	"flag"
 	"os"
-	"encoding/csv"
 )
+
 func checkError(message string, err error) {
 	if err != nil {
 		log.Fatal(message, err)
@@ -18,40 +19,21 @@ func checkError(message string, err error) {
 
 var fileInput = flag.String("in", "./data/input.json", "in - input model file")
 
-
-func printToCsv(dataOutput []parser.CSVData) {
-	var column []string
-	var lines [][]string = [][]string{}
-	var length int = 0
-	var currentLen int = 0
-	for _, value := range dataOutput {
-		column = append([]string{value.Header}, value.Data...)
-		currentLen = len(column)
-		if length > currentLen {
-			length = currentLen
-		}
-
-		for i := 0; i < length; i++ {
-			lines[i] = append(lines[i], column[i])
-		}
+func printToCsv(filename string, output parser.QueriesMinTimes) error {
+	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("can't open %q to write: %s", filename, err)
 	}
+	defer f.Close()
 
-
-	// генерация csv
-	file, err := os.Create("data/result.csv")
-	checkError("Cannot create file", err)
-	defer file.Close()
-
-	writer := csv.NewWriter(file)
-	defer writer.Flush()
-
-	for _, value := range lines {
-		err := writer.Write(value)
-		checkError("Cannot write to file", err)
+	err = gocsv.MarshalFile(&output, f) // Use this to save the CSV back to the file
+	if err != nil {
+		return fmt.Errorf("can't write to %q csv: %s", filename, err)
 	}
+	return nil
 }
 
-func main(){
+func main() {
 	flag.Parse()
 
 	// парсинг входного json
@@ -70,7 +52,7 @@ func main(){
 		fmt.Println("query", query.Name, query.GetID())
 
 		// выбор уникальных id таблиц, участвующих во всех join //этот шаг нужен чтобы таблицы не повторялись
-		var queryTablesTemp= map[string]bool{}
+		var queryTablesTemp = map[string]bool{}
 		for _, jsm := range query.Joins {
 			for _, jm := range jsm.Join {
 				queryTablesTemp[jm.TableId] = true
@@ -87,7 +69,7 @@ func main(){
 		}
 
 		// конструирование всех вариантов соединения таблиц n! штук
-		var allJoinVariations= math.PermutationsOfN(len(queryTables))
+		var allJoinVariations = math.PermutationsOfN(len(queryTables))
 
 		// проход по всем вариантам из n!
 		fmt.Println(allJoinVariations)
@@ -105,8 +87,8 @@ func main(){
 			for _, i := range jv {
 				// пусть X соединяется с Н по атрибуту а или (a AND b)
 				// Выбор таблицы, которая будет справа в соединении Y
-				var currentQueryTableId= queryTables[i]
-				var tableInQuery, hasTableInQuery= query.TablesInQueryMap[currentQueryTableId]
+				var currentQueryTableId = queryTables[i]
+				var tableInQuery, hasTableInQuery = query.TablesInQueryMap[currentQueryTableId]
 				if !hasTableInQuery {
 					log.Fatalf("can`t find table (%s) used into join tables for query (%s)", currentQueryTableId, query.Name)
 				}
@@ -125,7 +107,7 @@ func main(){
 					fmt.Println(t.Table.Name, "C1", Z, Z_io)
 
 					// Опеделение есть ли условие для использования IndexScan
-					var condition, cErr= query.GetAllCondition(t.GetID())
+					var condition, cErr = query.GetAllCondition(t.GetID())
 					if cErr != nil {
 						log.Fatal(cErr)
 					}
@@ -148,7 +130,7 @@ func main(){
 				} else {
 					// JoinPlan для таблиц 2:n
 					// Оценка подзапроса в рамках join
-					var I, I_x, err= query.GetJoinI(X, *t)
+					var I, I_x, err = query.GetJoinI(X, *t)
 					checkError("", err)
 					if I == 0 {
 						// Декартово произведение
@@ -156,12 +138,12 @@ func main(){
 						C, C_io, err := math.TableScan(*t.Table)
 						checkError("", err)
 						// Оценка соединения
-						Z = T_x * C + math.C_join
-						Z_io = T_x * C_io + math.C_join_io
+						Z = T_x*C + math.C_join
+						Z_io = T_x*C_io + math.C_join_io
 					} else {
 						// Соединение по индексу
 						// Оценка Y
-						C, C_io, _, err := math.IndexScan(*t.Table, 1 / I) //  ??
+						C, C_io, _, err := math.IndexScan(*t.Table, 1/I) //  ??
 						checkError("", err)
 						// Оценка соединения
 						Z = T_x * C
@@ -169,7 +151,7 @@ func main(){
 					}
 					// Определение числа записей в Y
 					// Определение p для Y
-					var condition, cErr= query.GetAllCondition(t.GetID())
+					var condition, cErr = query.GetAllCondition(t.GetID())
 					checkError("", cErr)
 					if condition != 1 {
 						T *= condition
@@ -183,9 +165,9 @@ func main(){
 					} else {
 						// Число записей при соединении по условию
 						T = Math.Ceil((T_x * T) / (Math.Max(Math.Min(I_x, T_x), I))) // I_x - мощность атрибута соединения (a) в X;
-																						// T_x - число записей в X;
-																						// I - мощность атрибута соединения (а) в Y;
-																						// T - число записей в Y
+						// T_x - число записей в X;
+						// I - мощность атрибута соединения (а) в Y;
+						// T - число записей в Y
 						B_x = Math.Ceil(T / (t.Table.L * math.L_b))
 					}
 
@@ -202,7 +184,7 @@ func main(){
 			}
 			if queryMinTime == -1 {
 				queryMinTime = Z_x
-			} else  {
+			} else {
 				queryMinTime = Math.Min(queryMinTime, Z_x)
 			}
 			fmt.Println()
@@ -210,10 +192,9 @@ func main(){
 		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime}) // запись в массив минимального времени выполнение очередного запроса
 	}
 	fmt.Print(parser.QueriesMinTimes(queriesMinTime))
-	// расчет технических характеристик
-	var j = parser.CSVData{Header: "time", Data: []string{"200604300.00","150.12"}}
-	var k = parser.CSVData{Header: "name", Data: []string{"hello","bye"}}
-	var l = []parser.CSVData{j, k}
 	// генерация csv
-	 printToCsv(l)
+	err = printToCsv("output.csv", queriesMinTime)
+	if err != nil {
+		panic(err)
+	}
 }
