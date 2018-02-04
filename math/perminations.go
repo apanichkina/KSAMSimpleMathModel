@@ -30,11 +30,10 @@ func permutations(arr []int) [][]int {
 	return res
 }
 
-func PermutationsOfN(n int)[][]int {
+func PermutationsOfN(n int) [][]int {
 	arr := make([]int, n)
 	for i := 0; i < n; i++ {
 		arr[i] = i
 	}
 	return permutations(arr)
 }
-

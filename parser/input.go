@@ -3,8 +3,8 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 	"io/ioutil"
+	"strings"
 )
 
 type ID struct {
@@ -23,11 +23,10 @@ type UniqObject interface {
 	GetID() string
 }
 
-type InputParams struct{
-	ID `json:"_id"`
-	DataModel []*DataModel	`json:"datamodel"`
+type InputParams struct {
+	ID        `json:"_id"`
+	DataModel []*DataModel `json:"datamodel"`
 }
-
 
 type DataModel struct {
 	Object
@@ -37,7 +36,7 @@ type DataModel struct {
 	Queries    []*Query `json:"queries"`
 	QueriesMap map[string]*Query
 
-	Transactions []*Transaction `json:"transactions"`
+	Transactions    []*Transaction `json:"transactions"`
 	TransactionsMap map[string]*Transaction
 }
 
@@ -60,9 +59,9 @@ func (d *DataModel) setMaps() {
 
 type Table struct {
 	Object
-	Name string  `json:"name"`		// имя
-	T    float64 `json:"nrows"`  	// количество записей
-	L    float64 `json:"L"`    		// количество записей в блоке
+	Name string  `json:"name"`  // имя
+	T    float64 `json:"nrows"` // количество записей
+	L    float64 `json:"L"`     // количество записей в блоке
 
 	Attributes    []*Attribute `json:"attributes"`
 	AttributesMap map[string]*Attribute
@@ -73,7 +72,6 @@ type Attribute struct {
 	Name string  `json:"name"` // имя
 	I    float64 `json:"I"`    // мощность
 }
-
 
 type TableIDs []*TableInQuery
 
@@ -97,20 +95,20 @@ type Query struct {
 	Object
 	Name string `json:"name"` // имя
 
-	TablesInQuery []*TableInQuery `json:"tables"` //таблицы с псевдонимами и без, участвующие в запросе
+	TablesInQuery    []*TableInQuery `json:"tables"` //таблицы с псевдонимами и без, участвующие в запросе
 	TablesInQueryMap map[string]*TableInQuery
 
-	Joins    []*Join					`json:"joins"`
-	Projections    []*TableAttribute	`json:"projection"`
-	Conditions    []*Condition			`json:"condition"`
+	Joins       []*Join           `json:"joins"`
+	Projections []*TableAttribute `json:"projection"`
+	Conditions  []*Condition      `json:"condition"`
 }
 
 type TableInQuery struct {
 	Object
-	Pseudoname string  `json:"pseudoname"` // имя
+	Pseudoname string `json:"pseudoname"` // имя
 
 	TableId string `json:"tableid"`
-	Table *Table
+	Table   *Table
 }
 
 func (q *Query) setMaps() {
@@ -122,17 +120,17 @@ func (q *Query) setMaps() {
 
 type Join struct {
 	Object
-	Join    []*TableAttributes `json:"join"`
+	Join []*TableAttributes `json:"join"`
 }
 
 type TableAttributes struct {
-	TableId string		`json:"tableid"`
-	Attributes []string	`json:"attributes"`
+	TableId    string   `json:"tableid"`
+	Attributes []string `json:"attributes"`
 }
 
 type TableAttribute struct {
-	TableId string		`json:"tableid"`
-	AttributeId string	`json:"attributeId"`
+	TableId     string `json:"tableid"`
+	AttributeId string `json:"attributeId"`
 }
 
 func (c TableAttribute) GetID() string {
@@ -172,11 +170,12 @@ func (q Query) FindJoin(leftTableId string, rightTableId string) (bool, []string
 	}
 	return false, nil, nil, nil
 }
+
 //
 // правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
 // не учитывает, что в X могжет содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))
 func (q Query) GetJoinI(x []*TableInQuery, rightTable TableInQuery) (float64, float64, error) {
-	var I float64 = 1 // I для Y по атрибуту соединения a
+	var I float64 = 1   // I для Y по атрибуту соединения a
 	var I_x float64 = 1 // I для X по атрибуту a
 	for _, leftTable := range x {
 		var hasJoin, attrIdLeft, attrIdRight, err = q.FindJoin(leftTable.GetID(), rightTable.GetID())
@@ -203,7 +202,6 @@ func (q Query) GetJoinI(x []*TableInQuery, rightTable TableInQuery) (float64, fl
 	}
 	return I, I_x, nil
 }
-
 
 func (q Query) GetAllCondition(tableId string) (float64, error) {
 	var result float64 = 1
@@ -235,15 +233,15 @@ func (c *TableInQuery) setPointers(ip DataModel) error {
 }
 
 type Transaction struct {
-	 Object
-	 Name string `json:"name"`
-	 Queries []*TransactionQuery `json:"queries"`
-	 QueriesMap map[string]*TransactionQuery
+	Object
+	Name       string              `json:"name"`
+	Queries    []*TransactionQuery `json:"queries"`
+	QueriesMap map[string]*TransactionQuery
 }
 
 type TransactionQuery struct {
 	QueryId string `json:"queryid"`
-	Count string `json:"rep"`          // число
+	Count   string `json:"rep"` // число
 }
 
 func (o TransactionQuery) GetID() string {
