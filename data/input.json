@@ -1,213 +1,233 @@
 {
-  "input": 3,
-  "tables": [
+  "_id": {
+    "$oid": "000"
+  },
+  "datamodel": [
     {
       "id": {
-        "$oid": "4"
+        "$oid": "00"
       },
-      "name": "J",
-      "nrows": 10000,
-      "L": 500,
-      "attributes": [
-        {
-          "id": {
-            "$oid": "41"
-          },
-          "name": "город",
-          "I": 50
-        },
-        {
-          "id": {
-            "$oid": "42"
-          },
-          "name": "ном_изд",
-          "I": 10000
-        }
-      ]
-    },
-    {
-      "id": {
-        "$oid": "1"
-      },
-      "name": "S",
-      "nrows": 10000,
-      "L": 500,
-      "attributes": [
-        {
-          "id": {
-            "$oid": "11"
-          },
-          "name": "город",
-          "I": 50
-        },
-        {
-          "id": {
-            "$oid": "12"
-          },
-          "name": "ном_пост",
-          "I": 10000
-        },
-        {
-          "id": {
-            "$oid": "13"
-          },
-          "name": "имя",
-          "I": 9000
-        }
-      ]
-    },
-    {
-      "id": {
-        "$oid": "2"
-      },
-      "name": "P",
-      "nrows": 100000,
-      "L": 500,
-      "attributes": [
-        {
-          "id": {
-            "$oid": "21"
-          },
-          "name": "название",
-          "I": 100000
-        },
-        {
-          "id": {
-            "$oid": "22"
-          },
-          "name": "ном_дет",
-          "I": 100000
-        },
-        {
-          "id": {
-            "$oid": "23"
-          },
-          "name": "цвет",
-          "I": 20
-        }
-      ]
-    },
-    {
-      "id": {
-        "$oid": "3"
-      },
-      "name": "SPJ",
-      "nrows": 1000000,
-      "L": 1000,
-      "attributes": [
-        {
-          "id": {
-            "$oid": "31"
-          },
-          "name": "ном_изд",
-          "I": 10000
-        },
-        {
-          "id": {
-            "$oid": "32"
-          },
-          "name": "ном_дет",
-          "I": 100000
-        },
-        {
-          "id": {
-            "$oid": "33"
-          },
-          "name": "ном_пост",
-          "I": 5000
-        }
-      ]
-    }
-  ],
-  "queries": [
-    {
-      "id": {
-        "$oid": "013"
-      },
-      "name": "Q13",
-      "joins": [
-        {
-          "id": {
-            "$oid": "101"
-          },
-          "join": [
-            {
-              "tableid": "101",
-              "attributes": ["12"]
-            },
-            {
-              "tableid": "103",
-              "attributes": ["33"]
-            }
-          ]
-        },
-        {
-          "id": {
-            "$oid": "102"
-          },
-          "join": [
-            {
-              "tableid": "102",
-              "attributes": ["22"]
-            },
-            {
-              "tableid": "103",
-              "attributes": ["32"]
-            }
-          ]
-        }
-      ],
-      "projection": [
-        {
-          "tableid": "101",
-          "attributeid": "13"
-        }
-      ],
-      "condition": [
-        {
-          "tableid": "101",
-          "attributeid": "11",
-          "P": 0.02
-        },
-        {
-          "tableid": "103",
-          "attributeid": "31",
-          "P": 0.0001
-        },
-        {
-          "tableid": "102",
-          "attributeid": "23",
-          "P": 0.00001
-        }
-      ],
       "tables": [
         {
           "id": {
-            "$oid": "104"
+            "$oid": "4"
           },
-          "pseudoname": "J",
-          "tableid": "4"
+          "name": "J",
+          "nrows": 10000,
+          "L": 500,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "41"
+              },
+              "name": "город",
+              "I": 50
+            },
+            {
+              "id": {
+                "$oid": "42"
+              },
+              "name": "ном_изд",
+              "I": 10000
+            }
+          ]
         },
         {
           "id": {
-            "$oid": "101"
+            "$oid": "1"
           },
-          "pseudoname": "S",
-          "tableid": "1"
+          "name": "S",
+          "nrows": 10000,
+          "L": 500,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "11"
+              },
+              "name": "город",
+              "I": 50
+            },
+            {
+              "id": {
+                "$oid": "12"
+              },
+              "name": "ном_пост",
+              "I": 10000
+            },
+            {
+              "id": {
+                "$oid": "13"
+              },
+              "name": "имя",
+              "I": 9000
+            }
+          ]
         },
         {
           "id": {
-            "$oid": "102"
+            "$oid": "2"
           },
-          "pseudoname": "P",
-          "tableid": "2"
+          "name": "P",
+          "nrows": 100000,
+          "L": 500,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "21"
+              },
+              "name": "название",
+              "I": 100000
+            },
+            {
+              "id": {
+                "$oid": "22"
+              },
+              "name": "ном_дет",
+              "I": 100000
+            },
+            {
+              "id": {
+                "$oid": "23"
+              },
+              "name": "цвет",
+              "I": 20
+            }
+          ]
         },
         {
           "id": {
-            "$oid": "103"
+            "$oid": "3"
           },
-          "pseudoname": "SPJ",
-          "tableid": "3"
+          "name": "SPJ",
+          "nrows": 1000000,
+          "L": 1000,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "31"
+              },
+              "name": "ном_изд",
+              "I": 10000
+            },
+            {
+              "id": {
+                "$oid": "32"
+              },
+              "name": "ном_дет",
+              "I": 100000
+            },
+            {
+              "id": {
+                "$oid": "33"
+              },
+              "name": "ном_пост",
+              "I": 5000
+            }
+          ]
+        }
+      ],
+      "queries": [
+        {
+          "id": {
+            "$oid": "013"
+          },
+          "name": "Q13",
+          "joins": [
+            {
+              "id": {
+                "$oid": "101"
+              },
+              "join": [
+                {
+                  "tableid": "101",
+                  "attributes": ["12"]
+                },
+                {
+                  "tableid": "103",
+                  "attributes": ["33"]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "102"
+              },
+              "join": [
+                {
+                  "tableid": "102",
+                  "attributes": ["22"]
+                },
+                {
+                  "tableid": "103",
+                  "attributes": ["32"]
+                }
+              ]
+            }
+          ],
+          "projection": [
+            {
+              "tableid": "101",
+              "attributeid": "13"
+            }
+          ],
+          "condition": [
+            {
+              "tableid": "101",
+              "attributeid": "11",
+              "P": 0.02
+            },
+            {
+              "tableid": "103",
+              "attributeid": "31",
+              "P": 0.0001
+            },
+            {
+              "tableid": "102",
+              "attributeid": "23",
+              "P": 0.00001
+            }
+          ],
+          "tables": [
+            {
+              "id": {
+                "$oid": "104"
+              },
+              "pseudoname": "J",
+              "tableid": "4"
+            },
+            {
+              "id": {
+                "$oid": "101"
+              },
+              "pseudoname": "S",
+              "tableid": "1"
+            },
+            {
+              "id": {
+                "$oid": "102"
+              },
+              "pseudoname": "P",
+              "tableid": "2"
+            },
+            {
+              "id": {
+                "$oid": "103"
+              },
+              "pseudoname": "SPJ",
+              "tableid": "3"
+            }
+          ]
+        }
+      ],
+      "transactions": [
+        {
+          "id": {
+            "$oid": "201"
+          },
+          "name": "TR1",
+          "queries": [
+            {"queryid": "013", "rep": 1}
+          ]
         }
       ]
     }

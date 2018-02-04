@@ -23,24 +23,38 @@ type UniqObject interface {
 	GetID() string
 }
 
-type InputParams struct {
-	Input     int      `json:"input"`
+type InputParams struct{
+	ID `json:"_id"`
+	DataModel []*DataModel	`json:"datamodel"`
+}
+
+
+type DataModel struct {
+	Object
 	Tables    []*Table `json:"tables"`
 	TablesMap map[string]*Table
 
 	Queries    []*Query `json:"queries"`
 	QueriesMap map[string]*Query
+
+	Transactions []*Transaction `json:"transactions"`
+	TransactionsMap map[string]*Transaction
 }
 
-func (p *InputParams) setMaps() {
-	p.TablesMap = make(map[string]*Table)
-	for _, t := range p.Tables {
-		p.TablesMap[t.GetID()] = t
+func (d *DataModel) setMaps() {
+	d.TablesMap = make(map[string]*Table)
+	for _, t := range d.Tables {
+		d.TablesMap[t.GetID()] = t
 	}
 
-	p.QueriesMap = make(map[string]*Query)
-	for _, q := range p.Queries {
-		p.QueriesMap[q.GetID()] = q
+	d.QueriesMap = make(map[string]*Query)
+	for _, q := range d.Queries {
+		d.QueriesMap[q.GetID()] = q
+	}
+
+	d.TransactionsMap = make(map[string]*Transaction)
+	for _, t := range d.Transactions {
+		d.TransactionsMap[t.GetID()] = t
 	}
 }
 
@@ -86,9 +100,9 @@ type Query struct {
 	TablesInQuery []*TableInQuery `json:"tables"` //таблицы с псевдонимами и без, участвующие в запросе
 	TablesInQueryMap map[string]*TableInQuery
 
-	Joins    []*Join `json:"joins"`
-	Projections    []*TableAttribute `json:"projection"`
-	Conditions    []*Condition `json:"condition"`
+	Joins    []*Join					`json:"joins"`
+	Projections    []*TableAttribute	`json:"projection"`
+	Conditions    []*Condition			`json:"condition"`
 }
 
 type TableInQuery struct {
@@ -112,13 +126,13 @@ type Join struct {
 }
 
 type TableAttributes struct {
-	TableId string `json:"tableid"`
-	Attributes []string     `json:"attributes"`
+	TableId string		`json:"tableid"`
+	Attributes []string	`json:"attributes"`
 }
 
 type TableAttribute struct {
-	TableId string `json:"tableid"`
-	AttributeId string     `json:"attributeId"`
+	TableId string		`json:"tableid"`
+	AttributeId string	`json:"attributeId"`
 }
 
 func (c TableAttribute) GetID() string {
@@ -201,7 +215,7 @@ func (q Query) GetAllCondition(tableId string) (float64, error) {
 	return result, nil
 }
 
-func (p InputParams) findTable(id string) (*Table, error) {
+func (p DataModel) findTable(id string) (*Table, error) {
 	var table, ok = p.TablesMap[id]
 	if ok {
 		return table, nil
@@ -210,7 +224,7 @@ func (p InputParams) findTable(id string) (*Table, error) {
 	return nil, fmt.Errorf("can't get table %q in params", id)
 }
 
-func (c *TableInQuery) setPointers(ip InputParams) error {
+func (c *TableInQuery) setPointers(ip DataModel) error {
 	table, err := ip.findTable(c.TableId)
 	if err != nil {
 		return fmt.Errorf("can't set pointers [table = %q]: %q", c.TableId, err)
@@ -218,6 +232,29 @@ func (c *TableInQuery) setPointers(ip InputParams) error {
 	c.Table = table
 
 	return nil
+}
+
+type Transaction struct {
+	 Object
+	 Name string `json:"name"`
+	 Queries []*TransactionQuery `json:"queries"`
+	 QueriesMap map[string]*TransactionQuery
+}
+
+type TransactionQuery struct {
+	QueryId string `json:"queryid"`
+	Count int `json:"rep"`          // число
+}
+
+func (o TransactionQuery) GetID() string {
+	return o.QueryId
+}
+
+func (q *Transaction) setMaps() {
+	q.QueriesMap = make(map[string]*TransactionQuery)
+	for _, t := range q.Queries {
+		q.QueriesMap[t.GetID()] = t
+	}
 }
 
 func GetInputParamsFromByteSlice(input []byte) (InputParams, error) {
@@ -247,40 +284,29 @@ func GetInputParamsFromFile(inputFile string) (InputParams, error) {
 	return GetInputParamsFromByteSlice(raw)
 }
 
-func (p *InputParams) PrepareData() error {
-	p.setMaps()
+func (ip *InputParams) PrepareData() error {
+	for _, p := range ip.DataModel {
+		p.setMaps()
 
-	for _, q := range p.Queries {
-		q.setMaps()
+		for _, q := range p.Queries {
+			q.setMaps()
 
-		//for _, j := range q.Joins {
-		//	j.setMaps()
-		//
-		//	for _, join := range j.Join {
-		//		err := join.setPointers(*p)
-		//		if err != nil {
-		//			return err
-		//		}
-		//	}
-		//}
-		//
-		for _, tq := range q.TablesInQuery {
-			err := tq.setPointers(*p)
-			if err != nil {
-				return err
+			for _, tq := range q.TablesInQuery {
+				err := tq.setPointers(*p)
+				if err != nil {
+					return err
+				}
 			}
 		}
 
-		//for _, proj := range q.Projections {
-		//	err := proj.setPointers(*p)
-		//	if err != nil {
-		//		return err
-		//	}
-		//}
-	}
+		for _, t := range p.Tables {
+			t.setMaps()
+		}
 
-	for _, t := range p.Tables {
-		t.setMaps()
+		for _, t := range p.Transactions {
+			t.setMaps()
+		}
+
 	}
 
 	return nil

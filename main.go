@@ -14,10 +14,12 @@ func main(){
 	flag.Parse()
 
 	// парсинг входного json
-	params, err := parser.GetInputParamsFromFile(*fileInput)
+	inputparams, err := parser.GetInputParamsFromFile(*fileInput)
 	if err != nil {
 		log.Fatal(err)
 	}
+	var params = inputparams.DataModel[0] // добавить проход по массиву
+
 	if len(params.Queries) < 1 {
 		log.Fatal("can`t find any query")
 	}
