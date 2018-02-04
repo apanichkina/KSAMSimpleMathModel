@@ -226,7 +226,7 @@
           },
           "name": "TR1",
           "queries": [
-            {"queryid": "013", "rep": 1}
+            {"queryid": "013", "rep": "1"}
           ]
         }
       ]

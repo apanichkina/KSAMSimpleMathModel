@@ -7,24 +7,66 @@ import (
 	"log"
 	Math "math"
 	"flag"
+	"os"
+	"encoding/csv"
 )
+func checkError(message string, err error) {
+	if err != nil {
+		log.Fatal(message, err)
+	}
+}
 
 var fileInput = flag.String("in", "./data/input.json", "in - input model file")
+
+
+func printToCsv(dataOutput []parser.CSVData) {
+	var column []string
+	var lines [][]string = [][]string{}
+	var length int = 0
+	var currentLen int = 0
+	for _, value := range dataOutput {
+		column = append([]string{value.Header}, value.Data...)
+		currentLen = len(column)
+		if length > currentLen {
+			length = currentLen
+		}
+
+		for i := 0; i < length; i++ {
+			lines[i] = append(lines[i], column[i])
+		}
+	}
+
+
+	// генерация csv
+	file, err := os.Create("data/result.csv")
+	checkError("Cannot create file", err)
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	for _, value := range lines {
+		err := writer.Write(value)
+		checkError("Cannot write to file", err)
+	}
+}
+
 func main(){
 	flag.Parse()
 
 	// парсинг входного json
 	inputparams, err := parser.GetInputParamsFromFile(*fileInput)
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkError("", err)
 	var params = inputparams.DataModel[0] // добавить проход по массиву
 
 	if len(params.Queries) < 1 {
 		log.Fatal("can`t find any query")
 	}
+	var queriesMinTime parser.QueriesMinTimes // минимальное время выполнения всех запросов
 	// проход по всем запоросам
 	for _, query := range params.Queries {
+		var queryMinTime float64 = -1 // минимальное время выполнения запроса
+
 		fmt.Println("query", query.Name, query.GetID())
 
 		// выбор уникальных id таблиц, участвующих во всех join //этот шаг нужен чтобы таблицы не повторялись
@@ -79,9 +121,7 @@ func main(){
 					// AccessPlan для первой таблицы
 					// TableScan
 					Z, Z_io, err = math.TableScan(*t.Table)
-					if err != nil {
-						log.Fatal(err)
-					}
+					checkError("", err)
 					fmt.Println(t.Table.Name, "C1", Z, Z_io)
 
 					// Опеделение есть ли условие для использования IndexScan
@@ -92,9 +132,7 @@ func main(){
 					if condition != 1 {
 						// IndexScan
 						C2, C2_io, T_Q, err := math.IndexScan(*t.Table, condition)
-						if err != nil {
-							log.Fatal(err)
-						}
+						checkError("", err)
 						fmt.Println(t.Table.Name, "C2", C2, C2_io)
 						// Выбор min(TableScan;IndexScan)
 						if C2 < Z {
@@ -111,16 +149,12 @@ func main(){
 					// JoinPlan для таблиц 2:n
 					// Оценка подзапроса в рамках join
 					var I, I_x, err= query.GetJoinI(X, *t)
-					if err != nil {
-						log.Fatal(err)
-					}
+					checkError("", err)
 					if I == 0 {
 						// Декартово произведение
 						// Оценка Y
 						C, C_io, err := math.TableScan(*t.Table)
-						if err != nil {
-							log.Fatal(err)
-						}
+						checkError("", err)
 						// Оценка соединения
 						Z = T_x * C + math.C_join
 						Z_io = T_x * C_io + math.C_join_io
@@ -128,9 +162,7 @@ func main(){
 						// Соединение по индексу
 						// Оценка Y
 						C, C_io, _, err := math.IndexScan(*t.Table, 1 / I) //  ??
-						if err != nil {
-							log.Fatal(err)
-						}
+						checkError("", err)
 						// Оценка соединения
 						Z = T_x * C
 						Z_io = T_x * C_io
@@ -138,9 +170,7 @@ func main(){
 					// Определение числа записей в Y
 					// Определение p для Y
 					var condition, cErr= query.GetAllCondition(t.GetID())
-					if cErr != nil {
-						log.Fatal(cErr)
-					}
+					checkError("", cErr)
 					if condition != 1 {
 						T *= condition
 					}
@@ -170,8 +200,20 @@ func main(){
 				fmt.Printf("table %s %.2f %.2f %.2f %.2f %.2f \n", t.Table.Name, Z_x, Z_io_x, T_x, B_x, B_x_join)
 				X = append(X, t)
 			}
+			if queryMinTime == -1 {
+				queryMinTime = Z_x
+			} else  {
+				queryMinTime = Math.Min(queryMinTime, Z_x)
+			}
 			fmt.Println()
 		}
+		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime}) // запись в массив минимального времени выполнение очередного запроса
 	}
+	fmt.Print(parser.QueriesMinTimes(queriesMinTime))
 	// расчет технических характеристик
+	var j = parser.CSVData{Header: "time", Data: []string{"200604300.00","150.12"}}
+	var k = parser.CSVData{Header: "name", Data: []string{"hello","bye"}}
+	var l = []parser.CSVData{j, k}
+	// генерация csv
+	 printToCsv(l)
 }

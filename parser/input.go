@@ -243,7 +243,7 @@ type Transaction struct {
 
 type TransactionQuery struct {
 	QueryId string `json:"queryid"`
-	Count int `json:"rep"`          // число
+	Count string `json:"rep"`          // число
 }
 
 func (o TransactionQuery) GetID() string {
