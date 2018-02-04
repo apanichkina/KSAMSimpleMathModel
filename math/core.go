@@ -35,7 +35,7 @@ func IndexScan(Table parser.Table, p float64) (float64, float64, float64, error)
 	var T float64 = Table.T * p
 	var B float64 = Table.T / Table.L
 	var C_cpu float64 = T * C_filter
-	var C_io float64 = (math.Ceil(B * p) + math.Ceil(Table.T * p)) * C_b
+	var C_io float64 = (math.Ceil(B*p) + math.Ceil(Table.T*p)) * C_b
 	var C = C_cpu + C_io
 
 	return C, C_io, T, nil
