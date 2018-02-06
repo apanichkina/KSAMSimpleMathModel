@@ -17,7 +17,7 @@ func checkError(message string, err error) {
 	}
 }
 
-var fileInput = flag.String("in", "./data/input.json", "in - input model file")
+var fileInput = flag.String("in", "./data/true.input.json", "in - input model file")
 
 func printToCsv(filename string, output parser.QueriesMinTimes) error {
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.ModePerm)
