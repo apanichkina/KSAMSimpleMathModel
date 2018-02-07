@@ -4290,7 +4290,7 @@
       "queries": [
         {
           "id": {
-            "$oid": "857a97c2-9de6-8139-56c4-df418e3dddac"
+          "$oid": "857a97c2-9de6-8139-56c4-df418e3dddac"
           },
           "name": "Q6",
           "scheme": "70754517-9cc8-59e0-6091-e5ed8014f995",
@@ -4318,7 +4318,7 @@
           "order": [],
           "group": [],
           "condition": [
-             {
+            {
               "tableid": "ba87ae52-a4b3-1200-edbe-c3a4e26cb43d",
               "attributeid": "2a239b40-63b2-6553-aaf2-48601c56f0a0",
               "P": 0.14

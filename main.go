@@ -13,20 +13,25 @@ import (
 
 func checkError(message string, err error) {
 	if err != nil {
+		var fullError = parser.Errors{{Message: fmt.Sprint(message, err)}}
+		var err1 = printToCsv("data/result.csv", fullError)
+		if err1 != nil {
+			log.Fatal(message, err1)
+		}
 		log.Fatal(message, err)
 	}
 }
 
 var fileInput = flag.String("in", "./data/true_input.json", "in - input model file")
 
-func printToCsv(filename string, output parser.QueriesMinTimes) error {
+func printToCsv(filename string, output interface{}) error {
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return fmt.Errorf("can't open %q to write: %s", filename, err)
 	}
 	defer f.Close()
 
-	err = gocsv.MarshalFile(&output, f) // Use this to save the CSV back to the file
+	err = gocsv.MarshalFile(output, f) // Use this to save the CSV back to the file
 	if err != nil {
 		return fmt.Errorf("can't write to %q csv: %s", filename, err)
 	}
@@ -68,7 +73,7 @@ func main() {
 			queryTables = append(queryTables, iut)
 		}
 		if len(queryTables) < 2 {
-			log.Fatal("too few tabels for any joins (< 2)")
+			checkError("Join error. ", fmt.Errorf("too few tabels for any joins (< 2)"))
 		}
 
 		// конструирование всех вариантов соединения таблиц n! штук
@@ -106,18 +111,16 @@ func main() {
 					// AccessPlan для первой таблицы
 					// TableScan
 					Z, Z_io, err = math.TableScan(*t.Table)
-					checkError("", err)
+					checkError("AccessPlan TableScan error. ", err)
 					fmt.Println(t.Table.Name, "C1", Z, Z_io)
 
 					// Опеделение есть ли условие для использования IndexScan
-					var condition, cErr = query.GetAllCondition(t.GetID())
-					if cErr != nil {
-						log.Fatal(cErr)
-					}
+					var condition, L, cErr = query.GetAllCondition(t.GetID())
+					checkError("AccessPlan GetAllCondition error. ", cErr)
 					if condition != 1 {
 						// IndexScan
-						C2, C2_io, T_Q, err := math.IndexScan(*t.Table, condition)
-						checkError("", err)
+						C2, C2_io, T_Q, err := math.IndexScan(*t.Table, condition, L)
+						checkError("AccessPlan IndexScan error. ", err)
 						fmt.Println(t.Table.Name, "C2", C2, C2_io)
 						// Выбор min(TableScan;IndexScan)
 						if C2 < Z {
@@ -135,28 +138,28 @@ func main() {
 					// JoinPlan для таблиц 2:n
 					// Оценка подзапроса в рамках join
 					var I, I_x, err = query.GetJoinI(X, *t)
-					checkError("", err)
+					checkError("Calculate I for Join error. ", err)
 					if I == 0 {
 						// Декартово произведение
 						// Оценка Y
 						C, C_io, err := math.TableScan(*t.Table)
-						checkError("", err)
+						checkError("Evaluation of a subquery TableScan error. ", err)
 						// Оценка соединения
-						Z = T_x*C + math.C_join
-						Z_io = T_x*C_io + math.C_join_io
+						Z = T_x * C + math.C_join
+						Z_io = T_x * C_io + math.C_join_io
 					} else {
 						// Соединение по индексу
 						// Оценка Y
-						C, C_io, _, err := math.IndexScan(*t.Table, 1/I) //  ??
-						checkError("", err)
+						C, C_io, _, err := math.IndexScan(*t.Table, 1 / I, math.L_ind) //  TODO как считать L ind
+						checkError("Evaluation of a subquery IndexScan error. ", err)
 						// Оценка соединения
 						Z = T_x * C
 						Z_io = T_x * C_io
 					}
 					// Определение числа записей в Y
 					// Определение p для Y
-					var condition, cErr = query.GetAllCondition(t.GetID())
-					checkError("", cErr)
+					var condition, _, cErr = query.GetAllCondition(t.GetID())
+					checkError("JoinPlan GetAllCondition error. ", cErr)
 					if condition != 1 {
 						T *= condition
 					}
@@ -182,8 +185,9 @@ func main() {
 				Z_x += Z
 				Z_io_x += Z_io
 				T_x = T
+				B_x = B_x_join
 				// Конец итерации
-				fmt.Printf("table %s %.2f %.2f %.2f %.2f %.2f \n", t.Table.Name, Z_x, Z_io_x, T_x, B_x, B_x_join)
+				fmt.Printf("table %s %.2f %.2f %.2f %.2f %.2f \n", t.Table.Name, Z_x, Z_io_x, T_x, B_x)
 				X = append(X, t)
 			}
 			if queryMinTime == -1 {
@@ -193,10 +197,10 @@ func main() {
 			}
 			fmt.Println()
 		}
-		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime}) // запись в массив минимального времени выполнение очередного запроса
+		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: parser.FullFloat64(queryMinTime)}) // запись в массив минимального времени выполнение очередного запроса
 	}
 	fmt.Print(parser.QueriesMinTimes(queriesMinTime))
 	// генерация csv
-	err = printToCsv("data/result.csv", queriesMinTime)
+	err = printToCsv("data/result.csv", parser.QueriesMinTimes(queriesMinTime))
 	checkError("", err)
 }

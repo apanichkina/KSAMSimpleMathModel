@@ -3,6 +3,7 @@ package math
 import (
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"math"
+	"fmt"
 )
 
 type Str struct {
@@ -22,6 +23,9 @@ type VOptions struct {
 }
 
 func TableScan(Table parser.Table) (float64, float64, error) {
+	if Table.L == 0 {
+		return 0.0, 0.0, fmt.Errorf("%s Table.L cann`t be 0", Table.Name)
+	}
 	var T float64 = Table.T
 	var B float64 = Table.T / Table.L
 	var C_cpu float64 = T * C_filter
@@ -31,11 +35,14 @@ func TableScan(Table parser.Table) (float64, float64, error) {
 	return C, C_io, nil
 }
 
-func IndexScan(Table parser.Table, p float64) (float64, float64, float64, error) {
+func IndexScan(Table parser.Table, p float64, L float64) (float64, float64, float64, error) { //Допущение: Индекс не кластеризован!
+	if L == 0 {
+		return 0.0, 0.0, 0.0, fmt.Errorf("%s Attr.L cann`t be 0", Table.Name)
+	}
 	var T float64 = Table.T * p
-	var B float64 = Table.T / Table.L
+	var B_ind float64 = Table.T / L
 	var C_cpu float64 = T * C_filter
-	var C_io float64 = (math.Ceil(B*p) + math.Ceil(Table.T*p)) * C_b
+	var C_io float64 = (math.Ceil(B_ind * p) + math.Ceil(Table.T * p)) * C_b
 	var C = C_cpu + C_io
 
 	return C, C_io, T, nil

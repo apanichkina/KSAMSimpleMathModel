@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"math"
 )
 
 type ID struct {
@@ -89,6 +90,7 @@ type Attribute struct {
 	Object
 	Name string  `json:"name"` // имя
 	I    float64 `json:"I"`    // мощность
+	L    float64 `json:"L"`    // число блоков в индексе по этому атрибуту
 }
 
 func (a *Attribute) UnmarshalJSON(data []byte) error {
@@ -248,14 +250,16 @@ func (q Query) GetJoinI(x []*TableInQuery, rightTable TableInQuery) (float64, fl
 	return I, I_x, nil
 }
 
-func (q Query) GetAllCondition(tableId string) (float64, error) {
+func (q Query) GetAllCondition(tableId string) (float64, float64, error) {
 	var result float64 = 1
+	var L float64 = 1
 	for _, c := range q.Conditions {
 		if c.TableId == tableId {
 			result *= c.P
+			L = math.Min(L, q.TablesInQueryMap[tableId].Table.AttributesMap[c.AttributeId].L)
 		}
 	}
-	return result, nil
+	return result, math.Max(L, 1), nil
 }
 
 func (p DataModel) findTable(id string) (*Table, error) {
