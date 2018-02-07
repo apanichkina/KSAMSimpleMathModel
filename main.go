@@ -17,7 +17,7 @@ func checkError(message string, err error) {
 	}
 }
 
-var fileInput = flag.String("in", "./data/true.input.json", "in - input model file")
+var fileInput = flag.String("in", "./data/true_input.json", "in - input model file")
 
 func printToCsv(filename string, output parser.QueriesMinTimes) error {
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.ModePerm)
@@ -39,7 +39,9 @@ func main() {
 	// парсинг входного json
 	inputparams, err := parser.GetInputParamsFromFile(*fileInput)
 	checkError("", err)
+	fmt.Println("Считается модель: ", inputparams.Name)
 	var params = inputparams.DataModel[0] // добавить проход по массиву
+	fmt.Println("Считается концептуальная модель: ", params.Name)
 
 	if len(params.Queries) < 1 {
 		log.Fatal("can`t find any query")
@@ -50,6 +52,7 @@ func main() {
 		var queryMinTime float64 = -1 // минимальное время выполнения запроса
 
 		fmt.Println("query", query.Name, query.GetID())
+
 
 		// выбор уникальных id таблиц, участвующих во всех join //этот шаг нужен чтобы таблицы не повторялись
 		var queryTablesTemp = map[string]bool{}
@@ -95,7 +98,7 @@ func main() {
 
 				var t = tableInQuery
 
-				fmt.Println(parser.TableIDs(X), "+", t.Table.GetID(), t.Table.Name)
+				fmt.Println(parser.TableNames(X), "+", t.Table.Name)
 				var T = t.Table.T
 				var Z float64 = 0
 				var Z_io float64 = 0
@@ -125,6 +128,7 @@ func main() {
 						T = T_Q
 					}
 					// Оценка числа блоков в промежуточной таблице
+
 					B_x = Math.Ceil(T / (t.Table.L * math.L_b)) // ??
 
 				} else {
@@ -193,8 +197,6 @@ func main() {
 	}
 	fmt.Print(parser.QueriesMinTimes(queriesMinTime))
 	// генерация csv
-	err = printToCsv("output.csv", queriesMinTime)
-	if err != nil {
-		panic(err)
-	}
+	err = printToCsv("data/result.csv", queriesMinTime)
+	checkError("", err)
 }

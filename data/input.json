@@ -2,11 +2,13 @@
   "_id": {
     "$oid": "000"
   },
+  "name": "ModelTEST",
   "datamodel": [
     {
       "id": {
         "$oid": "00"
       },
+      "name": "DB",
       "tables": [
         {
           "id": {

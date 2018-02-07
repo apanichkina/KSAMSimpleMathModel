@@ -25,11 +25,13 @@ type UniqObject interface {
 
 type InputParams struct {
 	ID        `json:"_id"`
+	Name      string       `json:"name"`
 	DataModel []*DataModel `json:"datamodel"`
 }
 
 type DataModel struct {
 	Object
+	Name      string   `json:"name"`
 	Tables    []*Table `json:"tables"`
 	TablesMap map[string]*Table
 
@@ -59,12 +61,28 @@ func (d *DataModel) setMaps() {
 
 type Table struct {
 	Object
-	Name string  `json:"name"`  // имя
-	T    float64 `json:"nrows"` // количество записей
+	Name string            `json:"name"`  // имя
+	T    float64           `json:"nrows"` // количество записей
 	L    float64 `json:"L"`     // количество записей в блоке
 
 	Attributes    []*Attribute `json:"attributes"`
 	AttributesMap map[string]*Attribute
+}
+
+func (t *Table) UnmarshalJSON(data []byte) error {
+	type alias Table
+	var temp alias
+
+	err := json.Unmarshal(data, &temp)
+	if err != nil {
+		return fmt.Errorf("can't unmarshal to %T: %s", t, err)
+	}
+
+	if temp.L == 0 {
+		temp.L = 200
+	}
+	*t = Table(temp)
+	return nil
 }
 
 type Attribute struct {
@@ -73,12 +91,39 @@ type Attribute struct {
 	I    float64 `json:"I"`    // мощность
 }
 
+func (a *Attribute) UnmarshalJSON(data []byte) error {
+	type alias Attribute
+	var temp alias
+
+	err := json.Unmarshal(data, &temp)
+	if err != nil {
+		return fmt.Errorf("can't unmarshal to %T: %s", a, err)
+	}
+
+	if temp.I == 0 {
+		temp.I = 200
+	}
+	*a = Attribute(temp)
+	return nil
+}
+
 type TableIDs []*TableInQuery
 
 func (arr TableIDs) String() string {
 	var result []string
 	for _, v := range arr {
 		result = append(result, v.GetID())
+	}
+
+	return strings.Join(result, ",")
+}
+
+type TableNames []*TableInQuery
+
+func (arr TableNames) String() string {
+	var result []string
+	for _, v := range arr {
+		result = append(result, v.Table.Name)
 	}
 
 	return strings.Join(result, ",")
