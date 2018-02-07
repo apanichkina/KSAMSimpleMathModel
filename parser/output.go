@@ -2,6 +2,8 @@ package parser
 
 import (
 	"fmt"
+	"os"
+	"github.com/gocarina/gocsv"
 )
 
 type FullFloat64 float64
@@ -35,4 +37,18 @@ type QueriesMinTimes []QueriesMinTime
 type CSVData struct {
 	Error
 	QueriesMinTime
+}
+
+func PrintToCsv(filename string, output interface{}) error {
+	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("can't open %q to write: %s", filename, err)
+	}
+	defer f.Close()
+
+	err = gocsv.MarshalFile(output, f) // Use this to save the CSV back to the file
+	if err != nil {
+		return fmt.Errorf("can't write to %q csv: %s", filename, err)
+	}
+	return nil
 }
