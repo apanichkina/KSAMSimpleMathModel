@@ -51,6 +51,7 @@ func IndexScan(Table parser.Table, p float64, L float64) (float64, float64, floa
 func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 	params := inputParams.DataModel[0] // добавить проход по массиву
 	fmt.Println("Считается концептуальная модель: ", params.Name)
+	// подготовительные расчеты для входных параметров
 
 	if len(params.Queries) < 1 {
 		return nil, fmt.Errorf("can`t find any query")
@@ -72,7 +73,8 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 			for _, t := range query.TablesInQuery {
 				var Z float64 = 0
 				var Z_io float64 = 0
-				Z, Z_io, err := TableScan(*t.Table)
+				var err error
+				Z, Z_io, err = TableScan(*t.Table)
 				if err != nil {
 					return nil, fmt.Errorf("SimpleJoin TableScan error: %s", err)
 				}
@@ -153,7 +155,8 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 					if len(X) == 0 {
 						// AccessPlan для первой таблицы
 						// TableScan
-						Z, Z_io, err := TableScan(*t.Table)
+						var err error
+						Z, Z_io, err = TableScan(*t.Table)
 						if err != nil {
 							return nil, fmt.Errorf("AccessPlan TableScan error: %s", err)
 						}

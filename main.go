@@ -26,10 +26,10 @@ func main() {
 
 	// парсинг входного json
 	inputparams, err := parser.GetInputParamsFromFile(*fileInput)
-	checkError("parse error", err)
+	checkError("parse error. ", err)
 
 	result, err := math.Evaluate(inputparams)
-	checkError("math core error", err)
+	checkError("math core error. ", err)
 
 	// генерация csv
 	err = parser.PrintToCsv("data/result.csv", result)

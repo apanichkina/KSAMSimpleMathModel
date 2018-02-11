@@ -68,6 +68,9 @@ type Table struct {
 
 	Attributes    []*Attribute `json:"attributes"`
 	AttributesMap map[string]*Attribute
+
+	Size	float64		// Длина записи в байтах
+
 }
 
 func (t *Table) UnmarshalJSON(data []byte) error {
@@ -91,6 +94,7 @@ type Attribute struct {
 	Name string  `json:"name"` // имя
 	I    float64 `json:"I"`    // мощность
 	L    float64 `json:"L"`    // число блоков в индексе по этому атрибуту
+	Size float64 `json:"size"` // размер типа атрибута
 }
 
 func (a *Attribute) UnmarshalJSON(data []byte) error {
@@ -131,11 +135,20 @@ func (arr TableNames) String() string {
 	return strings.Join(result, ",")
 }
 
-func (t *Table) setMaps() {
+func (t *Table) setMaps() error {
+	if len(t.Attributes) == 0 {
+		return fmt.Errorf("table %s has no attributes", t.Name)
+	}
 	t.AttributesMap = make(map[string]*Attribute)
+	var size float64 = 0
+
 	for _, a := range t.Attributes {
 		t.AttributesMap[a.GetID()] = a
+		size += a.Size
 	}
+	t.Size = size
+
+	return nil
 }
 
 type Query struct {
@@ -297,11 +310,15 @@ func (o TransactionQuery) GetID() string {
 	return o.QueryId
 }
 
-func (q *Transaction) setMaps() {
+func (q *Transaction) setMaps() error{
+	if len(q.Queries) == 0 {
+		return fmt.Errorf("transacton %s has no queries", q.Name)
+	}
 	q.QueriesMap = make(map[string]*TransactionQuery)
 	for _, t := range q.Queries {
 		q.QueriesMap[t.GetID()] = t
 	}
+	return nil
 }
 
 func GetInputParamsFromByteSlice(input []byte) (InputParams, error) {
@@ -347,11 +364,17 @@ func (ip *InputParams) PrepareData() error {
 		}
 
 		for _, t := range p.Tables {
-			t.setMaps()
+			err := t.setMaps()
+			if err != nil {
+				return err
+			}
 		}
 
 		for _, t := range p.Transactions {
-			t.setMaps()
+			err := t.setMaps()
+			if err != nil {
+				return err
+			}
 		}
 
 	}
