@@ -2652,8 +2652,7 @@
               "valid": true,
               "showing": false,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -2738,8 +2737,7 @@
               "valid": true,
               "showing": false,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3014,8 +3012,7 @@
               "showing": false,
               "valid": true,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3027,8 +3024,7 @@
               "showing": false,
               "attr_type": "long",
               "size": 8,
-              "toggled": true,
-              "fk": true
+              "toggled": true
             },
             {
               "id": {
@@ -3082,8 +3078,7 @@
               "showing": false,
               "valid": true,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3095,8 +3090,7 @@
               "showing": false,
               "attr_type": "long",
               "size": 8,
-              "toggled": true,
-              "fk": true
+              "toggled": true
             },
             {
               "id": {
@@ -3189,8 +3183,7 @@
               "showing": false,
               "attr_type": "long",
               "size": 8,
-              "toggled": true,
-              "fk": true
+              "toggled": true
             },
             {
               "id": {
@@ -3288,8 +3281,7 @@
               "showing": false,
               "attr_type": "long",
               "size": 8,
-              "toggled": true,
-              "fk": true
+              "toggled": true
             },
             {
               "id": {
@@ -3367,8 +3359,7 @@
               "valid": true,
               "showing": false,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3475,8 +3466,7 @@
               "valid": true,
               "showing": false,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3576,8 +3566,7 @@
               "showing": false,
               "valid": true,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3588,8 +3577,7 @@
               "valid": true,
               "showing": false,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3600,8 +3588,7 @@
               "valid": true,
               "showing": false,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3764,8 +3751,7 @@
               "showing": false,
               "valid": true,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3776,8 +3762,7 @@
               "valid": true,
               "showing": false,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3788,8 +3773,7 @@
               "valid": true,
               "showing": false,
               "attr_type": "long",
-              "size": 8,
-              "fk": true
+              "size": 8
             },
             {
               "id": {
@@ -3980,8 +3964,7 @@
               "showing": false,
               "attr_type": "long",
               "size": 8,
-              "toggled": true,
-              "fk": true
+              "toggled": true
             },
             {
               "id": {
@@ -4035,8 +4018,7 @@
               "showing": false,
               "attr_type": "long",
               "size": 8,
-              "toggled": true,
-              "fk": true
+              "toggled": true
             },
             {
               "id": {
@@ -4451,428 +4433,6 @@
           "stepIndex": 2,
           "table": "5c86f89a-833f-af1c-f0c0-af2a08f07a25",
           "query_type": "easy"
-        },
-        {
-          "id": {
-            "$oid": "22e4a4d1-0a30-280b-c9c2-f33bf6ea74a0"
-          },
-          "name": "Q81",
-          "scheme": "70754517-9cc8-59e0-6091-e5ed8014f995",
-          "type": "complex",
-          "tables": [
-            {
-              "pseudoname": "SUPPLIER",
-              "id": {
-                "$oid": "f90197e0-588b-9cea-d326-b7ccd22a89e7"
-              },
-              "tableid": "7921e558-f25f-183f-79b9-941ec730edb0"
-            },
-            {
-              "pseudoname": "PART",
-              "id": {
-                "$oid": "7ef30014-e182-cbed-44a9-57825b438b17"
-              },
-              "tableid": "b72c8d3b-db02-7a53-aeff-4486eb9adeca"
-            },
-            {
-              "pseudoname": "LINEITEM",
-              "id": {
-                "$oid": "3fe51844-ab50-43c7-3aa0-c454b2f5c11f"
-              },
-              "tableid": "5c86f89a-833f-af1c-f0c0-af2a08f07a25"
-            },
-            {
-              "pseudoname": "CUSTOMER",
-              "id": {
-                "$oid": "43cdaa35-5f75-a44b-9023-81d067a5f572"
-              },
-              "tableid": "386767eb-6494-ad38-7561-d81878ea8f8b"
-            },
-            {
-              "pseudoname": "ORDERS",
-              "id": {
-                "$oid": "ea1baf25-0245-45d2-4c0c-f16f85e71e69"
-              },
-              "tableid": "e2c5bbc5-95a4-c1df-3400-dad51b737f71"
-            },
-            {
-              "pseudoname": "nation n1",
-              "id": {
-                "$oid": "40bb79f7-951f-be46-b78c-4a0103d954e0"
-              },
-              "tableid": "dcbb6dd6-768f-5a04-8bc9-2a81d142b2aa"
-            },
-            {
-              "pseudoname": "nation n2",
-              "id": {
-                "$oid": "55c5d5fc-d672-2f93-c088-253d62b56911"
-              },
-              "tableid": "dcbb6dd6-768f-5a04-8bc9-2a81d142b2aa"
-            },
-            {
-              "pseudoname": "REGION",
-              "id": {
-                "$oid": "61b78d15-e295-0821-c2c2-fccba160b3f0"
-              },
-              "tableid": "3d92fc66-714f-5265-9fb9-9cb81ca3fe8e"
-            }
-          ],
-          "joins": [
-            {
-              "id": {
-                "$oid": "f305ce08-ce0e-388b-efd0-3ecc5387f3eb"
-              },
-              "join": [
-                {
-                  "tableid": "7ef30014-e182-cbed-44a9-57825b438b17",
-                  "attributes": [
-                    "2088ad29-c680-91be-e3d9-2a77fdd2dd54"
-                  ]
-                },
-                {
-                  "tableid": "3fe51844-ab50-43c7-3aa0-c454b2f5c11f",
-                  "attributes": [
-                    "f54a4866-e6ab-c3b7-a37d-698ebfd13b3f"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "8f9dbe2c-4adb-c0ec-8c67-bfdb9cbd3f49"
-              },
-              "join": [
-                {
-                  "tableid": "f90197e0-588b-9cea-d326-b7ccd22a89e7",
-                  "attributes": [
-                    "4dab472c-ade5-f8d9-c660-e7cbe19cc508"
-                  ]
-                },
-                {
-                  "tableid": "3fe51844-ab50-43c7-3aa0-c454b2f5c11f",
-                  "attributes": [
-                    "5394eca9-1649-5c0c-164c-e91a4c642006"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "60303b98-2a19-0b7a-806f-22856951f88a"
-              },
-              "join": [
-                {
-                  "tableid": "ea1baf25-0245-45d2-4c0c-f16f85e71e69",
-                  "attributes": [
-                    "f87f71f0-0462-7269-93d3-fc390ebece5a"
-                  ]
-                },
-                {
-                  "tableid": "43cdaa35-5f75-a44b-9023-81d067a5f572",
-                  "attributes": [
-                    "74f84e82-04c4-cff6-5f2a-9c13ab07aa8e"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "1f0c71b7-e762-e17d-a569-2c3513729e5e"
-              },
-              "join": [
-                {
-                  "tableid": "43cdaa35-5f75-a44b-9023-81d067a5f572",
-                  "attributes": [
-                    "57b150c8-3915-2cd5-a4e0-fd9cdd644d90"
-                  ]
-                },
-                {
-                  "tableid": "40bb79f7-951f-be46-b78c-4a0103d954e0",
-                  "attributes": [
-                    "772af4fb-a142-7719-7c46-016174422d40"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "53566daf-c531-f9a9-fe73-dfa06bdc8c94"
-              },
-              "join": [
-                {
-                  "tableid": "40bb79f7-951f-be46-b78c-4a0103d954e0",
-                  "attributes": [
-                    "00a36a2f-fdc2-d2c8-189f-792491e3aa95"
-                  ]
-                },
-                {
-                  "tableid": "61b78d15-e295-0821-c2c2-fccba160b3f0",
-                  "attributes": [
-                    "49366690-64bc-9618-8df7-8e67df91faf5"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "c1ff54b6-fb2b-1794-2e5d-c93914510cb9"
-              },
-              "join": [
-                {
-                  "tableid": "f90197e0-588b-9cea-d326-b7ccd22a89e7",
-                  "attributes": [
-                    "84fd2a57-4002-9ce3-ca7b-1d35a8edfbc5"
-                  ]
-                },
-                {
-                  "tableid": "55c5d5fc-d672-2f93-c088-253d62b56911",
-                  "attributes": [
-                    "772af4fb-a142-7719-7c46-016174422d40"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "af3df767-e93a-3016-1b3c-29c63dd1ea30"
-              },
-              "join": [
-                {
-                  "tableid": "3fe51844-ab50-43c7-3aa0-c454b2f5c11f",
-                  "attributes": [
-                    "57f36a27-8b25-c384-731a-585e5431299d"
-                  ]
-                },
-                {
-                  "tableid": "ea1baf25-0245-45d2-4c0c-f16f85e71e69",
-                  "attributes": [
-                    "ed4431f9-bdda-2270-f829-912d1ac93581"
-                  ]
-                }
-              ]
-            }
-          ],
-          "projection": [
-            {
-              "tableid": "3fe51844-ab50-43c7-3aa0-c454b2f5c11f",
-              "attributeid": "10d77ea2-2977-25a4-83b6-9d5f536d54d2"
-            },
-            {
-              "tableid": "3fe51844-ab50-43c7-3aa0-c454b2f5c11f",
-              "attributeid": "1dfd7989-f95a-a0b9-a250-3c17a68f48ee"
-            },
-            {
-              "tableid": "55c5d5fc-d672-2f93-c088-253d62b56911",
-              "attributeid": "4f58defe-524a-4fb8-f2dc-0929612483b7"
-            },
-            {
-              "tableid": "ea1baf25-0245-45d2-4c0c-f16f85e71e69",
-              "attributeid": "7f4c3820-050d-5435-a931-052c678ae94e"
-            }
-          ],
-          "order": [],
-          "group": [],
-          "condition": [
-            {
-              "tableid": "ea1baf25-0245-45d2-4c0c-f16f85e71e69",
-              "attributeid": "7f4c3820-050d-5435-a931-052c678ae94e",
-              "P": 0.3
-            },
-            {
-              "tableid": "7ef30014-e182-cbed-44a9-57825b438b17",
-              "attributeid": "7aef4d2d-95bf-1492-0fae-9385e64704ee",
-              "P": 0.00667
-            },
-            {
-              "tableid": "61b78d15-e295-0821-c2c2-fccba160b3f0",
-              "attributeid": "369b6469-e02e-9e95-ef25-b33c1aa353d5",
-              "P": 0.2
-            }
-          ],
-          "valid": true,
-          "showing": false,
-          "stepIndex": 2,
-          "toggled": true,
-          "query_type": "complex"
-        },
-        {
-          "id": {
-            "$oid": "0acfca25-63f1-7751-b9a7-5c8c8700aa36"
-          },
-          "name": "Q91",
-          "scheme": "70754517-9cc8-59e0-6091-e5ed8014f995",
-          "type": "complex",
-          "tables": [
-            {
-              "pseudoname": "SUPPLIER",
-              "id": {
-                "$oid": "2268b2fb-117b-b5c8-2fbc-366dbca7ce4b"
-              },
-              "tableid": "7921e558-f25f-183f-79b9-941ec730edb0"
-            },
-            {
-              "pseudoname": "PART",
-              "id": {
-                "$oid": "9fa9d612-5f6c-496a-e5bb-7459f70e8c24"
-              },
-              "tableid": "b72c8d3b-db02-7a53-aeff-4486eb9adeca"
-            },
-            {
-              "pseudoname": "PARTSUPP",
-              "id": {
-                "$oid": "69d0efeb-1f49-faa1-e622-f3aaea84d164"
-              },
-              "tableid": "1eab079e-60d4-2f22-f4c4-a8baf4cadb32"
-            },
-            {
-              "pseudoname": "LINEITEM",
-              "id": {
-                "$oid": "2e6ff751-593c-fddf-7372-ac37521da565"
-              },
-              "tableid": "5c86f89a-833f-af1c-f0c0-af2a08f07a25"
-            },
-            {
-              "pseudoname": "ORDERS",
-              "id": {
-                "$oid": "eea05159-6d22-1815-dcd4-0819261fb8af"
-              },
-              "tableid": "e2c5bbc5-95a4-c1df-3400-dad51b737f71"
-            },
-            {
-              "pseudoname": "NATION",
-              "id": {
-                "$oid": "8500d2ce-9c4d-1001-60fc-4899dd820e4d"
-              },
-              "tableid": "dcbb6dd6-768f-5a04-8bc9-2a81d142b2aa"
-            }
-          ],
-          "joins": [
-            {
-              "id": {
-                "$oid": "ee3bd563-ff3a-6700-4d46-b0d2ad065b15"
-              },
-              "join": [
-                {
-                  "tableid": "2268b2fb-117b-b5c8-2fbc-366dbca7ce4b",
-                  "attributes": [
-                    "4dab472c-ade5-f8d9-c660-e7cbe19cc508"
-                  ]
-                },
-                {
-                  "tableid": "2e6ff751-593c-fddf-7372-ac37521da565",
-                  "attributes": [
-                    "5394eca9-1649-5c0c-164c-e91a4c642006"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "d04d7569-c9c4-34d7-bff2-be92d90e9d50"
-              },
-              "join": [
-                {
-                  "tableid": "69d0efeb-1f49-faa1-e622-f3aaea84d164",
-                  "attributes": [
-                    "96de37a7-2a14-6a9d-6119-ee0f059466e3",
-                    "42f0768b-e38d-c669-927c-933c999347ad"
-                  ]
-                },
-                {
-                  "tableid": "2e6ff751-593c-fddf-7372-ac37521da565",
-                  "attributes": [
-                    "f54a4866-e6ab-c3b7-a37d-698ebfd13b3f",
-                    "5394eca9-1649-5c0c-164c-e91a4c642006"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "7c21af1f-4758-f9f8-0565-f62df2a5bf2c"
-              },
-              "join": [
-                {
-                  "tableid": "9fa9d612-5f6c-496a-e5bb-7459f70e8c24",
-                  "attributes": [
-                    "2088ad29-c680-91be-e3d9-2a77fdd2dd54"
-                  ]
-                },
-                {
-                  "tableid": "2e6ff751-593c-fddf-7372-ac37521da565",
-                  "attributes": [
-                    "f54a4866-e6ab-c3b7-a37d-698ebfd13b3f"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "aaf6c7f5-c45c-19d2-7cdf-3573ce3e076e"
-              },
-              "join": [
-                {
-                  "tableid": "eea05159-6d22-1815-dcd4-0819261fb8af",
-                  "attributes": [
-                    "ed4431f9-bdda-2270-f829-912d1ac93581"
-                  ]
-                },
-                {
-                  "tableid": "2e6ff751-593c-fddf-7372-ac37521da565",
-                  "attributes": [
-                    "57f36a27-8b25-c384-731a-585e5431299d"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": {
-                "$oid": "bbabc89d-afaa-3b4f-a09e-9920e5fcde86"
-              },
-              "join": [
-                {
-                  "tableid": "2268b2fb-117b-b5c8-2fbc-366dbca7ce4b",
-                  "attributes": [
-                    "84fd2a57-4002-9ce3-ca7b-1d35a8edfbc5"
-                  ]
-                },
-                {
-                  "tableid": "8500d2ce-9c4d-1001-60fc-4899dd820e4d",
-                  "attributes": [
-                    "772af4fb-a142-7719-7c46-016174422d40"
-                  ]
-                }
-              ]
-            }
-          ],
-          "projection": [
-            {
-              "tableid": "8500d2ce-9c4d-1001-60fc-4899dd820e4d",
-              "attributeid": "4f58defe-524a-4fb8-f2dc-0929612483b7"
-            },
-            {
-              "tableid": "eea05159-6d22-1815-dcd4-0819261fb8af",
-              "attributeid": "7f4c3820-050d-5435-a931-052c678ae94e"
-            },
-            {
-              "tableid": "69d0efeb-1f49-faa1-e622-f3aaea84d164",
-              "attributeid": "8f7fc16a-9d6c-1411-0064-a7b56516d569"
-            }
-          ],
-          "order": [],
-          "group": [],
-          "condition": [
-            {
-              "tableid": "9fa9d612-5f6c-496a-e5bb-7459f70e8c24",
-              "attributeid": "0f82796f-67b7-1836-d3ca-175f1d5996ac",
-              "P": 0.054
-            }
-          ],
-          "toggled": true,
-          "showing": false,
-          "valid": true,
-          "stepIndex": 2,
-          "query_type": "complex"
         }
       ],
       "transactions": [

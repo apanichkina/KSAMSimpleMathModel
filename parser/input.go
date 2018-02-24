@@ -28,6 +28,43 @@ type InputParams struct {
 	ID        `json:"_id"`
 	Name      string       `json:"name"`
 	DataModel []*DataModel `json:"datamodel"`
+
+	Increment []*Increment `json:"increment"`
+
+	Nodes	[]*Node `json:"nodes"`
+	//NodesMap map[string]*Node
+	Networks	[]*Network `json:"networks"`
+}
+
+type Increment struct {
+	Object
+	ObjId	string   `json:"obj"`
+	ObjType	string	`json:"objtype"`
+
+	FieldName	string   `json:"field"`
+	From	float64   `json:"from"`
+	Step	float64   `json:"incr"`
+	To	float64   `json:"to"`
+}
+
+type Node struct {
+	Object
+	Name      string   `json:"name"`
+	Type      string   `json:"node_type"`
+	NodeCount      float64   `json:"nodecount"`
+	Mode      string   `json:"mode"`
+	Mem      float64   `json:"mem"`
+	Disk      float64   `json:"disk"`
+	DiskCount     float64   `json:"diskcount"`
+	Net      float64   `json:"net"`
+	Proc      float64   `json:"proc"`
+}
+
+type Network struct {
+	Object
+	Name      string   `json:"name"`
+	NodesID	[]string `json:"nodes"`
+	Speed      float64   `json:"speed"`
 }
 
 type DataModel struct {
@@ -69,6 +106,8 @@ type Table struct {
 	Attributes    []*Attribute `json:"attributes"`
 	AttributesMap map[string]*Attribute
 
+	PKAttribute *Attribute
+
 	Size	float64		// Длина записи в байтах
 
 }
@@ -92,9 +131,9 @@ func (t *Table) UnmarshalJSON(data []byte) error {
 type Attribute struct {
 	Object
 	Name string  `json:"name"` // имя
-	I    float64 `json:"I"`    // мощность
-	L    float64 `json:"L"`    // число блоков в индексе по этому атрибуту
+	I    float64 `json:"attr_I"`    // мощность
 	Size float64 `json:"size"` // размер типа атрибута
+	PK bool `json:"pk"`
 }
 
 func (a *Attribute) UnmarshalJSON(data []byte) error {
@@ -140,11 +179,15 @@ func (t *Table) setMaps() error {
 		return fmt.Errorf("table %s has no attributes", t.Name)
 	}
 	t.AttributesMap = make(map[string]*Attribute)
+
 	var size float64 = 0
 
 	for _, a := range t.Attributes {
 		t.AttributesMap[a.GetID()] = a
 		size += a.Size
+		if a.PK {
+			t.PKAttribute = a
+		}
 	}
 	t.Size = size
 
@@ -183,6 +226,11 @@ type Join struct {
 	Join []*TableAttributes `json:"join"`
 }
 
+type JoinAttributes struct {
+	LeftAttrId []string
+	RightAttrId []string
+}
+
 type TableAttributes struct {
 	TableId    string   `json:"tableid"`
 	Attributes []string `json:"attributes"`
@@ -202,77 +250,91 @@ type Condition struct {
 	P float64 `json:"P"`
 }
 
-func (q Query) FindJoin(leftTableId string, rightTableId string) (bool, []string, []string, error) {
+func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttributes, error) {
+	var result []JoinAttributes
 	for _, js := range q.Joins {
 		var hasLeft = false
 		var hasRight = false
 		var attrsIdLeft []string
 		var attrsIdRight []string
 		for _, j := range js.Join {
+			if len(j.Attributes) < 1 {
+				return  nil, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
+			}
 			if j.TableId == leftTableId {
 				hasLeft = true
 				attrsIdLeft = j.Attributes
-				if len(attrsIdLeft) < 1 {
-					return false, nil, nil, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
-				}
 			}
 			if j.TableId == rightTableId {
 				hasRight = true
 				attrsIdRight = j.Attributes
-				if len(attrsIdRight) < 1 {
-					return false, nil, nil, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
-				}
 			}
 		}
 		if hasLeft && hasRight {
-			return true, attrsIdLeft, attrsIdRight, nil
+			result = append(result, JoinAttributes{attrsIdLeft, attrsIdRight})
 		}
 	}
-	return false, nil, nil, nil
+
+	return result, nil
 }
 
 //
 // правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
 // не учитывает, что в X могжет содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))
-func (q Query) GetJoinI(x []*TableInQuery, rightTable TableInQuery) (float64, float64, error) {
-	var I float64 = 1   // I для Y по атрибуту соединения a
-	var I_x float64 = 1 // I для X по атрибуту a
+func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64) (*Attribute, float64, float64, error) {
+	var I float64 = 0   // I для Y по атрибуту соединения a
+	var P_maxI float64 = 1 // Вероятность P для текущего I
+	var P float64 = 1	// P для Y по условиям join, по которым не читается таблица
+	var Attr *Attribute = nil
+	var JoinLeftI float64 = 0
 	for _, leftTable := range x {
-		var hasJoin, attrIdLeft, attrIdRight, err = q.FindJoin(leftTable.GetID(), rightTable.GetID())
+		var joinAttrs, err = q.FindJoins(leftTable.GetID(), rightTable.GetID())
 		if err != nil {
-			return 0, 0, err
+			return Attr, P, JoinLeftI, err
 		}
-		if hasJoin {
-			for _, id := range attrIdLeft {
-				var joinAttrLeft, okL = leftTable.Table.AttributesMap[id]
-				if !okL {
-					return 0, 0, fmt.Errorf("can`t find leftattr with id: %s for join tables %s and %s", id, leftTable.Table.GetID(), rightTable.Table.GetID())
-				}
-				I_x *= joinAttrLeft.I
+		// проход  по джоинам, ищем соединение, где максимальный I
+		for _, ja := range joinAttrs {
+			var idL = ja.LeftAttrId[0]
+			var joinAttrLeft, okL = leftTable.Table.AttributesMap[idL]
+			if !okL {
+				return Attr, P, JoinLeftI, fmt.Errorf("can`t find leftattr with id: %s for join tables %s and %s", idL, leftTable.Table.GetID(), rightTable.Table.GetID())
 			}
 
-			for _, id := range attrIdRight {
-				var joinAttrRight, okR = rightTable.Table.AttributesMap[id]
-				if !okR {
-					return 0, 0, fmt.Errorf("can`t find rightattr with id: %s for join tables %s and %s", id, leftTable.Table.GetID(), rightTable.Table.GetID())
-				}
-				I *= joinAttrRight.I
+			var idR = ja.RightAttrId[0]
+			var joinAttrRight, okR = rightTable.Table.AttributesMap[idR]
+			if !okR {
+				return Attr, P, JoinLeftI, fmt.Errorf("can`t find rightattr with id: %s for join tables %s and %s", idR, leftTable.Table.GetID(), rightTable.Table.GetID())
 			}
+
+			var leftI = math.Min(joinAttrLeft.I, N)
+			var currentP = math.Min(leftI, joinAttrRight.I) / math.Max(leftI, joinAttrRight.I)
+
+			// ищем атрибут с максимальним I, чтобы 1/I было маленьким
+			// Остальные атрибуты будут в P
+			if joinAttrRight.I > I {
+				I = joinAttrRight.I
+				Attr = joinAttrRight
+				P_maxI = currentP
+				JoinLeftI = leftI
+			}
+
+
+			P *= currentP
 		}
+
 	}
-	return I, I_x, nil
+	P /= P_maxI
+	return Attr, P, JoinLeftI, nil
 }
 
-func (q Query) GetAllCondition(tableId string) (float64, float64, error) {
+func (q Query) GetAllCondition(tableId string) (float64, error) {
 	var result float64 = 1
-	var L float64 = 1
 	for _, c := range q.Conditions {
 		if c.TableId == tableId {
 			result *= c.P
-			L = math.Min(L, q.TablesInQueryMap[tableId].Table.AttributesMap[c.AttributeId].L)
 		}
 	}
-	return result, math.Max(L, 1), nil
+	return result, nil
 }
 
 func (p DataModel) findTable(id string) (*Table, error) {

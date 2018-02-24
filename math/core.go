@@ -23,11 +23,11 @@ type VOptions struct {
 }
 
 func TableScan(Table parser.Table) (float64, float64, error) {
-	if Table.L == 0 {
-		return 0.0, 0.0, fmt.Errorf("%s Table.L cann`t be 0", Table.Name)
+	if Table.Size == 0 {
+		return 0.0, 0.0, fmt.Errorf("%s Table.Size cann`t be 0", Table.Name)
 	}
 	var T float64 = Table.T
-	var B float64 = Table.T / Table.L
+	var B float64 = D / Table.Size
 	var C_cpu float64 = T * C_filter
 	var C_io float64 = B * C_b
 	var C = C_cpu + C_io
@@ -35,12 +35,52 @@ func TableScan(Table parser.Table) (float64, float64, error) {
 	return C, C_io, nil
 }
 
+func IndexScanRead(Table parser.Table, Query parser.Query) (float64, float64, error) { //Допущение: Индекс не кластеризован! И индекс только на PK
+	if Table.PKAttribute == nil {
+		return math.MaxFloat64, 0.0, nil
+	}
+	var tableId = Table.GetID()
+	var pkId = Table.PKAttribute.GetID()
+	var p float64 = 1
+	for _, c := range Query.Conditions {
+		if c.TableId == tableId && c.AttributeId == pkId {
+			p *= c.P
+		}
+	}
+	if p == 1 {
+		return math.MaxFloat64, 0.0, nil
+	}
+	var T float64 = Table.T * p
+	var B_ind float64 = D_ind / Table.PKAttribute.Size
+	var C_cpu float64 = T * C_filter
+	var C_io float64 = (math.Ceil(B_ind * p) + math.Ceil(Table.T * p)) * C_b
+	var C = C_cpu + C_io
+
+	return C, C_io, nil
+}
+
+
+func JoinPlanRead(Table parser.Table, Attr *parser.Attribute, N float64) (float64, float64, float64, error) { //Допущение: Индекс не кластеризован!
+	var I = Attr.I
+	if I == 0 {
+		return 0.0, 0.0, 0.0, fmt.Errorf("%s Attr.I cann`t be 0 for join. ", Table.Name)
+	}
+	var T float64 = Table.T * 1 / I
+	var C_cpu float64 = N * T * C_filter
+	var B_ind float64 = D_ind / Attr.Size
+	var C_io float64 = N * (math.Ceil(B_ind * 1 / I) + math.Ceil(Table.T * 1 / I)) * C_b
+	var C = C_cpu + C_io
+
+	return C, C_io, T, nil
+}
+
+
 func IndexScan(Table parser.Table, p float64, L float64) (float64, float64, float64, error) { //Допущение: Индекс не кластеризован!
 	if L == 0 {
 		return 0.0, 0.0, 0.0, fmt.Errorf("%s Attr.L cann`t be 0", Table.Name)
 	}
 	var T float64 = Table.T * p
-	var B_ind float64 = Table.T / L
+	var B_ind float64 = D_ind / Table.L
 	var C_cpu float64 = T * C_filter
 	var C_io float64 = (math.Ceil(B_ind * p) + math.Ceil(Table.T * p)) * C_b
 	var C = C_cpu + C_io
@@ -71,33 +111,24 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 			var Z_x float64 = 0
 			var Z_io_x float64 = 0
 			for _, t := range query.TablesInQuery {
-				var Z float64 = 0
-				var Z_io float64 = 0
-				var err error
-				Z, Z_io, err = TableScan(*t.Table)
+				Z, Z_io, err := TableScan(*t.Table)
 				if err != nil {
 					return nil, fmt.Errorf("SimpleJoin TableScan error: %s", err)
 				}
 				fmt.Println(t.Table.Name, "C1", Z, Z_io)
 
-				var condition, L, cErr = query.GetAllCondition(t.GetID())
-				if cErr != nil {
-					return nil, fmt.Errorf("SimpleJoin GetAllCondition error: %s ", cErr)
+				// IndexScan
+				C2, C2_io, err := IndexScanRead(*t.Table, *query)
+				if err != nil {
+					return nil, fmt.Errorf("AccessPlan IndexScan error: %s", err)
 				}
-				if condition != 1 {
-					// IndexScan
-					C2, C2_io, _, err := IndexScan(*t.Table, condition, L)
-					if err != nil {
-						return nil, fmt.Errorf("AccessPlan IndexScan error: %s", err)
-					}
-					fmt.Println(t.Table.Name, "C2", C2, C2_io)
-					// Выбор min(TableScan;IndexScan)
-					if C2 < Z {
-						Z = C2
-						Z_io = C2_io
-					}
+				fmt.Println(t.Table.Name, "C2", C2, C2_io)
+				// Выбор min(TableScan;IndexScan)
+				if C2 < Z {
+					Z = C2
+					Z_io = C2_io
+				}
 
-				}
 				Z_x += Z
 				Z_io_x += Z_io
 			}
@@ -156,82 +187,81 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 						// AccessPlan для первой таблицы
 						// TableScan
 						var err error
-						Z, Z_io, err = TableScan(*t.Table)
+						Z, Z_io, err = TableScan(*t.Table) // *t.Table - реальная таблица, для которой создан псевдоним или нет, но она находится в queries.TablesInQuery
 						if err != nil {
 							return nil, fmt.Errorf("AccessPlan TableScan error: %s", err)
 						}
 						fmt.Println(t.Table.Name, "C1", Z, Z_io)
 
-						// Опеделение есть ли условие для использования IndexScan
-						var condition, L, cErr = query.GetAllCondition(t.GetID())
+						C2, C2_io, err := IndexScanRead(*t.Table, *query)
+						if err != nil {
+							return nil, fmt.Errorf("AccessPlan IndexScan error: %s", err)
+						}
+						fmt.Println(t.Table.Name, "C2", C2, C2_io)
+						// Выбор min(TableScan;IndexScan)
+						if C2 < Z {
+							Z = C2
+							Z_io = C2_io
+						}
+						// Фильтрация
+						// Число записей в промежуточной таблице подзапроса с учетом условия селекции
+						var condition, cErr = query.GetAllCondition(t.GetID())
 						if cErr != nil {
-							return nil, fmt.Errorf("AccessPlan GetAllCondition error: %s", cErr)
+							return nil, fmt.Errorf("GetAllCondition error: %s ", cErr)
 						}
-						if condition != 1 {
-							// IndexScan
-							C2, C2_io, T_Q, err := IndexScan(*t.Table, condition, L)
-							if err != nil {
-								return nil, fmt.Errorf("AccessPlan IndexScan error: %s", err)
-							}
-							fmt.Println(t.Table.Name, "C2", C2, C2_io)
-							// Выбор min(TableScan;IndexScan)
-							if C2 < Z {
-								Z = C2
-								Z_io = C2_io
-							}
-							// Число записей в промежуточной таблице подзапроса с учетом условия селекции
-							T = T_Q
-						}
+						T *= condition
 						// Оценка числа блоков в промежуточной таблице
 
-						B_x = math.Ceil(T / (t.Table.L * L_b)) // ??
+						B_x = math.Ceil(T / (t.Table.L * L_b)) // TODO пересчитать с учетом длины блока в байтах
 
 					} else {
 						// JoinPlan для таблиц 2:n
 						// Оценка подзапроса в рамках join
-						var I, I_x, err = query.GetJoinI(X, *t)
+						var AttrJoin, P, I_x, err = query.GetJoinAttr(X, *t, T_x)
 						if err != nil {
-							return nil,fmt.Errorf("Calculate I for Join error: %s", err)
+							return nil,fmt.Errorf("Calculate I for Join error: %s. ", err)
 						}
-						if I == 0 {
+						if AttrJoin == nil {
 							// Декартово произведение
 							// Оценка Y
 							C, C_io, err := TableScan(*t.Table)
 							if err != nil {
-								return nil, fmt.Errorf("Evaluation of a subquery TableScan error: %s", err)
+								return nil, fmt.Errorf("Evaluation of a subquery TableScan error: %s. ", err)
 							}
 							// Оценка соединения
-							Z = T_x * C + C_join
-							Z_io = T_x * C_io + C_join_io
+							Z = C + C_join
+							Z_io = C_io + C_join_io
 						} else {
 							// Соединение по индексу
 							// Оценка Y
-							C, C_io, _, err := IndexScan(*t.Table, 1 / I, L_ind) //  TODO как считать L ind
+							C, C_io, _, err := JoinPlanRead(*t.Table, AttrJoin, T_x)
 							if err != nil {
-								return nil, fmt.Errorf("Evaluation of a subquery IndexScan error: %s", err)
+								return nil, fmt.Errorf("Evaluation of a subquery IndexScan error: %s. ", err)
 							}
 							// Оценка соединения
-							Z = T_x * C
-							Z_io = T_x * C_io
+							Z = C
+							Z_io = C_io
+
+							T *=  P
 						}
 						// Определение числа записей в Y
 						// Определение p для Y
-						var condition, _, cErr = query.GetAllCondition(t.GetID())
+						var condition, cErr = query.GetAllCondition(t.GetID())
 						if cErr != nil {
-							return nil, fmt.Errorf("JoinPlan GetAllCondition error: %s", cErr)
-						}
-						if condition != 1 {
-							T *= condition
+							return nil, fmt.Errorf("JoinPlan GetAllCondition error: %s. ", cErr)
 						}
 
+						T *= condition
+
+
 						// Определение числа записей в соединении
-						if I == 0 {
+						if AttrJoin == nil {
 							// Число записей при декартовом произведении
 							B_x = math.Ceil(T / (t.Table.L * L_b))
 							T = math.Ceil(T_x * T)
 						} else {
 							// Число записей при соединении по условию
-							T = math.Ceil((T_x * T) / (math.Max(math.Min(I_x, T_x), I))) // I_x - мощность атрибута соединения (a) в X;
+							T = math.Ceil((T_x * T) / (math.Max(I_x, AttrJoin.I))) // I_x - мощность атрибута соединения (a) в X;
 							// T_x - число записей в X;
 							// I - мощность атрибута соединения (а) в Y;
 							// T - число записей в Y
