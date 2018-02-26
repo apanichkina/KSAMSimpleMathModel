@@ -16,7 +16,10 @@ type Errors []Error
 
 type QueriesMinTime struct {
 	Query *Query  `csv:"query"`
-	Time  FullFloat64 `csv:"time"`
+	Time  float64 `csv:"time"`
+	TimeIO float64 `csv:"timeIO"`
+	RowsCount float64 `csv:"RowsCount"`
+	RowSize float64 `csv:"RowsSize"`
 }
 
 // Convert the internal date as CSV string
@@ -24,19 +27,43 @@ func (q *Query) MarshalCSV() (string, error) {
 	return fmt.Sprintf("%s", q.Name), nil
 }
 
+func (t *Transaction) MarshalCSV() (string, error) {
+	return fmt.Sprintf("%s", t.Name), nil
+}
+
 func (f FullFloat64) MarshalCSV() (string, error) {
 	return fmt.Sprintf("%f", f), nil
 }
 
 func (a QueriesMinTime) String() string { // правило печати объектов типа QueriesMinTime
-	return fmt.Sprintf("{%s, %f}", a.Query.GetID(), a.Time)
+	return fmt.Sprintf("{%s, %f, %f, %f, %f}", a.Query.Name, a.Time, a.TimeIO, a.RowsCount, a.RowSize)
 }
 
 type QueriesMinTimes []QueriesMinTime
 
+func (a TransactionResult) String() string { // правило печати объектов типа QueriesMinTime
+	return fmt.Sprintf("{%s, %f, %f, %f}", a.Transaction, a.Time, a.DiscCharge, a.ProcCharge)
+}
+
+type TransactionResult struct {
+	Transaction *Transaction  `csv:"transaction"`
+	Time  float64 `csv:"time"`
+	DiscCharge float64 `csv:"disc-p"`
+	ProcCharge float64 `csv:"proc-p"`
+}
+
+type RequestResult struct {
+	TransactionResult
+	NetworkCharge float64 `csv:"net-p"`
+}
+
+type RequestsResults []RequestResult
+
+type TransactionsResults []TransactionResult
+
 type CSVData struct {
-	Error
-	QueriesMinTime
+	TransactionsResults
+	QueriesMinTimes
 }
 
 func PrintToCsv(filename string, output interface{}) error {

@@ -28,12 +28,44 @@ type InputParams struct {
 	ID        `json:"_id"`
 	Name      string       `json:"name"`
 	DataModel []*DataModel `json:"datamodel"`
+	DataModelMap map[string]*DataModel
 
 	Increment []*Increment `json:"increment"`
 
-	Nodes	[]*Node `json:"nodes"`
-	//NodesMap map[string]*Node
-	Networks	[]*Network `json:"networks"`
+	Node	[]*Node `json:"nodes"`
+	NodeMap map[string]*Node
+
+	Network	[]*Network `json:"networks"`
+	Database	[]*Database `json:"database"`
+	DatabaseMap map[string]*Database
+	Request	[]*Request `json:"requests"`
+}
+
+type Request struct {
+	Object
+	Name      string   `json:"name"`
+	Mode string  `json:"mode"`
+	Frequency	float64	`json:"frequency"`
+
+	NodeID	string  `json:"node"` // узел обращения
+	Node	*Node
+
+	DatabaseID string `json:"database"`
+	Database *Database
+
+	TransactionID	string `json:"transaction"`
+	Transaction *Transaction
+}
+
+type Database struct {
+	Object
+	Name      string   `json:"name"`
+
+	NodeID	string  `json:"node"` // кластер размещения
+	Node *Node
+
+	DatamodelID string `json:"datamodel"`
+	DataModel *DataModel
 }
 
 type Increment struct {
@@ -78,6 +110,61 @@ type DataModel struct {
 
 	Transactions    []*Transaction `json:"transactions"`
 	TransactionsMap map[string]*Transaction
+}
+
+func (ip *InputParams) setPointers() error{
+	for _, d := range ip.Database {
+		x, okX := ip.NodeMap[d.NodeID]
+		if !okX {
+			return fmt.Errorf("can't find node by id %s in database: %s", d.NodeID, d.GetID())
+		}
+		d.Node = x
+
+		y, okY := ip.DataModelMap[d.DatamodelID]
+		if !okY {
+			return fmt.Errorf("can't find datamodel by id %s in database: %s", d.DatamodelID, d.GetID())
+		}
+		d.DataModel = y
+	}
+
+	for _, d := range ip.Request {
+		x, okX := ip.NodeMap[d.NodeID]
+		if !okX {
+			return fmt.Errorf("can't find node by id %s in request: %s", d.NodeID, d.GetID())
+		}
+		d.Node = x
+
+		y, okY := ip.DatabaseMap[d.DatabaseID]
+		if !okY {
+			return fmt.Errorf("can't find database by id %s in request: %s", d.DatabaseID, d.GetID())
+		}
+		d.Database = y
+
+		z, okZ := d.Database.DataModel.TransactionsMap[d.TransactionID]
+		if !okZ {
+			return fmt.Errorf("can't find transaction by id %s in request: %s", d.TransactionID, d.GetID())
+		}
+		d.Transaction = z
+	}
+
+	return nil
+}
+func (d *InputParams) setMaps() {
+	d.DataModelMap = make(map[string]*DataModel)
+	for _, t := range d.DataModel {
+		d.DataModelMap[t.GetID()] = t
+	}
+
+	d.NodeMap = make(map[string]*Node)
+	for _, t := range d.Node {
+		d.NodeMap[t.GetID()] = t
+	}
+
+	d.DatabaseMap = make(map[string]*Database)
+	for _, t := range d.Database {
+		d.DatabaseMap[t.GetID()] = t
+	}
+
 }
 
 func (d *DataModel) setMaps() {
@@ -365,7 +452,7 @@ type Transaction struct {
 
 type TransactionQuery struct {
 	QueryId string `json:"queryid"`
-	Count   string `json:"rep"` // число
+	Count   float64 `json:"rep"` // число
 }
 
 func (o TransactionQuery) GetID() string {
@@ -411,7 +498,9 @@ func GetInputParamsFromFile(inputFile string) (InputParams, error) {
 }
 
 func (ip *InputParams) PrepareData() error {
+	ip.setMaps()
 	for _, p := range ip.DataModel {
+
 		p.setMaps()
 
 		for _, q := range p.Queries {
@@ -439,6 +528,11 @@ func (ip *InputParams) PrepareData() error {
 			}
 		}
 
+	}
+
+	err := ip.setPointers()
+	if err != nil {
+		return err
 	}
 
 	return nil

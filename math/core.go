@@ -4,6 +4,7 @@ import (
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"math"
 	"fmt"
+	"github.com/apanichkina/KSAMSimpleMathModel/helper"
 )
 
 type Str struct {
@@ -88,8 +89,7 @@ func IndexScan(Table parser.Table, p float64, L float64) (float64, float64, floa
 	return C, C_io, T, nil
 }
 
-func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
-	params := inputParams.DataModel[0] // добавить проход по массиву
+func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 	fmt.Println("Считается концептуальная модель: ", params.Name)
 	// подготовительные расчеты для входных параметров
 
@@ -100,7 +100,9 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 	// проход по всем запоросам
 	for _, query := range params.Queries {
 		var queryMinTime float64 = -1 // минимальное время выполнения запроса
-
+		var queryMinTimeIO float64 = 0 // минимальное время выполнения запроса
+		var resulRowCount float64 = 0
+		var resultRowSize float64 = 0
 		fmt.Println("query", query.Name, query.GetID())
 
 		if len(query.Joins) == 0 {
@@ -108,6 +110,8 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 			if len(query.TablesInQuery) == 0 {
 				return nil, fmt.Errorf("too few tabels in query %s", query.Name)
 			}
+			var T_x float64 = 1
+			var Size_x float64 = 0
 			var Z_x float64 = 0
 			var Z_io_x float64 = 0
 			for _, t := range query.TablesInQuery {
@@ -120,7 +124,7 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 				// IndexScan
 				C2, C2_io, err := IndexScanRead(*t.Table, *query)
 				if err != nil {
-					return nil, fmt.Errorf("AccessPlan IndexScan error: %s", err)
+					return nil, fmt.Errorf("SimpleJoin IndexScan error: %s", err)
 				}
 				fmt.Println(t.Table.Name, "C2", C2, C2_io)
 				// Выбор min(TableScan;IndexScan)
@@ -131,8 +135,19 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 
 				Z_x += Z
 				Z_io_x += Z_io
+				var T = t.Table.T
+				var condition, cErr = query.GetAllCondition(t.GetID())
+				if cErr != nil {
+					return nil, fmt.Errorf("SimpleJoin GetAllCondition error: %s ", cErr)
+				}
+				T *= condition
+				T_x *= T // Если в простом запросе более одной таблицы, то декартово произведение
+				Size_x += t.Table.Size
 			}
 			queryMinTime = Z_x
+			queryMinTimeIO = Z_io_x
+			resulRowCount = T_x
+			resultRowSize = Size_x
 
 		} else {
 			// выбор уникальных id таблиц, участвующих во всех join //этот шаг нужен чтобы таблицы не повторялись
@@ -166,6 +181,7 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 				var B_x float64 = 0
 				var B_x_join float64 = 0
 				var X []*parser.TableInQuery // Левый аргумент соединения
+				var Size_x float64 = 0
 
 				// Обработка первого аргумента соединения
 				for _, i := range jv {
@@ -231,6 +247,7 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 							// Оценка соединения
 							Z = C + C_join
 							Z_io = C_io + C_join_io
+							Size_x += t.Table.Size
 						} else {
 							// Соединение по индексу
 							// Оценка Y
@@ -259,6 +276,7 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 							// Число записей при декартовом произведении
 							B_x = math.Ceil(T / (t.Table.L * L_b))
 							T = math.Ceil(T_x * T)
+							Size_x = t.Table.Size
 						} else {
 							// Число записей при соединении по условию
 							T = math.Ceil((T_x * T) / (math.Max(I_x, AttrJoin.I))) // I_x - мощность атрибута соединения (a) в X;
@@ -266,6 +284,7 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 							// I - мощность атрибута соединения (а) в Y;
 							// T - число записей в Y
 							B_x = math.Ceil(T / (t.Table.L * L_b))
+							Size_x += t.Table.Size - AttrJoin.Size
 						}
 
 						B_x_join = math.Ceil(T / L_join)
@@ -280,15 +299,146 @@ func Evaluate(inputParams parser.InputParams) (parser.QueriesMinTimes, error) {
 					fmt.Printf("table %s %.2f %.2f %.2f %.2f \n", t.Table.Name, Z_x, Z_io_x, T_x, B_x)
 					X = append(X, t)
 				}
-				if queryMinTime == -1 {
+				if queryMinTime == -1 || Z_x < queryMinTime {
 					queryMinTime = Z_x
-				} else {
-					queryMinTime = math.Min(queryMinTime, Z_x)
+					queryMinTimeIO = Z_io_x
+					resulRowCount = T_x
+					resultRowSize = Size_x
 				}
 				fmt.Println()
 			}
 		}
-		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: parser.FullFloat64(queryMinTime)}) // запись в массив минимального времени выполнение очередного запроса
+		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime, TimeIO: queryMinTimeIO, RowsCount: resulRowCount, RowSize: resultRowSize}) // запись в массив минимального времени выполнение очередного запроса
 	}
-	return parser.QueriesMinTimes(queriesMinTime), nil
+	fmt.Printf("%v \n", parser.QueriesMinTimes(queriesMinTime))
+	return queriesMinTime, nil
+}
+
+//func CalculateOnlineTransaction(params *parser.DataModel, queriesTimes parser.QueriesMinTimes) (parser.TransactionResult, error) {
+//	return parser.TransactionResult(nil), nil
+//}
+
+type QueryTimesCache map[string] parser.QueriesMinTimes
+
+func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, error) {
+	var alredyCalculatedDataModel = make(QueryTimesCache)
+	var result parser.RequestsResults
+
+	for _, request := range inputParams.Request {
+		if request.Frequency == 0 {
+			return parser.RequestsResults(nil), nil // TODO вывод с нулевым временем
+		}
+		var datamodel = request.Database.DataModel
+		var resultByQuery parser.QueriesMinTimes
+		q, ok := alredyCalculatedDataModel[datamodel.GetID()]
+		if !ok {
+			var err error
+			resultByQuery, err = EvaluateQueries(datamodel)
+			if err != nil {
+				return nil, err
+			}
+			alredyCalculatedDataModel[datamodel.GetID()] = resultByQuery
+		} else  {
+			resultByQuery = q
+		}
+		var N_proc= request.Database.Node.NodeCount                        //число машин в кластере, на котором размещена БД и транзакция
+		var N_disc= request.Database.Node.DiskCount                        //число дисков в кластере, на котором размещена БД и транзакция
+		var QueriesSumTime float64 = 0
+		var QueriesSumTimeIO float64 = 0
+		var TransactionSize float64 = 0 //размер транзакции в байтах
+		for _, q := range request.Transaction.Queries {
+			for _, rq := range resultByQuery {
+				if rq.Query.GetID() == q.GetID() {
+					QueriesSumTime += rq.Time * q.Count
+					QueriesSumTimeIO += rq.TimeIO * q.Count
+					TransactionSize += rq.RowsCount * rq.RowSize
+					break
+				}
+			}
+		}
+		//передача по сети
+		var NetworkSpeed float64 = -1
+		if request.Node.GetID() != request.Database.Node.GetID() { //кластер обращается не сам к себе
+			// Ищем сеть, связывающую request.Node и request.Database.Node
+			for _, net := range inputParams.Network {
+				var findClient = false
+				var findClaster = false
+				for _, nodeID := range net.NodesID {
+					if nodeID == request.Node.GetID() {
+						findClient = true
+					}
+					if nodeID == request.Database.Node.GetID() {
+						findClaster = true
+					}
+				}
+				if findClient && findClaster {
+					NetworkSpeed = net.Speed
+					if NetworkSpeed == 0 {
+						return nil, fmt.Errorf("Network %s has speed 0 Mbit/sec. ", net.Name)
+					}
+					break
+				}
+			}
+			if NetworkSpeed == -1 {
+				return nil, fmt.Errorf("Can`t requst from node %s to %s without network. ", request.Node.Name, request.Database.Node.Name)
+			}
+		}
+		var TransactionTime float64 = 0
+		var NetworkCharge float64 = 0
+		var T_network float64 = 0
+		var DiscCharge float64 = 0
+		var ProcCharge float64 = 0
+		// расчет транзакции Online
+		if request.Mode == OnlineTransactionType {
+			fmt.Println(OnlineTransactionType)
+			var intension= helper.HourToSecond(request.Frequency) * request.Node.NodeCount //число клиентов
+			DiscCharge = intension * QueriesSumTimeIO / N_disc
+			ProcCharge = intension * QueriesSumTime / N_proc // TODO нужно ли считать время для всех транзакций?
+			fmt.Println(ProcCharge, DiscCharge)
+			for _, q := range request.Transaction.Queries {
+				for _, rq := range resultByQuery {
+					if rq.Query.GetID() == q.GetID() {
+						TransactionTime += q.Count * (rq.Time / (1 - ProcCharge) + rq.TimeIO / (1 - DiscCharge))
+						break
+					}
+				}
+			}
+
+			var T_network_time = TransactionSize / helper.MbitToByte(NetworkSpeed)
+			NetworkCharge = intension * T_network_time
+			T_network = T_network_time / (1 - NetworkCharge)
+
+			TransactionTime += T_network
+		}
+
+		if request.Mode == OfflineTransactionType {
+			fmt.Println(OfflineTransactionType)
+			var n = request.Frequency
+			var P_proc = (QueriesSumTime * n / N_proc) / ((QueriesSumTime * n / N_proc) + (QueriesSumTimeIO * n / N_disc))
+			var P_disc = 1 - P_proc
+			var K_proc = P_proc / N_proc // TODO нужно ли умножать на (n-1) ?
+			var K_disc = P_disc / N_disc // TODO нужно ли умножать на (n-1) ?
+			for _, q := range request.Transaction.Queries {
+				for _, rq := range resultByQuery {
+					if rq.Query.GetID() == q.GetID() {
+						TransactionTime += q.Count * (rq.Time * (1 + K_proc) + rq.TimeIO * (1 + K_disc))
+						break
+					}
+				}
+			}
+		}
+		result= append(result, parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge}, NetworkCharge: NetworkCharge}) // запись в массив минимального времени выполнение очередного запроса
+
+	}
+	return result, nil
+}
+func Evaluate(inputParams parser.InputParams) (parser.RequestsResults, error){
+	//var output = parser.Errors{parser.Error{Message: "test"}}
+
+	resultByRequest, err := EvaluateRequest(inputParams)
+	if err != nil {
+		return nil, err
+	}
+
+	return resultByRequest, nil // []parser.CSVData{{TransactionsResults: resultByTransaction, QueriesMinTimes: resultByQuery}}, nil
 }
