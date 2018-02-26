@@ -15,9 +15,5 @@ const C_b float64 = 0.0002
 const C_join = 0
 const C_join_io = 0
 
-const D float64 = 18432 // длина блока таблицы в байтах 18Kb
-const D_ind float64 = 16384 // длина блока индекса 16Kb
-const K float64 = 4 // количество тактов на простую операцию
-
 const OnlineTransactionType = "online"
 const OfflineTransactionType = "offline"

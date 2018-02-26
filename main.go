@@ -16,7 +16,8 @@ func main() {
 	inputparams, err := parser.GetInputParamsFromFile(*fileInput)
 	helper.CheckError("parse error. ", err)
 
-	result, err := math.Evaluate(inputparams)
+	var globalVariables = parser.GlobalVariables{D: 18432, D_ind: 16384, K: 4}
+	result, err := math.Evaluate(inputparams, globalVariables)
 	helper.CheckError("math core error. ", err)
 
 	// генерация csv

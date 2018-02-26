@@ -28,7 +28,7 @@ func TableScan(Table parser.Table) (float64, float64, error) {
 		return 0.0, 0.0, fmt.Errorf("%s Table.Size cann`t be 0", Table.Name)
 	}
 	var T float64 = Table.T
-	var B float64 = D / Table.Size
+	var B float64 = GLOBALVARS.D / Table.Size
 	var C_cpu float64 = T * C_filter
 	var C_io float64 = B * C_b
 	var C = C_cpu + C_io
@@ -52,7 +52,7 @@ func IndexScanRead(Table parser.Table, Query parser.Query) (float64, float64, er
 		return math.MaxFloat64, 0.0, nil
 	}
 	var T float64 = Table.T * p
-	var B_ind float64 = D_ind / Table.PKAttribute.Size
+	var B_ind float64 = GLOBALVARS.D_ind / Table.PKAttribute.Size
 	var C_cpu float64 = T * C_filter
 	var C_io float64 = (math.Ceil(B_ind * p) + math.Ceil(Table.T * p)) * C_b
 	var C = C_cpu + C_io
@@ -68,7 +68,7 @@ func JoinPlanRead(Table parser.Table, Attr *parser.Attribute, N float64) (float6
 	}
 	var T float64 = Table.T * 1 / I
 	var C_cpu float64 = N * T * C_filter
-	var B_ind float64 = D_ind / Attr.Size
+	var B_ind float64 = GLOBALVARS.D_ind / Attr.Size
 	var C_io float64 = N * (math.Ceil(B_ind * 1 / I) + math.Ceil(Table.T * 1 / I)) * C_b
 	var C = C_cpu + C_io
 
@@ -81,7 +81,7 @@ func IndexScan(Table parser.Table, p float64, L float64) (float64, float64, floa
 		return 0.0, 0.0, 0.0, fmt.Errorf("%s Attr.L cann`t be 0", Table.Name)
 	}
 	var T float64 = Table.T * p
-	var B_ind float64 = D_ind / Table.L
+	var B_ind float64 = GLOBALVARS.D_ind / Table.L
 	var C_cpu float64 = T * C_filter
 	var C_io float64 = (math.Ceil(B_ind * p) + math.Ceil(Table.T * p)) * C_b
 	var C = C_cpu + C_io
@@ -432,9 +432,11 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 	}
 	return result, nil
 }
-func Evaluate(inputParams parser.InputParams) (parser.RequestsResults, error){
-	//var output = parser.Errors{parser.Error{Message: "test"}}
 
+var GLOBALVARS parser.GlobalVariables
+func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVariables) (parser.RequestsResults, error){
+	//var output = parser.Errors{parser.Error{Message: "test"}}
+	GLOBALVARS = globalVariables
 	resultByRequest, err := EvaluateRequest(inputParams)
 	if err != nil {
 		return nil, err

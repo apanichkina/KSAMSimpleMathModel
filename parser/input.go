@@ -7,6 +7,11 @@ import (
 	"strings"
 	"math"
 )
+type GlobalVariables struct {
+	D float64
+	D_ind float64
+	K float64
+}
 
 type ID struct {
 	ID string `json:"$oid"`
