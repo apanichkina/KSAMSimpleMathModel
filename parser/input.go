@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
-	"math"
 )
+
 type GlobalVariables struct {
-	D float64
-	D_ind float64
-	K float64
+	D     Float64
+	D_ind Float64
+	K     Float64
 }
 
 type ID struct {
@@ -30,78 +30,78 @@ type UniqObject interface {
 }
 
 type InputParams struct {
-	ID        `json:"_id"`
-	Name      string       `json:"name"`
-	DataModel []*DataModel `json:"datamodel"`
+	ID           `json:"_id"`
+	Name         string       `json:"name"`
+	DataModel    []*DataModel `json:"datamodel"`
 	DataModelMap map[string]*DataModel
 
 	Increment []*Increment `json:"increment"`
 
-	Node	[]*Node `json:"nodes"`
+	Node    []*Node `json:"nodes"`
 	NodeMap map[string]*Node
 
-	Network	[]*Network `json:"networks"`
-	Database	[]*Database `json:"database"`
+	Network     []*Network  `json:"networks"`
+	Database    []*Database `json:"database"`
 	DatabaseMap map[string]*Database
-	Request	[]*Request `json:"requests"`
+	Request     []*Request `json:"requests"`
 }
 
 type Request struct {
 	Object
-	Name      string   `json:"name"`
-	Mode string  `json:"mode"`
-	Frequency	float64	`json:"frequency"`
+	Name      string  `json:"name"`
+	Mode      string  `json:"mode"`
+	Frequency Float64 `json:"frequency"`
 
-	NodeID	string  `json:"node"` // узел обращения
-	Node	*Node
+	NodeID string `json:"node"` // узел обращения
+	Node   *Node
 
 	DatabaseID string `json:"database"`
-	Database *Database
+	Database   *Database
 
-	TransactionID	string `json:"transaction"`
-	Transaction *Transaction
+	TransactionID string `json:"transaction"`
+	Transaction   *Transaction
 }
 
 type Database struct {
 	Object
-	Name      string   `json:"name"`
+	Name string `json:"name"`
 
-	NodeID	string  `json:"node"` // кластер размещения
-	Node *Node
+	NodeID string `json:"node"` // кластер размещения
+	Node   *Node
 
 	DatamodelID string `json:"datamodel"`
-	DataModel *DataModel
+	DataModel   *DataModel
 }
 
 type Increment struct {
 	Object
-	ObjId	string   `json:"obj"`
-	ObjType	string	`json:"objtype"`
+	ObjId   string `json:"obj"`
+	ObjType string `json:"objtype"`
 
-	FieldName	string   `json:"field"`
-	From	float64   `json:"from"`
-	Step	float64   `json:"incr"`
-	To	float64   `json:"to"`
+	FieldName string  `json:"field"`
+	From      Float64 `json:"from"`
+	Step      Float64 `json:"incr"`
+	To        Float64 `json:"to"`
 }
 
 type Node struct {
 	Object
-	Name      string   `json:"name"`
-	Type      string   `json:"node_type"`
-	NodeCount      float64   `json:"nodecount"`
-	Mode      string   `json:"mode"`
-	Mem      float64   `json:"mem"`
-	Disk      float64   `json:"disk"`
-	DiskCount     float64   `json:"diskcount"`
-	Net      float64   `json:"net"`
-	Proc      float64   `json:"proc"`
+	Name      string  `json:"name"`
+	Type      string  `json:"node_type"`
+	NodeCount Float64 `json:"nodecount"`
+	Mode      string  `json:"mode"`
+	Mem       Float64 `json:"mem"`
+	Disk      Float64 `json:"disk"`
+	DiskCount Float64 `json:"diskcount"`
+	Net       Float64 `json:"net"`
+	Proc      Float64 `json:"proc"`
 }
 
 type Network struct {
 	Object
-	Name      string   `json:"name"`
-	NodesID	[]string `json:"nodes"`
-	Speed      float64   `json:"speed"`
+	Name    string   `json:"name"`
+	NodesID []string `json:"nodes"`
+	Speed   Float64  `json:"speed"`
 }
 
 type DataModel struct {
@@ -117,7 +117,7 @@ type DataModel struct {
 	TransactionsMap map[string]*Transaction
 }
 
-func (ip *InputParams) setPointers() error{
+func (ip *InputParams) setPointers() error {
 	for _, d := range ip.Database {
 		x, okX := ip.NodeMap[d.NodeID]
 		if !okX {
@@ -191,16 +191,16 @@ func (d *DataModel) setMaps() {
 
 type Table struct {
 	Object
-	Name string            `json:"name"`  // имя
-	T    float64           `json:"nrows"` // количество записей
-	L    float64 `json:"L"`     // количество записей в блоке
+	Name string  `json:"name"`  // имя
+	T    Float64 `json:"nrows"` // количество записей
+	L    Float64 `json:"L"`     // количество записей в блоке
 
 	Attributes    []*Attribute `json:"attributes"`
 	AttributesMap map[string]*Attribute
 
 	PKAttribute *Attribute
 
-	Size	float64		// Длина записи в байтах
+	Size Float64 // Длина записи в байтах
 
 }
 
@@ -222,10 +222,10 @@ func (t *Table) UnmarshalJSON(data []byte) error {
 
 type Attribute struct {
 	Object
-	Name string  `json:"name"` // имя
-	I    float64 `json:"attr_I"`    // мощность
-	Size float64 `json:"size"` // размер типа атрибута
-	PK bool `json:"pk"`
+	Name string  `json:"name"`   // имя
+	I    Float64 `json:"attr_I"` // мощность
+	Size Float64 `json:"size"`   // размер типа атрибута
+	PK   bool    `json:"pk"`
 }
 
 func (a *Attribute) UnmarshalJSON(data []byte) error {
@@ -272,7 +272,7 @@ func (t *Table) setMaps() error {
 	}
 	t.AttributesMap = make(map[string]*Attribute)
 
-	var size float64 = 0
+	var size Float64 = 0
 
 	for _, a := range t.Attributes {
 		t.AttributesMap[a.GetID()] = a
@@ -319,7 +319,7 @@ type Join struct {
 }
 
 type JoinAttributes struct {
-	LeftAttrId []string
+	LeftAttrId  []string
 	RightAttrId []string
 }
 
@@ -339,7 +339,7 @@ func (c TableAttribute) GetID() string {
 
 type Condition struct {
 	TableAttribute
-	P float64 `json:"P"`
+	P Float64 `json:"P"`
 }
 
 func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttributes, error) {
@@ -351,7 +351,7 @@ func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttribu
 		var attrsIdRight []string
 		for _, j := range js.Join {
 			if len(j.Attributes) < 1 {
-				return  nil, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
+				return nil, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
 			}
 			if j.TableId == leftTableId {
 				hasLeft = true
@@ -373,12 +373,12 @@ func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttribu
 //
 // правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
 // не учитывает, что в X могжет содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))
-func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64) (*Attribute, float64, float64, error) {
-	var I float64 = 0   // I для Y по атрибуту соединения a
-	var P_maxI float64 = 1 // Вероятность P для текущего I
-	var P float64 = 1	// P для Y по условиям join, по которым не читается таблица
+func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64) (*Attribute, Float64, Float64, error) {
+	var I Float64 = 0      // I для Y по атрибуту соединения a
+	var P_maxI Float64 = 1 // Вероятность P для текущего I
+	var P Float64 = 1      // P для Y по условиям join, по которым не читается таблица
 	var Attr *Attribute = nil
-	var JoinLeftI float64 = 0
+	var JoinLeftI Float64 = 0
 	for _, leftTable := range x {
 		var joinAttrs, err = q.FindJoins(leftTable.GetID(), rightTable.GetID())
 		if err != nil {
@@ -398,8 +398,8 @@ func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64
 				return Attr, P, JoinLeftI, fmt.Errorf("can`t find rightattr with id: %s for join tables %s and %s", idR, leftTable.Table.GetID(), rightTable.Table.GetID())
 			}
 
-			var leftI = math.Min(joinAttrLeft.I, N)
-			var currentP = math.Min(leftI, joinAttrRight.I) / math.Max(leftI, joinAttrRight.I)
+			var leftI = Min(joinAttrLeft.I, Float64(N))
+			var currentP = Min(leftI, joinAttrRight.I) / Max(leftI, joinAttrRight.I)
 
 			// ищем атрибут с максимальним I, чтобы 1/I было маленьким
 			// Остальные атрибуты будут в P
@@ -410,7 +410,6 @@ func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64
 				JoinLeftI = leftI
 			}
 
-
 			P *= currentP
 		}
 
@@ -419,8 +418,8 @@ func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64
 	return Attr, P, JoinLeftI, nil
 }
 
-func (q Query) GetAllCondition(tableId string) (float64, error) {
-	var result float64 = 1
+func (q Query) GetAllCondition(tableId string) (Float64, error) {
+	var result Float64 = 1
 	for _, c := range q.Conditions {
 		if c.TableId == tableId {
 			result *= c.P
@@ -456,15 +455,15 @@ type Transaction struct {
 }
 
 type TransactionQuery struct {
-	QueryId string `json:"queryid"`
-	Count   float64 `json:"rep"` // число
+	QueryId string  `json:"queryid"`
+	Count   Float64 `json:"rep"` // число
 }
 
 func (o TransactionQuery) GetID() string {
 	return o.QueryId
 }
 
-func (q *Transaction) setMaps() error{
+func (q *Transaction) setMaps() error {
 	if len(q.Queries) == 0 {
 		return fmt.Errorf("transacton %s has no queries", q.Name)
 	}
