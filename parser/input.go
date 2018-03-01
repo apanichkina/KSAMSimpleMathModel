@@ -372,14 +372,14 @@ func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttribu
 	return result, nil
 }
 
-func (q Query) GetRowSizeAfterProjection(table *TableInQuery, attrJoin *Attribute) (float64) {
+func (q Query) GetRowSizeAfterProjection(table *TableInQuery, attrJoin *Attribute) float64 {
 	var result float64 = 0
 	var hasJoin = false
 
 	for _, p := range q.Projections {
 		if p.TableId == table.GetID() {
 			var attrID = p.AttributeId
-			if attrJoin != nil && attrID == attrJoin.GetID(){
+			if attrJoin != nil && attrID == attrJoin.GetID() {
 				hasJoin = true
 			}
 			var size = table.Table.AttributesMap[attrID].Size
@@ -498,12 +498,48 @@ func (q *Transaction) setMaps() error {
 	return nil
 }
 
-var r = regexp.MustCompile(`"([-+]?)\d*\.\d+"|"\d+"`)
+var findNumsInQuotes = regexp.MustCompile(`"([-+]?)\d*\.\d+"|"\d+"`)
+var findEmptyStrings = regexp.MustCompile(`(\s)*,*(\s)*("[^"]*")([:])(\s)*("")(\s)*,*(\s)*`)
+var findEndOrStartCommas = regexp.MustCompile(`{(\s)*,|,(\s)*}`)
+
+func prepareNumsInQuotes(input []byte) []byte {
+	return []byte(findNumsInQuotes.ReplaceAllStringFunc(string(input), func(input string) string {
+		if input == `""` {
+			return "0"
+		}
+		return strings.Replace(input, `"`, ``, -1)
+	}))
+}
+
+func prepareEmptyQuotes(input []byte) []byte {
+	return []byte(findEmptyStrings.ReplaceAllStringFunc(string(input), func(input string) string {
+		workingStr := strings.TrimSpace(input)
+		hasPreComma := strings.HasPrefix(workingStr, ",")
+		hasPostComma := strings.HasSuffix(workingStr, ",")
+		switch {
+		case hasPreComma && hasPostComma: // ..., "a": "",... -> ..., ...
+			return ", "
+		default:
+			return ""
+		}
+	}))
+}
+
+func prepareEndStartCommas(input []byte) []byte {
+	return []byte(findEndOrStartCommas.ReplaceAllStringFunc(string(input), func(input string) string {
+		if strings.Contains(input, "{") {
+			return "{"
+		}
+		return "}"
+	}))
+}
 
 func PrepareJson(input []byte) []byte {
-	return []byte(r.ReplaceAllStringFunc(string(input), func(x string) string {
-		return strings.Replace(x, `"`, ``, -1)
-	}))
+	return prepareEndStartCommas(
+		prepareEmptyQuotes(
+			prepareNumsInQuotes(input),
+		),
+	)
 }
 
 func GetInputParamsFromByteSlice(input []byte) (InputParams, error) {
