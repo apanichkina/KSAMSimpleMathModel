@@ -18,9 +18,17 @@ func CheckError(message string, err error) {
 }
 
 func MbitToByte(num float64) (float64) {
-	return num * 1024 * 1024 / 8
+	return num * 125000
 }
 
 func HourToSecond(time float64) (float64) {
 	return time / 3600
+}
+
+func GigagertzToGertz(t float64) (float64) {
+	return t * 1000000000
+}
+
+func MegabyteToByte(t float64) (float64) {
+	return t * 1000000
 }

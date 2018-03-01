@@ -50,11 +50,14 @@ type TransactionResult struct {
 	Time  float64 `csv:"time"`
 	DiscCharge float64 `csv:"disc-p"`
 	ProcCharge float64 `csv:"proc-p"`
+	Size float64 `csv:"size-byte"`
 }
 
 type RequestResult struct {
 	TransactionResult
 	NetworkCharge float64 `csv:"net-p"`
+	NetworkTime float64 `csv:"net-M"`
+	NetworkSpeed float64 `csv:"net-speed"`
 }
 
 type RequestsResults []RequestResult
