@@ -370,6 +370,28 @@ func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttribu
 	return result, nil
 }
 
+func (q Query) GetRowSizeAfterProjection(table *TableInQuery, attrJoin *Attribute) (float64) {
+	var result float64 = 0
+	var hasJoin = false
+
+	for _, p := range q.Projections {
+		if p.TableId == table.GetID() {
+			var attrID = p.AttributeId
+			if attrJoin != nil && attrID == attrJoin.GetID(){
+				hasJoin = true
+			}
+			var size = table.Table.AttributesMap[attrID].Size
+			result += size
+		}
+	}
+	if hasJoin {
+		result -= attrJoin.Size
+	}
+	// TODO ошибка
+
+	return result
+}
+
 //
 // правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
 // не учитывает, что в X могжет содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))

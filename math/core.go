@@ -23,7 +23,7 @@ type VOptions struct {
 	k string             // индексируемый атрибут
 }
 
-func TableScan(Table parser.Table) (float64, float64, error) {
+func TableScan(Table parser.Table, C_filter float64, C_b float64) (float64, float64, error) {
 	if Table.Size == 0 {
 		return 0.0, 0.0, fmt.Errorf("%s Table.Size cann`t be 0", Table.Name)
 	}
@@ -36,7 +36,7 @@ func TableScan(Table parser.Table) (float64, float64, error) {
 	return C, C_io, nil
 }
 
-func IndexScanRead(Table parser.Table, Query parser.Query) (float64, float64, error) { //Допущение: Индекс не кластеризован! И индекс только на PK
+func IndexScanRead(Table parser.Table, Query parser.Query, C_filter float64, C_b float64) (float64, float64, error) { //Допущение: Индекс не кластеризован! И индекс только на PK
 	if Table.PKAttribute == nil {
 		return math.MaxFloat64, 0.0, nil
 	}
@@ -61,22 +61,23 @@ func IndexScanRead(Table parser.Table, Query parser.Query) (float64, float64, er
 }
 
 
-func JoinPlanRead(Table parser.Table, Attr *parser.Attribute, N float64) (float64, float64, float64, error) { //Допущение: Индекс не кластеризован!
+func JoinPlanRead(Table parser.Table, Attr *parser.Attribute, N float64, C_filter float64, C_b float64) (float64, float64, float64, error) { //Допущение: Индекс не кластеризован!
 	var I = Attr.I
 	if I == 0 {
 		return 0.0, 0.0, 0.0, fmt.Errorf("%s Attr.I cann`t be 0 for join. ", Table.Name)
 	}
+
 	var T float64 = Table.T * 1 / I
 	var C_cpu float64 = N * T * C_filter
-	var B_ind float64 = GLOBALVARS.D_ind / Attr.Size
-	var C_io float64 = N * (math.Ceil(B_ind * 1 / I) + math.Ceil(Table.T * 1 / I)) * C_b
+	var B_ind float64 = math.Ceil(T * (Attr.Size / GLOBALVARS.D_ind))
+	var C_io float64 = N * (B_ind + math.Ceil(Table.T * 1 / I)) * C_b
 	var C = C_cpu + C_io
-
+	// fmt.Println(N, B_ind)
 	return C, C_io, T, nil
 }
 
 
-func IndexScan(Table parser.Table, p float64, L float64) (float64, float64, float64, error) { //Допущение: Индекс не кластеризован!
+func IndexScan(Table parser.Table, p float64, L float64, C_filter float64, C_b float64) (float64, float64, float64, error) { //Допущение: Индекс не кластеризован!
 	if L == 0 {
 		return 0.0, 0.0, 0.0, fmt.Errorf("%s Attr.L cann`t be 0", Table.Name)
 	}
@@ -89,7 +90,14 @@ func IndexScan(Table parser.Table, p float64, L float64) (float64, float64, floa
 	return C, C_io, T, nil
 }
 
-func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
+
+
+func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.QueriesMinTimes, error) {
+	var C_filter float64 = GLOBALVARS.K / helper.GigagertzToGertz(node.Proc)
+	var C_b float64 = GLOBALVARS.D / helper.MegabyteToByte(node.Disk)
+
+	fmt.Println("C_filter", C_filter, "C_b", C_b)
+
 	fmt.Println("Считается концептуальная модель: ", params.Name)
 	// подготовительные расчеты для входных параметров
 
@@ -103,7 +111,7 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 		var queryMinTimeIO float64 = 0 // минимальное время выполнения запроса
 		var resulRowCount float64 = 0
 		var resultRowSize float64 = 0
-		fmt.Println("query", query.Name, query.GetID())
+		// fmt.Println("query", query.Name, query.GetID())
 
 		if len(query.Joins) == 0 {
 			// нет джоинов -> это простой запрос
@@ -115,18 +123,18 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 			var Z_x float64 = 0
 			var Z_io_x float64 = 0
 			for _, t := range query.TablesInQuery {
-				Z, Z_io, err := TableScan(*t.Table)
+				Z, Z_io, err := TableScan(*t.Table, C_filter,C_b)
 				if err != nil {
 					return nil, fmt.Errorf("SimpleJoin TableScan error: %s", err)
 				}
-				fmt.Println(t.Table.Name, "C1", Z, Z_io)
+				// fmt.Println(t.Table.Name, "C1", Z, Z_io)
 
 				// IndexScan
-				C2, C2_io, err := IndexScanRead(*t.Table, *query)
+				C2, C2_io, err := IndexScanRead(*t.Table, *query, C_filter, C_b)
 				if err != nil {
 					return nil, fmt.Errorf("SimpleJoin IndexScan error: %s", err)
 				}
-				fmt.Println(t.Table.Name, "C2", C2, C2_io)
+				// fmt.Println(t.Table.Name, "C2", C2, C2_io)
 				// Выбор min(TableScan;IndexScan)
 				if C2 < Z {
 					Z = C2
@@ -142,7 +150,7 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 				}
 				T *= condition
 				T_x *= T // Если в простом запросе более одной таблицы, то декартово произведение
-				Size_x += t.Table.Size
+				Size_x += query.GetRowSizeAfterProjection(t, nil)
 			}
 			queryMinTime = Z_x
 			queryMinTimeIO = Z_io_x
@@ -171,15 +179,15 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 			allJoinVariations := PermutationsOfN(len(queryTables))
 
 			// проход по всем вариантам из n!
-			fmt.Println(allJoinVariations)
+			// fmt.Println(allJoinVariations)
 			for _, jv := range allJoinVariations {
 
-				fmt.Println("jv", jv)
+				// fmt.Println("jv", jv)
 				var Z_x float64 = 0
 				var Z_io_x float64 = 0
 				var T_x float64 = 1
-				var B_x float64 = 0
-				var B_x_join float64 = 0
+				// var B_x float64 = 0
+				// var B_x_join float64 = 0
 				var X []*parser.TableInQuery // Левый аргумент соединения
 				var Size_x float64 = 0
 
@@ -195,7 +203,7 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 
 					var t = tableInQuery
 
-					fmt.Println(parser.TableNames(X), "+", t.Table.Name)
+					// fmt.Println(parser.TableNames(X), "+", t.Table.Name)
 					var T = t.Table.T
 					var Z float64 = 0
 					var Z_io float64 = 0
@@ -203,17 +211,17 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 						// AccessPlan для первой таблицы
 						// TableScan
 						var err error
-						Z, Z_io, err = TableScan(*t.Table) // *t.Table - реальная таблица, для которой создан псевдоним или нет, но она находится в queries.TablesInQuery
+						Z, Z_io, err = TableScan(*t.Table, C_filter, C_b) // *t.Table - реальная таблица, для которой создан псевдоним или нет, но она находится в queries.TablesInQuery
 						if err != nil {
 							return nil, fmt.Errorf("AccessPlan TableScan error: %s", err)
 						}
-						fmt.Println(t.Table.Name, "C1", Z, Z_io)
+						// fmt.Println(t.Table.Name, "C1", Z, Z_io)
 
-						C2, C2_io, err := IndexScanRead(*t.Table, *query)
+						C2, C2_io, err := IndexScanRead(*t.Table, *query, C_filter, C_b)
 						if err != nil {
 							return nil, fmt.Errorf("AccessPlan IndexScan error: %s", err)
 						}
-						fmt.Println(t.Table.Name, "C2", C2, C2_io)
+						// fmt.Println(t.Table.Name, "C2", C2, C2_io)
 						// Выбор min(TableScan;IndexScan)
 						if C2 < Z {
 							Z = C2
@@ -228,7 +236,7 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 						T *= condition
 						// Оценка числа блоков в промежуточной таблице
 
-						B_x = math.Ceil(T / (t.Table.L * L_b)) // TODO пересчитать с учетом длины блока в байтах
+						// B_x = math.Ceil(T / (t.Table.L * L_b)) // TODO пересчитать с учетом длины блока в байтах
 
 					} else {
 						// JoinPlan для таблиц 2:n
@@ -240,18 +248,17 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 						if AttrJoin == nil {
 							// Декартово произведение
 							// Оценка Y
-							C, C_io, err := TableScan(*t.Table)
+							C, C_io, err := TableScan(*t.Table, C_filter, C_b)
 							if err != nil {
 								return nil, fmt.Errorf("Evaluation of a subquery TableScan error: %s. ", err)
 							}
 							// Оценка соединения
 							Z = C + C_join
 							Z_io = C_io + C_join_io
-							Size_x += t.Table.Size
 						} else {
 							// Соединение по индексу
 							// Оценка Y
-							C, C_io, _, err := JoinPlanRead(*t.Table, AttrJoin, T_x)
+							C, C_io, _, err := JoinPlanRead(*t.Table, AttrJoin, T_x, C_filter, C_b)
 							if err != nil {
 								return nil, fmt.Errorf("Evaluation of a subquery IndexScan error: %s. ", err)
 							}
@@ -274,29 +281,29 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 						// Определение числа записей в соединении
 						if AttrJoin == nil {
 							// Число записей при декартовом произведении
-							B_x = math.Ceil(T / (t.Table.L * L_b))
+							// B_x = math.Ceil(T / (t.Table.L * L_b))
 							T = math.Ceil(T_x * T)
-							Size_x = t.Table.Size
+							Size_x += query.GetRowSizeAfterProjection(t, nil)
 						} else {
 							// Число записей при соединении по условию
 							T = math.Ceil((T_x * T) / (math.Max(I_x, AttrJoin.I))) // I_x - мощность атрибута соединения (a) в X;
 							// T_x - число записей в X;
 							// I - мощность атрибута соединения (а) в Y;
 							// T - число записей в Y
-							B_x = math.Ceil(T / (t.Table.L * L_b))
-							Size_x += t.Table.Size - AttrJoin.Size
+							// B_x = math.Ceil(T / (t.Table.L * L_b))
+							Size_x += query.GetRowSizeAfterProjection(t, AttrJoin)
 						}
 
-						B_x_join = math.Ceil(T / L_join)
+						// B_x_join = math.Ceil(T / L_join)
 					}
 
 					// Оценка соединения
 					Z_x += Z
 					Z_io_x += Z_io
 					T_x = T
-					B_x = B_x_join
+					// B_x = B_x_join
 					// Конец итерации
-					fmt.Printf("table %s %.2f %.2f %.2f %.2f \n", t.Table.Name, Z_x, Z_io_x, T_x, B_x)
+					// fmt.Printf("table %s %.2f %.2f %.2f %.2f \n", t.Table.Name, Z_x, Z_io_x, T_x, B_x)
 					X = append(X, t)
 				}
 				if queryMinTime == -1 || Z_x < queryMinTime {
@@ -305,7 +312,7 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 					resulRowCount = T_x
 					resultRowSize = Size_x
 				}
-				fmt.Println()
+				// fmt.Println(resulRowCount)
 			}
 		}
 		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime, TimeIO: queryMinTimeIO, RowsCount: resulRowCount, RowSize: resultRowSize}) // запись в массив минимального времени выполнение очередного запроса
@@ -318,9 +325,14 @@ func EvaluateQueries(params *parser.DataModel) (parser.QueriesMinTimes, error) {
 //	return parser.TransactionResult(nil), nil
 //}
 
-type QueryTimesCache map[string] parser.QueriesMinTimes
+type QueryTimesCache map[string] parser.QueriesMinTimes // key = datamodel.id + '_' node.id
+
+func getQueryTimesCacheID(datamodel *parser.DataModel, node *parser.Node) (string) {
+	return fmt.Sprint(datamodel.GetID(), "_", node.GetID())
+}
 
 func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, error) {
+	// по итерациям
 	var alredyCalculatedDataModel = make(QueryTimesCache)
 	var result parser.RequestsResults
 
@@ -329,15 +341,16 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 			return parser.RequestsResults(nil), nil // TODO вывод с нулевым временем
 		}
 		var datamodel = request.Database.DataModel
+		var node = request.Database.Node
 		var resultByQuery parser.QueriesMinTimes
-		q, ok := alredyCalculatedDataModel[datamodel.GetID()]
+		q, ok := alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node)]
 		if !ok {
 			var err error
-			resultByQuery, err = EvaluateQueries(datamodel)
+			resultByQuery, err = EvaluateQueries(datamodel, node)
 			if err != nil {
 				return nil, err
 			}
-			alredyCalculatedDataModel[datamodel.GetID()] = resultByQuery
+			alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node)] = resultByQuery
 		} else  {
 			resultByQuery = q
 		}
@@ -356,6 +369,7 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 				}
 			}
 		}
+
 		//передача по сети
 		var NetworkSpeed float64 = -1
 		if request.Node.GetID() != request.Database.Node.GetID() { //кластер обращается не сам к себе
@@ -388,6 +402,7 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 		var T_network float64 = 0
 		var DiscCharge float64 = 0
 		var ProcCharge float64 = 0
+		var T_network_time float64 = 0
 		// расчет транзакции Online
 		if request.Mode == OnlineTransactionType {
 			fmt.Println(OnlineTransactionType)
@@ -398,13 +413,13 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 			for _, q := range request.Transaction.Queries {
 				for _, rq := range resultByQuery {
 					if rq.Query.GetID() == q.GetID() {
-						TransactionTime += q.Count * (rq.Time / (1 - ProcCharge) + rq.TimeIO / (1 - DiscCharge))
+						TransactionTime += q.Count * (rq.Time / (N_proc *(1 - ProcCharge)) + rq.TimeIO / (N_disc * (1 - DiscCharge)))
 						break
 					}
 				}
 			}
 
-			var T_network_time = TransactionSize / helper.MbitToByte(NetworkSpeed)
+			T_network_time = TransactionSize / helper.MbitToByte(NetworkSpeed)
 			NetworkCharge = intension * T_network_time
 			T_network = T_network_time / (1 - NetworkCharge)
 
@@ -416,18 +431,18 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 			var n = request.Frequency
 			var P_proc = (QueriesSumTime * n / N_proc) / ((QueriesSumTime * n / N_proc) + (QueriesSumTimeIO * n / N_disc))
 			var P_disc = 1 - P_proc
-			var K_proc = P_proc / N_proc // TODO нужно ли умножать на (n-1) ?
-			var K_disc = P_disc / N_disc // TODO нужно ли умножать на (n-1) ?
+			var K_proc = P_proc * (n - 1) / N_proc // TODO нужно ли умножать на (n-1) ?
+			var K_disc = P_disc * (n - 1) / N_disc // TODO нужно ли умножать на (n-1) ?
 			for _, q := range request.Transaction.Queries {
 				for _, rq := range resultByQuery {
 					if rq.Query.GetID() == q.GetID() {
-						TransactionTime += q.Count * (rq.Time * (1 + K_proc) + rq.TimeIO * (1 + K_disc))
+						TransactionTime += q.Count * (rq.Time * ((1 / N_proc) + K_proc) + rq.TimeIO * ((1/N_disc) + K_disc))
 						break
 					}
 				}
 			}
 		}
-		result= append(result, parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge}, NetworkCharge: NetworkCharge}) // запись в массив минимального времени выполнение очередного запроса
+		result= append(result, parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network_time, NetworkSpeed: helper.MbitToByte(NetworkSpeed)}) // запись в массив минимального времени выполнение очередного запроса
 
 	}
 	return result, nil
