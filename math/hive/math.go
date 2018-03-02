@@ -197,3 +197,21 @@ func SMBJoin(
 
 	return
 }
+
+// Distinct/Group By
+//
+// CPU Usage = Cost of Sorting
+// + Cost of categorizing into group = (T(R) * log T(R) + T(R)) * CPUc nano seconds;
+//
+// IO Usage = Cost of writing intermediate result set in to local FS for shuffling
+// + Cost of reading from local FS for transferring to GB reducer operator node
+// + Cost of transferring data set to GB Node
+// = Lw * T(R) * Tsz + Lr * T(R) * Tsz + NEt * T(R) * Tsz
+func DistinctOrGroupBy(t Table) (
+	cpu float64,
+	io float64,
+) {
+	cpu = (t.Tr*math.Log(t.Tr) + t.Tr) * CPUc
+	io = Lw*t.Tr*t.Tsz + Lr*t.Tr*t.Tsz + NEt*t.Tr*t.Tsz
+	return
+}
