@@ -115,3 +115,57 @@ func MapJoin(
 	io = NEt * transferingTablesCost * NumberOfMappers
 	return
 }
+
+// Bucket Map Join
+//
+// CPU Usage = Hash Table Construction cost
+// + Cost of Join
+// = (T(R2) + ...+ T(Rm)) * CPUc
+// + (T(R1) + T(R2) + ...+ T(Rm)) * CPUc nano seconds
+//
+// IO Usage = Cost of transferring small tables to Join Operator Node * Parallelization of the join
+// = NEt * (T(R2) * Tsz2 + ... + T(Rm) * Tszm) * number of mappers
+//
+// R1, R2... Rm is the relations involved in join and R1 is the big table that will be streamed.
+// Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
+func BucketMapJoin(
+	tables ...Table,
+) (
+	cpu float64,
+	io float64,
+) {
+	if len(tables) == 0 {
+		return
+	}
+	ind, biggest := 0, tables[0]
+	for i, t := range tables {
+		if t.Tr > biggest.Tr {
+			biggest = t
+			ind = i
+		}
+	}
+
+	// CPU
+	var (
+		hashTableConstructionCost float64
+		joinCost                  float64
+	)
+
+	// IO
+	var transferingTablesCost float64
+
+	for i, v := range tables {
+		joinCost += v.Tr
+
+		if ind == i {
+			continue
+		}
+
+		hashTableConstructionCost += v.Tr
+		transferingTablesCost += v.Tr * v.Tsz
+	}
+
+	cpu = hashTableConstructionCost*CPUc + joinCost*CPUc
+	io = NEt * transferingTablesCost * NumberOfMappers
+	return
+}
