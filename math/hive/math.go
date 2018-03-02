@@ -215,3 +215,28 @@ func DistinctOrGroupBy(t Table) (
 	io = Lw*t.Tr*t.Tsz + Lr*t.Tr*t.Tsz + NEt*t.Tr*t.Tsz
 	return
 }
+
+// Filter/Having
+//
+// CPU Usage = T(R) * CPUc nano seconds
+//
+// IO Usage = 0
+func Filter(t Table) (
+	cpu float64,
+	io float64,
+) {
+	cpu = t.Tr * CPUc
+	return
+}
+
+// Select
+//
+// CPU Usage = 0
+//
+// IO Usage = 0
+func Select(t Table) (
+	cpu float64,
+	io float64,
+) {
+	return
+}
