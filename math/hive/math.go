@@ -169,3 +169,31 @@ func BucketMapJoin(
 	io = NEt * transferingTablesCost * NumberOfMappers
 	return
 }
+
+// SMB Join
+//
+// CPU Usage = Cost of Join
+// = (T(R1) + T(R2) + ...+ T(Rm)) * CPUc nano seconds
+//
+// IO Usage = Cost of transferring small tables to Join * Parallelization of the join
+// = NEt * (T(R2) * Tsz2 + ... + T(Rm) * Tszm) * number of mappers
+//
+// R1, R2... Rm is the relations involved in join.
+// Tsz2... Tszm are the average size of tuple in relations R2...Rm.
+func SMBJoin(
+	tables ...Table,
+) (
+	cpu float64,
+	io float64,
+) {
+	var workingDataSize float64
+
+	for _, v := range tables {
+		cpu += v.Tr * CPUc
+		workingDataSize += v.Tr * v.Tsz
+	}
+
+	io = NEt * workingDataSize * NumberOfMappers
+
+	return
+}
