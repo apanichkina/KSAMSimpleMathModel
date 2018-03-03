@@ -1,5 +1,5 @@
-// realization of https://cwiki.apache.org/confluence/display/Hive/Cost-based+optimization+in+Hive cost
-// based optimisation funcs
+// realization of https://cwiki.apache.org/confluence/display/Hive/Cost-based+optimization+in+Hive
+// cost based optimisation funcs
 package hive
 
 import "math"
@@ -9,13 +9,11 @@ import "math"
 // CPU Usage = 0.
 //
 // IO Usage = Hr * T(R) * Tsz.
-func TableScan(t Table) (
-	cpu float64,
-	io float64,
-) {
-	cpu = 0
-	io = Hr * t.Tr * t.Tsz
-	return
+func TableScan(t Table) (Table, Cost) {
+	return t, NewCost(
+		0,
+		Hr*t.Tr*t.Tsz,
+	)
 }
 
 // Common Join
@@ -36,10 +34,7 @@ func TableScan(t Table) (
 // Tsz1, Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
 func CommonJoin(
 	tables ...Table,
-) (
-	cpu float64,
-	io float64,
-) {
+) Cost {
 	// cpu
 	var (
 		sortCost  float64
@@ -58,10 +53,10 @@ func CommonJoin(
 		workingDataSize += v.Tr * v.Tsz
 	}
 
-	cpu = sortCost + mergeCost
-	io = Lw*workingDataSize + Lr*workingDataSize + NEt*workingDataSize
-
-	return
+	return NewCost(
+		sortCost+mergeCost,
+		Lw*workingDataSize+Lr*workingDataSize+NEt*workingDataSize,
+	)
 }
 
 // Map Join
@@ -76,12 +71,9 @@ func CommonJoin(
 // Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
 func MapJoin(
 	tables ...Table,
-) (
-	cpu float64,
-	io float64,
-) {
+) Cost {
 	if len(tables) == 0 {
-		return
+		return NewCost(0, 0)
 	}
 	ind, biggest := 0, tables[0]
 	for i, t := range tables {
@@ -111,9 +103,10 @@ func MapJoin(
 		transferingTablesCost += v.Tr * v.Tsz
 	}
 
-	cpu = hashTableConstructionCost + joinCost*CPUc
-	io = NEt * transferingTablesCost * NumberOfMappers
-	return
+	return NewCost(
+		hashTableConstructionCost+joinCost*CPUc,
+		NEt*transferingTablesCost*NumberOfMappers,
+	)
 }
 
 // Bucket Map Join
@@ -130,12 +123,9 @@ func MapJoin(
 // Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
 func BucketMapJoin(
 	tables ...Table,
-) (
-	cpu float64,
-	io float64,
-) {
+) Cost {
 	if len(tables) == 0 {
-		return
+		return NewCost(0, 0)
 	}
 	ind, biggest := 0, tables[0]
 	for i, t := range tables {
@@ -165,9 +155,10 @@ func BucketMapJoin(
 		transferingTablesCost += v.Tr * v.Tsz
 	}
 
-	cpu = hashTableConstructionCost*CPUc + joinCost*CPUc
-	io = NEt * transferingTablesCost * NumberOfMappers
-	return
+	return NewCost(
+		hashTableConstructionCost*CPUc+joinCost*CPUc,
+		NEt*transferingTablesCost*NumberOfMappers,
+	)
 }
 
 // SMB Join
@@ -182,20 +173,19 @@ func BucketMapJoin(
 // Tsz2... Tszm are the average size of tuple in relations R2...Rm.
 func SMBJoin(
 	tables ...Table,
-) (
-	cpu float64,
-	io float64,
-) {
+) Cost {
 	var workingDataSize float64
+	var cpu float64
 
 	for _, v := range tables {
 		cpu += v.Tr * CPUc
 		workingDataSize += v.Tr * v.Tsz
 	}
 
-	io = NEt * workingDataSize * NumberOfMappers
-
-	return
+	return NewCost(
+		cpu,
+		NEt*workingDataSize*NumberOfMappers,
+	)
 }
 
 // Distinct/Group By
@@ -207,13 +197,11 @@ func SMBJoin(
 // + Cost of reading from local FS for transferring to GB reducer operator node
 // + Cost of transferring data set to GB Node
 // = Lw * T(R) * Tsz + Lr * T(R) * Tsz + NEt * T(R) * Tsz
-func DistinctOrGroupBy(t Table) (
-	cpu float64,
-	io float64,
-) {
-	cpu = (t.Tr*math.Log(t.Tr) + t.Tr) * CPUc
-	io = Lw*t.Tr*t.Tsz + Lr*t.Tr*t.Tsz + NEt*t.Tr*t.Tsz
-	return
+func DistinctOrGroupBy(t Table) Cost {
+	return NewCost(
+		(t.Tr*math.Log(t.Tr)+t.Tr)*CPUc,
+		Lw*t.Tr*t.Tsz+Lr*t.Tr*t.Tsz+NEt*t.Tr*t.Tsz,
+	)
 }
 
 // Filter/Having
@@ -221,12 +209,11 @@ func DistinctOrGroupBy(t Table) (
 // CPU Usage = T(R) * CPUc nano seconds
 //
 // IO Usage = 0
-func Filter(t Table) (
-	cpu float64,
-	io float64,
-) {
-	cpu = t.Tr * CPUc
-	return
+func Filter(t Table) Cost {
+	return NewCost(
+		t.Tr*CPUc,
+		0,
+	)
 }
 
 // Select
@@ -234,9 +221,6 @@ func Filter(t Table) (
 // CPU Usage = 0
 //
 // IO Usage = 0
-func Select(t Table) (
-	cpu float64,
-	io float64,
-) {
-	return
+func Select(t Table) Cost {
+	return NewCost(0, 0)
 }
