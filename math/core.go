@@ -174,9 +174,14 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 			if len(queryTables) < 2 {
 				return nil, fmt.Errorf("too few tabels for any joins (< 2)")
 			}
-
+			if TEST {
+				queryTables = []string{"69d0efeb-1f49-faa1-e622-f3aaea84d164", "2e6ff751-593c-fddf-7372-ac37521da565", "9fa9d612-5f6c-496a-e5bb-7459f70e8c24"} // PARTSUPP LINEITEM PART
+			}
 			// конструирование всех вариантов соединения таблиц n! штук
-			allJoinVariations := PermutationsOfN(len(queryTables))
+			var allJoinVariations = PermutationsOfN(len(queryTables))
+			if TEST && len(TESTSEQUENCE) == len(queryTables) {
+				allJoinVariations = [][]int{TESTSEQUENCE}
+			}
 
 			// проход по всем вариантам из n!
 			// fmt.Println(allJoinVariations)
@@ -306,15 +311,18 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 					// fmt.Printf("table %s %.2f %.2f %.2f %.2f \n", t.Table.Name, Z_x, Z_io_x, T_x, B_x)
 					X = append(X, t)
 				}
+
 				if queryMinTime == -1 || Z_x < queryMinTime {
 					queryMinTime = Z_x
 					queryMinTimeIO = Z_io_x
 					resulRowCount = T_x
 					resultRowSize = Size_x
+					fmt.Println(query.Name, Z_x, Z_io_x, T_x, Size_x, X)
 				}
 				// fmt.Println(resulRowCount)
 			}
 		}
+
 		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime, TimeIO: queryMinTimeIO, RowsCount: resulRowCount, RowSize: resultRowSize}) // запись в массив минимального времени выполнение очередного запроса
 	}
 	fmt.Printf("%v \n", parser.QueriesMinTimes(queriesMinTime))
@@ -394,7 +402,7 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 				}
 			}
 			if NetworkSpeed == -1 {
-				return nil, fmt.Errorf("Can`t requst from node %s to %s without network. ", request.Node.Name, request.Database.Node.Name)
+				return nil, fmt.Errorf("Can`t request from node %s to %s without network. ", request.Node.Name, request.Database.Node.Name)
 			}
 		}
 		var TransactionTime float64 = 0
@@ -405,11 +413,9 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 		var T_network_time float64 = 0
 		// расчет транзакции Online
 		if request.Mode == OnlineTransactionType {
-			fmt.Println(OnlineTransactionType)
 			var intension= helper.HourToSecond(request.Frequency) * request.Node.NodeCount //число клиентов
 			DiscCharge = intension * QueriesSumTimeIO / N_disc
 			ProcCharge = intension * QueriesSumTime / N_proc // TODO нужно ли считать время для всех транзакций?
-			fmt.Println(ProcCharge, DiscCharge)
 			for _, q := range request.Transaction.Queries {
 				for _, rq := range resultByQuery {
 					if rq.Query.GetID() == q.GetID() {
@@ -427,12 +433,12 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 		}
 
 		if request.Mode == OfflineTransactionType {
-			fmt.Println(OfflineTransactionType)
+			NetworkSpeed = 0 // сеть для offline не играет роли
 			var n = request.Frequency
 			var P_proc = (QueriesSumTime * n / N_proc) / ((QueriesSumTime * n / N_proc) + (QueriesSumTimeIO * n / N_disc))
 			var P_disc = 1 - P_proc
-			var K_proc = P_proc * (n - 1) / N_proc // TODO нужно ли умножать на (n-1) ?
-			var K_disc = P_disc * (n - 1) / N_disc // TODO нужно ли умножать на (n-1) ?
+			var K_proc = P_proc * (n - 1) / N_proc
+			var K_disc = P_disc * (n - 1) / N_disc
 			for _, q := range request.Transaction.Queries {
 				for _, rq := range resultByQuery {
 					if rq.Query.GetID() == q.GetID() {
@@ -449,9 +455,13 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 }
 
 var GLOBALVARS parser.GlobalVariables
+var TEST bool
+var TESTSEQUENCE []int
 func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVariables) (parser.RequestsResults, error){
 	//var output = parser.Errors{parser.Error{Message: "test"}}
 	GLOBALVARS = globalVariables
+	TEST = false
+	TESTSEQUENCE = []int{2, 0, 1}
 	resultByRequest, err := EvaluateRequest(inputParams)
 	if err != nil {
 		return nil, err

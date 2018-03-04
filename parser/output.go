@@ -45,6 +45,10 @@ func (a TransactionResult) String() string { // правило печати об
 	return fmt.Sprintf("{%s, %f, %f, %f}", a.Transaction, a.Time, a.DiscCharge, a.ProcCharge)
 }
 
+func (a *TableInQuery) String() string { // правило печати объектов типа QueriesMinTime
+	return fmt.Sprintf("{%s}", a.Pseudoname)
+}
+
 type TransactionResult struct {
 	Transaction *Transaction  `csv:"transaction"`
 	Time  float64 `csv:"time"`
