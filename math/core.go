@@ -291,7 +291,7 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 							Size_x += query.GetRowSizeAfterProjection(t, nil)
 						} else {
 							// Число записей при соединении по условию
-							T = math.Ceil((T_x * T) / (math.Max(I_x, AttrJoin.I))) // I_x - мощность атрибута соединения (a) в X;
+							T = math.Ceil((T_x * T) / (math.Max(I_x, math.Min(T ,AttrJoin.I)))) // I_x - мощность атрибута соединения (a) в X;
 							// T_x - число записей в X;
 							// I - мощность атрибута соединения (а) в Y;
 							// T - число записей в Y

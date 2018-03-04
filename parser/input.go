@@ -344,10 +344,11 @@ type Condition struct {
 	P float64 `json:"P"`
 }
 
-func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttributes, error) {
+func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttributes, bool, error) {
 	var result []JoinAttributes
-	//var hasLeftInAll = false
-	//var hasRightInAll = false
+	var hasLeftInAll = false
+	var hasRightInAll = false
+	var JoinsForSequence []*Join
 	for _, js := range q.Joins {
 		var hasLeft = false
 		var hasRight = false
@@ -355,23 +356,47 @@ func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttribu
 		var attrsIdRight []string
 		for _, j := range js.Join {
 			if len(j.Attributes) < 1 {
-				return nil, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
+				return nil, false, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
 			}
 			if j.TableId == leftTableId {
 				hasLeft = true
+				hasLeftInAll = true
 				attrsIdLeft = j.Attributes
 			}
 			if j.TableId == rightTableId {
 				hasRight = true
+				hasRightInAll = true
 				attrsIdRight = j.Attributes
 			}
 		}
 		if hasLeft && hasRight {
 			result = append(result, JoinAttributes{attrsIdLeft, attrsIdRight})
+		} else if hasLeft || hasRight {
+			JoinsForSequence = append(JoinsForSequence, js)
 		}
 	}
+	//if hasLeftInAll && hasRightInAll && len(JoinsForSequence) > 1 { // проверяем, что в JoinsForSequence есть joins с левой и правой таблицей
+	//	var tempTebleID string = ""
+	//	for _, jfs := range JoinsForSequence {
+	//		for _, j := range jfs.Join {
+	//			if len(j.Attributes) < 1 {
+	//				return nil, false, fmt.Errorf("too few join attrs in table (%s) in query (%s)", j.TableId, q.Name)
+	//			}
+	//			if j.TableId != leftTableId && j.TableId != rightTableId {
+	//				if tempTebleID == "" {
+	//					tempTebleID = j.TableId
+	//				} else if j.TableId != tempTebleID
+	//
+	//			}
+	//		}
+	//
+	//	}
+	//}
 
-	return result, nil
+	// fmt.Println(JoinsForSequence)
+	var canSearchJoinSequence = len(result) == 0 && hasLeftInAll && hasRightInAll
+
+	return result, canSearchJoinSequence, nil
 }
 
 func (q Query) GetRowSizeAfterProjection(table *TableInQuery, attrJoin *Attribute) float64 {
@@ -406,9 +431,12 @@ func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64
 	var Attr *Attribute = nil
 	var JoinLeftI float64 = 0
 	for _, leftTable := range x {
-		var joinAttrs, err = q.FindJoins(leftTable.GetID(), rightTable.GetID())
+		var joinAttrs, canSearchJoinSequence, err = q.FindJoins(leftTable.GetID(), rightTable.GetID())
 		if err != nil {
 			return Attr, P, JoinLeftI, err
+		}
+		if canSearchJoinSequence {
+			// fmt.Println("Нет явного соединения таблиц %s, %s. Но есть неяное. ", leftTable.Pseudoname, rightTable.Pseudoname)
 		}
 		// проход  по джоинам, ищем соединение, где максимальный I
 		for _, ja := range joinAttrs {
@@ -425,7 +453,7 @@ func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64
 			}
 
 			var leftI = math.Min(joinAttrLeft.I, N)
-			var currentP = math.Min(leftI, joinAttrRight.I) / math.Max(leftI, joinAttrRight.I)
+			var currentP = math.Min(leftI, joinAttrRight.I) / math.Max(leftI, joinAttrRight.I) // TODO спорно
 
 			// ищем атрибут с максимальним I, чтобы 1/I было маленьким
 			// Остальные атрибуты будут в P
