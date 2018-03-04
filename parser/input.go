@@ -346,6 +346,8 @@ type Condition struct {
 
 func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttributes, error) {
 	var result []JoinAttributes
+	//var hasLeftInAll = false
+	//var hasRightInAll = false
 	for _, js := range q.Joins {
 		var hasLeft = false
 		var hasRight = false
@@ -396,7 +398,7 @@ func (q Query) GetRowSizeAfterProjection(table *TableInQuery, attrJoin *Attribut
 
 //
 // правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
-// не учитывает, что в X могжет содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))
+// не учитывает, что в X может содержаться более одной таблицы, содержащей атрибут соединения (а), если учитывать этот момент, то p1=min(I(Qk,a);I(Ql,a)) и анадогично  p2=min(I(Qk,b);I(Ql,b))
 func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64) (*Attribute, float64, float64, error) {
 	var I float64 = 0      // I для Y по атрибуту соединения a
 	var P_maxI float64 = 1 // Вероятность P для текущего I
