@@ -1286,7 +1286,7 @@
               "tableid": "5c86f89a-833f-af1c-f0c0-af2a08f07a25"
             }
           ],
-          "aggregates": [
+          "aggregate": [
             {
               "name": "revenue",
               "size": 8

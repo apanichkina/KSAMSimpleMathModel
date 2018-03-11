@@ -120,22 +120,22 @@ func (ip *InputParams) PrepareData() error {
 
 		p.setMaps()
 
-		for _, q := range p.Queries {
-			q.setMaps()
+		for _, t := range p.Tables {
+			err := t.setMaps()
+			if err != nil {
+				return err
+			}
+		}
 
+		for _, q := range p.Queries {
 			for _, tq := range q.TablesInQuery {
 				err := tq.setPointers(*p)
 				if err != nil {
 					return err
 				}
 			}
-		}
 
-		for _, t := range p.Tables {
-			err := t.setMaps()
-			if err != nil {
-				return err
-			}
+			q.setMaps()
 		}
 
 		for _, t := range p.Transactions {

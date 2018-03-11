@@ -151,10 +151,42 @@ func (t *Table) setMaps() error {
 	return nil
 }
 
+func (q *Query) isTableAttributeValid(ta *TableAttribute) bool{
+	var table, hasTable = q.TablesInQueryMap[ta.TableId]
+	if !hasTable {
+		return false
+	}
+	var _, hasAttribute = table.Table.AttributesMap[ta.AttributeId]
+
+	return hasAttribute
+}
+
 func (q *Query) setMaps() {
 	q.TablesInQueryMap = make(map[string]*TableInQuery)
 	for _, t := range q.TablesInQuery {
 		q.TablesInQueryMap[t.GetID()] = t
+	}
+
+	q.ProjectionsMap = make(map[string]*TableAttribute)
+	for _, t := range q.Projection {
+		if q.isTableAttributeValid(t) { // на всякий случай проверяем что в q.Projection нет ссылок на несуществующие атрибуты несуществующих таблиц
+			q.ProjectionsMap[t.GetID()] = t
+		}
+	}
+
+	q.GroupMap = make(map[string]*TableAttribute)
+	for _, t := range q.Group {
+		if q.isTableAttributeValid(t) { // на всякий случай проверяем что в q.Group нет ссылок на несуществующие атрибуты несуществующих таблиц
+			q.GroupMap[t.GetID()] = t
+		}
+	}
+
+	q.OrderMap = make(map[string]*TableAttribute)
+	for _, t := range q.Order {
+		var _, hasGroup= q.GroupMap[t.GetID()]
+		if !hasGroup && q.isTableAttributeValid(t) { // после группировки значения и так отсортированны и мы не учитываем порядок полей в GROUP BY и ORDER BY
+			q.OrderMap[t.GetID()] = t
+		}
 	}
 }
 
