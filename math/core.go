@@ -8,22 +8,6 @@ import (
 	"reflect"
 )
 
-type Str struct {
-	W   string   // имя подзапроса
-	X   string   // левый аргумент соединения
-	Y   string   // правый аргумент соединения
-	Z   float64  // оценка стоимости выполнения подзапроса
-	ZIO float64  // оценка стоимости составляющей ввода-вывода подзапроса
-	V   VOptions // опции
-}
-
-type VOptions struct {
-	T float64            // оценка числа записей в подзапросе = T(Qi)
-	B float64            // оценка числа блоков в подзапросе = B(Qi)
-	I map[string]float64 // мощности атрибутов, которые участвуют в соединении
-	k string             // индексируемый атрибут
-}
-
 func TableScan(Table parser.Table, C_filter float64, C_b float64) (float64, float64, error) {
 	if Table.Size == 0 {
 		return 0.0, 0.0, fmt.Errorf("%s Table.Size cann`t be 0", Table.Name)
@@ -90,8 +74,6 @@ func IndexScan(Table parser.Table, p float64, L float64, C_filter float64, C_b f
 
 	return C, C_io, T, nil
 }
-
-
 
 func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (parser.QueriesMinTimes, error) {
 
