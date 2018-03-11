@@ -24,7 +24,7 @@ type InputParams struct {
 	DataModel    []*DataModel `json:"datamodel"`
 	DataModelMap map[string]*DataModel
 
-	Increment []*Increment `json:"increment"`
+	Increment    []*Increment `json:"increment"`
 	IncrementMap map[string]*Increment
 
 	Node    []*Node `json:"nodes"`
@@ -48,8 +48,8 @@ type Request struct {
 	DatabaseID string `json:"database"`
 	Database   *Database
 
-	TransactionID string `json:"transaction"`
-	Transaction   *Transaction
+	TransactionID  string `json:"transaction"`
+	Transaction    *Transaction
 	PossibleValues map[string]IncrementField
 }
 
@@ -69,12 +69,12 @@ type Increment struct {
 	ObjId   string `json:"obj"`
 	ObjType string `json:"objtype"`
 
-	FieldName string  `json:"field"`
-	From      float64 `json:"from"`
-	Step      float64 `json:"incr"`
-	To        float64 `json:"to"`
+	FieldName     string  `json:"field"`
+	From          float64 `json:"from"`
+	Step          float64 `json:"incr"`
+	To            float64 `json:"to"`
 	PosibleValues []string
-	StepsCount int
+	StepsCount    int
 }
 
 type Node struct {
@@ -144,17 +144,17 @@ type Query struct {
 	TablesInQuery    []*TableInQuery `json:"tables"` //таблицы с псевдонимами и без, участвующие в запросе
 	TablesInQueryMap map[string]*TableInQuery
 
-	Aggregates       []*Aggregate           `json:"aggregates"`
+	Aggregates  []*Aggregate      `json:"aggregates"`
 	Joins       []*Join           `json:"joins"`
 	Projections []*TableAttribute `json:"projection"`
 	Conditions  []*Condition      `json:"condition"`
-	Group  []*TableAttribute      `json:"group"`
-	Order  []*TableAttribute      `json:"order"`
+	Group       []*TableAttribute `json:"group"`
+	Order       []*TableAttribute `json:"order"`
 }
 
 type Aggregate struct {
-	Name string  `json:"name"`   // имя
-	Size float64 `json:"size"`   // размер типа атрибута
+	Name string  `json:"name"` // имя
+	Size float64 `json:"size"` // размер типа атрибута
 }
 type TableInQuery struct {
 	Object
@@ -197,21 +197,21 @@ type Transaction struct {
 }
 
 type TransactionQuery struct {
-	QueryId string  `json:"queryid"`
-	Count   float64 `json:"rep"` // число
-	Subquery bool `json:"sub"` // это подзапрос
+	QueryId  string  `json:"queryid"`
+	Count    float64 `json:"rep"` // число
+	Subquery bool    `json:"sub"` // это подзапрос
 }
 
 type IncrementField struct {
-	Name string
+	Name   string
 	Values []string
 }
 
 var INCREMENTVALS = map[string]IncrementField{
-	"type": IncrementField{"Mode",[]string{"online", "offline"}},
+	"type":      IncrementField{"Mode", []string{"online", "offline"}},
 	"frequency": IncrementField{"Frequency", nil},
 	"nodecount": IncrementField{"NodeCount", nil},
-	"CPU": IncrementField{"NodeCount", nil},
-	"disk": IncrementField{"Disk", nil},
+	"CPU":       IncrementField{"NodeCount", nil},
+	"disk":      IncrementField{"Disk", nil},
 	"countdisk": IncrementField{"DiskCount", nil},
 }

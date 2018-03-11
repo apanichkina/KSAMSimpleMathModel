@@ -2,8 +2,8 @@ package helper
 
 import (
 	"fmt"
-	"log"
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
+	"log"
 )
 
 func CheckError(message string, err error) {
@@ -17,18 +17,18 @@ func CheckError(message string, err error) {
 	}
 }
 
-func MbitToByte(num float64) (float64) {
+func MbitToByte(num float64) float64 {
 	return num * 125000
 }
 
-func HourToSecond(time float64) (float64) {
+func HourToSecond(time float64) float64 {
 	return time / 3600
 }
 
-func GigagertzToGertz(t float64) (float64) {
+func GigagertzToGertz(t float64) float64 {
 	return t * 1000000000
 }
 
-func MegabyteToByte(t float64) (float64) {
+func MegabyteToByte(t float64) float64 {
 	return t * 1000000
 }

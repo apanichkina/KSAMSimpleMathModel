@@ -17,4 +17,3 @@ func (q *Query) MarshalCSV() (string, error) {
 func (t *Transaction) MarshalCSV() (string, error) {
 	return fmt.Sprintf("%s", t.Name), nil
 }
-

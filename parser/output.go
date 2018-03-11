@@ -2,8 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"os"
 	"github.com/gocarina/gocsv"
+	"os"
 )
 
 func PrintToCsv(filename string, output interface{}) error {
@@ -19,5 +19,3 @@ func PrintToCsv(filename string, output interface{}) error {
 	}
 	return nil
 }
-
-

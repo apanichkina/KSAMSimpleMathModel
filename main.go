@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
+	"github.com/apanichkina/KSAMSimpleMathModel/helper"
 	"github.com/apanichkina/KSAMSimpleMathModel/math"
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
-	"github.com/apanichkina/KSAMSimpleMathModel/helper"
 )
 
 var fileInput = flag.String("in", "./data/true_input.json", "in - input model file")
