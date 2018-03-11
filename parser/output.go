@@ -18,6 +18,7 @@ type QueriesMinTime struct {
 	Query *Query  `csv:"query"`
 	Time  float64 `csv:"time"`
 	TimeIO float64 `csv:"timeIO"`
+	OrderTime float64 `csv:"Ordertime"`
 	RowsCount float64 `csv:"RowsCount"`
 	RowSize float64 `csv:"RowsSize"`
 }
@@ -36,7 +37,7 @@ func (f FullFloat64) MarshalCSV() (string, error) {
 }
 
 func (a QueriesMinTime) String() string { // правило печати объектов типа QueriesMinTime
-	return fmt.Sprintf("{%s, %f, %f, %f, %f}", a.Query.Name, a.Time, a.TimeIO, a.RowsCount, a.RowSize)
+	return fmt.Sprintf("{%s, %f, %f, %f, %f, %f}", a.Query.Name, a.Time, a.TimeIO, a.OrderTime, a.RowsCount, a.RowSize)
 }
 
 type QueriesMinTimes []QueriesMinTime
@@ -47,6 +48,10 @@ func (a TransactionResult) String() string { // правило печати об
 
 func (a *TableInQuery) String() string { // правило печати объектов типа QueriesMinTime
 	return fmt.Sprintf("{%s}", a.Pseudoname)
+}
+
+func (a *Increment) String() string { // правило печати объектов типа QueriesMinTime
+	return fmt.Sprintf("{%s, %s, %f, %f, %f, %d}", a.ObjId, a.FieldName, a.From, a.Step, a.To, a.StepsCount)
 }
 
 type TransactionResult struct {

@@ -15,6 +15,30 @@
       "incr": 10,
       "objtype": "node",
       "from": 10
+    },
+    {
+      "id": {
+        "$oid": "2b4978d6-80fe-4d5f-f7b9-e84fab48069c"
+      },
+      "obj": "abc47bdf-0620-cd6b-07a5-89b59201549e",
+      "field": "frequency",
+      "type": "",
+      "to": 10,
+      "incr": 3.1,
+      "objtype": "request",
+      "from": 0.1
+    },
+    {
+      "id": {
+        "$oid": "0c5bf5b9-95c2-ad8d-cc5c-da90486b7a79"
+      },
+      "obj": "c951ff22-2f1d-5732-bc28-829eac37a377",
+      "field": "type",
+      "type": "",
+      "to": 0,
+      "incr": 0,
+      "objtype": "request",
+      "from": 0
     }
   ],
   "requests": [
@@ -44,39 +68,8 @@
       "valid": true,
       "mode": "offline",
       "frequency": 20,
-      "node": "a4fc4a6b-e95f-5196-2dba-a5eaf600654e",
       "database": "c928d96f-050d-c8bc-7407-895de4a261bf",
       "transaction": "96018c0e-d08f-f09c-1cb8-14c43e89fcea"
-    },
-    {
-      "id": {
-        "$oid": "20272b47-2dc0-6dbb-a02f-65f9dc82d5b0"
-      },
-      "name": "online2",
-      "type": "object_request",
-      "toggled": true,
-      "showing": false,
-      "valid": true,
-      "mode": "online",
-      "frequency": 2,
-      "transaction": "57841777-256c-d7e1-8366-41bd3f707e9d",
-      "node": "7da7579e-2937-02e7-14f4-4b7a0a46838e",
-      "database": "c928d96f-050d-c8bc-7407-895de4a261bf"
-    },
-    {
-      "id": {
-        "$oid": "a09efe54-4b5f-7ce8-77b2-bbe32ac44039"
-      },
-      "name": "offline2",
-      "type": "object_request",
-      "toggled": true,
-      "showing": false,
-      "valid": true,
-      "mode": "offline",
-      "frequency": 20,
-      "transaction": "96018c0e-d08f-f09c-1cb8-14c43e89fcea",
-      "node": "578e983a-acce-7d74-bb74-bc7fe53eb46f",
-      "database": "c928d96f-050d-c8bc-7407-895de4a261bf"
     }
   ],
   "database": [
@@ -99,7 +92,7 @@
       "id": {
         "$oid": "ab51b253-903e-ad8c-0e6b-9913f1f1922e"
       },
-      "name": "NET1",
+      "name": "NET11",
       "type": "object_network",
       "nodes": [
         "ea2036a5-f5e8-cfe0-57a2-1c438fae47c0",
@@ -129,7 +122,7 @@
       "id": {
         "$oid": "5a3f830a-b0cb-23ab-6557-1e69f7916e23"
       },
-      "name": "NET2",
+      "name": "NET22",
       "type": "object_network",
       "nodes": [
         "578e983a-acce-7d74-bb74-bc7fe53eb46f",
@@ -142,24 +135,9 @@
     },
     {
       "id": {
-        "$oid": "5a3f830a-b0cb-23ab-6557-1e69f7916e23"
-      },
-      "name": "NET21",
-      "type": "object_network",
-      "nodes": [
-        "578e983a-acce-7d74-bb74-bc7fe53eb46f",
-        "a4fc4a6b-e95f-5196-2dba-a5eaf600654e"
-      ],
-      "toggled": true,
-      "showing": false,
-      "valid": true,
-      "speed": 100
-    },
-    {
-      "id": {
         "$oid": "820c37b7-9321-872c-1c3d-4ef1d9fb13d7"
       },
-      "name": "NET3",
+      "name": "NET33",
       "type": "object_network",
       "nodes": [
         "66114c0c-caf2-3a7a-fb1d-74836684d224",
@@ -200,12 +178,7 @@
       "showing": false,
       "valid": false,
       "node_type": "pc",
-      "nodecount": 1,
-      "mem": 0,
-      "disk": 0,
-      "diskcount": 0,
-      "net": 0,
-      "proc": 0
+      "nodecount": 1
     },
     {
       "id": {
@@ -235,12 +208,7 @@
       "showing": false,
       "valid": false,
       "node_type": "pc",
-      "nodecount": 10,
-      "mem": 0,
-      "disk": 0,
-      "diskcount": 0,
-      "net": 0,
-      "proc": 0
+      "nodecount": 10
     },
     {
       "id": {
@@ -749,7 +717,8 @@
               "valid": true,
               "showing": false,
               "attr_type": "date",
-              "size": 4
+              "size": 4,
+              "attr_I": 2404
             },
             {
               "id": {
@@ -760,7 +729,8 @@
               "valid": true,
               "showing": false,
               "attr_type": "text",
-              "size": 15
+              "size": 15,
+              "attr_I": 5
             },
             {
               "id": {
@@ -782,7 +752,8 @@
               "showing": false,
               "valid": true,
               "attr_type": "integer",
-              "size": 4
+              "size": 4,
+              "attr_I": 1
             },
             {
               "id": {
@@ -911,7 +882,8 @@
               "valid": true,
               "showing": false,
               "attr_type": "text",
-              "size": 1
+              "size": 1,
+              "attr_I": 4
             },
             {
               "id": {
@@ -922,7 +894,8 @@
               "valid": true,
               "showing": false,
               "attr_type": "text",
-              "size": 1
+              "size": 1,
+              "attr_I": 2
             },
             {
               "id": {
@@ -933,7 +906,8 @@
               "valid": true,
               "showing": false,
               "attr_type": "date",
-              "size": 4
+              "size": 4,
+              "attr_I": 2524
             },
             {
               "id": {
@@ -1118,7 +1092,7 @@
           "valid": true,
           "toggled": false,
           "showing": false,
-          "nrows": 24004860,
+          "nrows": 24016863,
           "attributes": [
             {
               "id": {
@@ -1130,7 +1104,8 @@
               "showing": false,
               "valid": true,
               "attr_type": "date",
-              "size": 4
+              "size": 4,
+              "attr_I": 6
             },
             {
               "id": {
@@ -1154,7 +1129,8 @@
               "showing": false,
               "attr_type": "text",
               "size": 25,
-              "toggled": true
+              "toggled": true,
+              "attr_I": 25
             }
           ]
         },
@@ -1168,7 +1144,7 @@
           "valid": true,
           "toggled": false,
           "showing": false,
-          "nrows": 989211264,
+          "nrows": 3888787320,
           "attributes": [
             {
               "id": {
@@ -1180,7 +1156,8 @@
               "showing": false,
               "attr_type": "text",
               "size": 25,
-              "toggled": true
+              "toggled": true,
+              "attr_I": 25
             },
             {
               "id": {
@@ -1192,7 +1169,8 @@
               "showing": false,
               "attr_type": "date",
               "size": 4,
-              "toggled": true
+              "toggled": true,
+              "attr_I": 6
             },
             {
               "id": {
@@ -1226,6 +1204,7 @@
               "tableid": "5c86f89a-833f-af1c-f0c0-af2a08f07a25"
             }
           ],
+          "aggregates": [],
           "joins": [],
           "projection": [
             {
@@ -1307,6 +1286,7 @@
               "tableid": "5c86f89a-833f-af1c-f0c0-af2a08f07a25"
             }
           ],
+          "aggregates": [],
           "joins": [],
           "projection": [
             {
@@ -1343,6 +1323,186 @@
           "stepIndex": 2,
           "table": "5c86f89a-833f-af1c-f0c0-af2a08f07a25",
           "query_type": "easy"
+        },
+        {
+          "id": {
+            "$oid": "0acfca25-63f1-7751-b9a7-5c8c8700aa36"
+          },
+          "name": "Q91",
+          "scheme": "70754517-9cc8-59e0-6091-e5ed8014f995",
+          "type": "complex",
+          "tables": [
+            {
+              "pseudoname": "SUPPLIER",
+              "id": {
+                "$oid": "2268b2fb-117b-b5c8-2fbc-366dbca7ce4b"
+              },
+              "tableid": "7921e558-f25f-183f-79b9-941ec730edb0"
+            },
+            {
+              "pseudoname": "PART",
+              "id": {
+                "$oid": "9fa9d612-5f6c-496a-e5bb-7459f70e8c24"
+              },
+              "tableid": "b72c8d3b-db02-7a53-aeff-4486eb9adeca"
+            },
+            {
+              "pseudoname": "PARTSUPP",
+              "id": {
+                "$oid": "69d0efeb-1f49-faa1-e622-f3aaea84d164"
+              },
+              "tableid": "1eab079e-60d4-2f22-f4c4-a8baf4cadb32"
+            },
+            {
+              "pseudoname": "LINEITEM",
+              "id": {
+                "$oid": "2e6ff751-593c-fddf-7372-ac37521da565"
+              },
+              "tableid": "5c86f89a-833f-af1c-f0c0-af2a08f07a25"
+            },
+            {
+              "pseudoname": "ORDERS",
+              "id": {
+                "$oid": "eea05159-6d22-1815-dcd4-0819261fb8af"
+              },
+              "tableid": "e2c5bbc5-95a4-c1df-3400-dad51b737f71"
+            },
+            {
+              "pseudoname": "NATION",
+              "id": {
+                "$oid": "8500d2ce-9c4d-1001-60fc-4899dd820e4d"
+              },
+              "tableid": "dcbb6dd6-768f-5a04-8bc9-2a81d142b2aa"
+            }
+          ],
+          "aggregates": [],
+          "joins": [
+            {
+              "id": {
+                "$oid": "ee3bd563-ff3a-6700-4d46-b0d2ad065b15"
+              },
+              "join": [
+                {
+                  "tableid": "2268b2fb-117b-b5c8-2fbc-366dbca7ce4b",
+                  "attributes": [
+                    "4dab472c-ade5-f8d9-c660-e7cbe19cc508"
+                  ]
+                },
+                {
+                  "tableid": "2e6ff751-593c-fddf-7372-ac37521da565",
+                  "attributes": [
+                    "5394eca9-1649-5c0c-164c-e91a4c642006"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "d04d7569-c9c4-34d7-bff2-be92d90e9d50"
+              },
+              "join": [
+                {
+                  "tableid": "69d0efeb-1f49-faa1-e622-f3aaea84d164",
+                  "attributes": [
+                    "96de37a7-2a14-6a9d-6119-ee0f059466e3",
+                    "42f0768b-e38d-c669-927c-933c999347ad"
+                  ]
+                },
+                {
+                  "tableid": "2e6ff751-593c-fddf-7372-ac37521da565",
+                  "attributes": [
+                    "f54a4866-e6ab-c3b7-a37d-698ebfd13b3f",
+                    "5394eca9-1649-5c0c-164c-e91a4c642006"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "7c21af1f-4758-f9f8-0565-f62df2a5bf2c"
+              },
+              "join": [
+                {
+                  "tableid": "9fa9d612-5f6c-496a-e5bb-7459f70e8c24",
+                  "attributes": [
+                    "2088ad29-c680-91be-e3d9-2a77fdd2dd54"
+                  ]
+                },
+                {
+                  "tableid": "2e6ff751-593c-fddf-7372-ac37521da565",
+                  "attributes": [
+                    "f54a4866-e6ab-c3b7-a37d-698ebfd13b3f"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "aaf6c7f5-c45c-19d2-7cdf-3573ce3e076e"
+              },
+              "join": [
+                {
+                  "tableid": "eea05159-6d22-1815-dcd4-0819261fb8af",
+                  "attributes": [
+                    "ed4431f9-bdda-2270-f829-912d1ac93581"
+                  ]
+                },
+                {
+                  "tableid": "2e6ff751-593c-fddf-7372-ac37521da565",
+                  "attributes": [
+                    "57f36a27-8b25-c384-731a-585e5431299d"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "bbabc89d-afaa-3b4f-a09e-9920e5fcde86"
+              },
+              "join": [
+                {
+                  "tableid": "2268b2fb-117b-b5c8-2fbc-366dbca7ce4b",
+                  "attributes": [
+                    "84fd2a57-4002-9ce3-ca7b-1d35a8edfbc5"
+                  ]
+                },
+                {
+                  "tableid": "8500d2ce-9c4d-1001-60fc-4899dd820e4d",
+                  "attributes": [
+                    "772af4fb-a142-7719-7c46-016174422d40"
+                  ]
+                }
+              ]
+            }
+          ],
+          "projection": [
+            {
+              "tableid": "8500d2ce-9c4d-1001-60fc-4899dd820e4d",
+              "attributeid": "4f58defe-524a-4fb8-f2dc-0929612483b7"
+            },
+            {
+              "tableid": "eea05159-6d22-1815-dcd4-0819261fb8af",
+              "attributeid": "7f4c3820-050d-5435-a931-052c678ae94e"
+            },
+            {
+              "tableid": "69d0efeb-1f49-faa1-e622-f3aaea84d164",
+              "attributeid": "8f7fc16a-9d6c-1411-0064-a7b56516d569"
+            }
+          ],
+          "order": [],
+          "group": [],
+          "condition": [
+            {
+              "tableid": "9fa9d612-5f6c-496a-e5bb-7459f70e8c24",
+              "attributeid": "0f82796f-67b7-1836-d3ca-175f1d5996ac",
+              "P": 0.054
+            }
+          ],
+          "toggled": true,
+          "showing": false,
+          "valid": true,
+          "stepIndex": 2,
+          "query_type": "complex"
         },
         {
           "id": {
@@ -1409,6 +1569,7 @@
               "tableid": "3d92fc66-714f-5265-9fb9-9cb81ca3fe8e"
             }
           ],
+          "aggregates": [],
           "joins": [
             {
               "id": {
@@ -1550,10 +1711,6 @@
               "attributeid": "10d77ea2-2977-25a4-83b6-9d5f536d54d2"
             },
             {
-              "tableid": "3fe51844-ab50-43c7-3aa0-c454b2f5c11f",
-              "attributeid": "1dfd7989-f95a-a0b9-a250-3c17a68f48ee"
-            },
-            {
               "tableid": "55c5d5fc-d672-2f93-c088-253d62b56911",
               "attributeid": "4f58defe-524a-4fb8-f2dc-0929612483b7"
             },
@@ -1586,6 +1743,137 @@
           "stepIndex": 2,
           "toggled": true,
           "query_type": "complex"
+        },
+        {
+          "id": {
+            "$oid": "bcd75902-5096-34e1-a110-e1e7e0259cd4"
+          },
+          "name": "Q8",
+          "scheme": "70754517-9cc8-59e0-6091-e5ed8014f995",
+          "type": "object_query",
+          "tables": [
+            {
+              "pseudoname": "TablQ81",
+              "id": {
+                "$oid": "af5447b7-0b18-1aac-c938-a32a3b788642"
+              },
+              "tableid": "7d08082a-2926-0318-121c-3d1a041a8814"
+            }
+          ],
+          "aggregates": [],
+          "joins": [],
+          "projection": [
+            {
+              "tableid": "14ad5ba0-faac-81a2-3768-cfa1a237bf27",
+              "attributeid": "2162d675-c4b5-8a16-6b42-9a58d5530c13"
+            },
+            {
+              "tableid": "14ad5ba0-faac-81a2-3768-cfa1a237bf27",
+              "attributeid": "0424b768-d5ee-7146-a8f7-33640b1738a7"
+            },
+            {
+              "tableid": "14ad5ba0-faac-81a2-3768-cfa1a237bf27",
+              "attributeid": "3210ca29-27cf-5d3c-5f66-ec7a58dbb98f"
+            },
+            {
+              "tableid": "af5447b7-0b18-1aac-c938-a32a3b788642",
+              "attributeid": "2162d675-c4b5-8a16-6b42-9a58d5530c13"
+            },
+            {
+              "tableid": "af5447b7-0b18-1aac-c938-a32a3b788642",
+              "attributeid": "0424b768-d5ee-7146-a8f7-33640b1738a7"
+            },
+            {
+              "tableid": "af5447b7-0b18-1aac-c938-a32a3b788642",
+              "attributeid": "3210ca29-27cf-5d3c-5f66-ec7a58dbb98f"
+            }
+          ],
+          "order": [
+            {
+              "tableid": "14ad5ba0-faac-81a2-3768-cfa1a237bf27",
+              "attributeid": "2162d675-c4b5-8a16-6b42-9a58d5530c13"
+            },
+            {
+              "tableid": "af5447b7-0b18-1aac-c938-a32a3b788642",
+              "attributeid": "2162d675-c4b5-8a16-6b42-9a58d5530c13"
+            }
+          ],
+          "group": [
+            {
+              "tableid": "14ad5ba0-faac-81a2-3768-cfa1a237bf27",
+              "attributeid": "2162d675-c4b5-8a16-6b42-9a58d5530c13"
+            },
+            {
+              "tableid": "af5447b7-0b18-1aac-c938-a32a3b788642",
+              "attributeid": "2162d675-c4b5-8a16-6b42-9a58d5530c13"
+            }
+          ],
+          "condition": [],
+          "valid": true,
+          "showing": false,
+          "stepIndex": 2,
+          "table": "7d08082a-2926-0318-121c-3d1a041a8814",
+          "query_type": "easy"
+        },
+        {
+          "id": {
+            "$oid": "3bbcfe6a-7f8e-b308-ba7e-006c061150e9"
+          },
+          "name": "Q9",
+          "scheme": "70754517-9cc8-59e0-6091-e5ed8014f995",
+          "type": "object_query",
+          "tables": [
+            {
+              "pseudoname": "TAB91",
+              "id": {
+                "$oid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668"
+              },
+              "tableid": "97c1e33a-b2d0-1df3-9b86-7db47a701e04"
+            }
+          ],
+          "aggregates": [],
+          "joins": [],
+          "projection": [
+            {
+              "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            },
+            {
+              "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
+              "attributeid": "d81c59d8-6fc6-929f-de4f-e3516d2c7d69"
+            }
+          ],
+          "order": [
+            {
+              "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            }
+          ],
+          "group": [
+            {
+              "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            }
+          ],
+          "condition": [],
+          "valid": true,
+          "showing": false,
+          "stepIndex": 2,
+          "table": "97c1e33a-b2d0-1df3-9b86-7db47a701e04",
+          "query_type": "easy",
+          "toggled": true
         }
       ],
       "transactions": [
@@ -1603,6 +1891,11 @@
             },
             {
               "queryid": "0acfca25-63f1-7751-b9a7-5c8c8700aa36",
+              "rep": 1,
+              "sub": true
+            },
+            {
+              "queryid": "3bbcfe6a-7f8e-b308-ba7e-006c061150e9",
               "rep": 1
             }
           ],
@@ -1625,6 +1918,11 @@
             },
             {
               "queryid": "22e4a4d1-0a30-280b-c9c2-f33bf6ea74a0",
+              "rep": 1,
+              "sub": true
+            },
+            {
+              "queryid": "bcd75902-5096-34e1-a110-e1e7e0259cd4",
               "rep": 1
             }
           ],

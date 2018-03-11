@@ -38,6 +38,7 @@ type InputParams struct {
 	DataModelMap map[string]*DataModel
 
 	Increment []*Increment `json:"increment"`
+	IncrementMap map[string]*Increment
 
 	Node    []*Node `json:"nodes"`
 	NodeMap map[string]*Node
@@ -62,6 +63,7 @@ type Request struct {
 
 	TransactionID string `json:"transaction"`
 	Transaction   *Transaction
+	PossibleValues map[string]IncrementField
 }
 
 type Database struct {
@@ -84,6 +86,12 @@ type Increment struct {
 	From      float64 `json:"from"`
 	Step      float64 `json:"incr"`
 	To        float64 `json:"to"`
+	PosibleValues []string
+	StepsCount int
+}
+
+func (a *Increment) getIncrementID() string {
+	return fmt.Sprint(a.ObjId, "_", a.FieldName)
 }
 
 type Node struct {
@@ -135,17 +143,22 @@ func (ip *InputParams) setPointers() error {
 	}
 
 	for _, d := range ip.Request {
-		x, okX := ip.NodeMap[d.NodeID]
-		if !okX {
-			return fmt.Errorf("can't find node by id %s in request: %s", d.NodeID, d.GetID())
-		}
-		d.Node = x
-
 		y, okY := ip.DatabaseMap[d.DatabaseID]
 		if !okY {
 			return fmt.Errorf("can't find database by id %s in request: %s", d.DatabaseID, d.GetID())
 		}
 		d.Database = y
+
+		var nodeID = d.NodeID
+		if nodeID == "" {
+			d.Node = y.Node
+		} else {
+			x, okX := ip.NodeMap[nodeID]
+			if !okX {
+				return fmt.Errorf("can't find node by id %s in request: %s", d.NodeID, d.GetID())
+			}
+			d.Node = x
+		}
 
 		z, okZ := d.Database.DataModel.TransactionsMap[d.TransactionID]
 		if !okZ {
@@ -156,10 +169,25 @@ func (ip *InputParams) setPointers() error {
 
 	return nil
 }
+
+var INCREMENTVALS = map[string]IncrementField{
+	"type": IncrementField{"Mode",[]string{"online", "offline"}},
+	"frequency": IncrementField{"Frequency", nil},
+	"nodecount": IncrementField{"NodeCount", nil},
+	"CPU": IncrementField{"NodeCount", nil},
+	"disk": IncrementField{"Disk", nil},
+	"countdisk": IncrementField{"DiskCount", nil},
+}
+
 func (d *InputParams) setMaps() {
 	d.DataModelMap = make(map[string]*DataModel)
 	for _, t := range d.DataModel {
 		d.DataModelMap[t.GetID()] = t
+	}
+
+	d.IncrementMap = make(map[string]*Increment)
+	for _, t := range d.Increment {
+		d.IncrementMap[t.ObjId] = t
 	}
 
 	d.NodeMap = make(map[string]*Node)
@@ -172,6 +200,26 @@ func (d *InputParams) setMaps() {
 		d.DatabaseMap[t.GetID()] = t
 	}
 
+	for _, i := range d.Increment {
+		var incrementvals, ok = INCREMENTVALS[i.FieldName]
+		if !ok {
+			panic("Can't find such increment field")
+		}
+		i.FieldName = incrementvals.Name
+		i.PosibleValues = incrementvals.Values
+		if incrementvals.Values != nil {
+			i.StepsCount = len(incrementvals.Values)
+		} else {
+			i.StepsCount = int((i.To - i.From) / i.Step)
+		}
+	}
+
+}
+
+
+type IncrementField struct {
+	Name string
+	Values []string
 }
 
 func (d *DataModel) setMaps() {
@@ -295,11 +343,18 @@ type Query struct {
 	TablesInQuery    []*TableInQuery `json:"tables"` //таблицы с псевдонимами и без, участвующие в запросе
 	TablesInQueryMap map[string]*TableInQuery
 
+	Aggregates       []*Aggregate           `json:"aggregates"`
 	Joins       []*Join           `json:"joins"`
 	Projections []*TableAttribute `json:"projection"`
 	Conditions  []*Condition      `json:"condition"`
+	Group  []*TableAttribute      `json:"group"`
+	Order  []*TableAttribute      `json:"order"`
 }
 
+type Aggregate struct {
+	Name string  `json:"name"`   // имя
+	Size float64 `json:"size"`   // размер типа атрибута
+}
 type TableInQuery struct {
 	Object
 	Pseudoname string `json:"pseudoname"` // имя
@@ -399,27 +454,44 @@ func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttribu
 	return result, canSearchJoinSequence, nil
 }
 
-func (q Query) GetRowSizeAfterProjection(table *TableInQuery, attrJoin *Attribute) float64 {
+func (q Query) GetRowSizeAfterProjection(table *TableInQuery) float64 {
 	var result float64 = 0
-	var hasJoin = false
 
 	for _, p := range q.Projections {
 		if p.TableId == table.GetID() {
-			var attrID = p.AttributeId
-			if attrJoin != nil && attrID == attrJoin.GetID() {
-				hasJoin = true
+			var attr, hasAttr = table.Table.AttributesMap[p.AttributeId]
+			if hasAttr {
+				result += attr.Size
 			}
-			var size = table.Table.AttributesMap[attrID].Size
-			result += size
+
 		}
-	}
-	if hasJoin {
-		result -= attrJoin.Size
 	}
 	// TODO ошибка
 
 	return result
 }
+
+func (q Query) GetRowCountAfterGroupBy() (float64) {
+	var result float64 = 1
+	var hasGroupBy = false
+
+	for _, g := range q.Group {
+		var table, hasTable = q.TablesInQueryMap[g.TableId]
+		if hasTable { // модель может содержать ссылки на таблицы не из этого запроса, это нужно валидировать на клиенте до модели, но ту проверять дешевле
+			var attr, hasAttr = table.Table.AttributesMap[g.AttributeId]
+			if hasAttr {
+				result *= attr.I
+				hasGroupBy = true
+			}
+		}
+	}
+	if hasGroupBy {
+		return  result
+	}
+
+	return math.MaxFloat64
+}
+
 
 //
 // правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
@@ -511,6 +583,7 @@ type Transaction struct {
 type TransactionQuery struct {
 	QueryId string  `json:"queryid"`
 	Count   float64 `json:"rep"` // число
+	Subquery bool `json:"sub"` // это подзапрос
 }
 
 func (o TransactionQuery) GetID() string {
