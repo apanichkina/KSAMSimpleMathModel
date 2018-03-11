@@ -155,7 +155,7 @@
         "$oid": "a4fc4a6b-e95f-5196-2dba-a5eaf600654e"
       },
       "name": "Cluster1",
-      "type": "cluster",
+      "type": "object_node",
       "toggled": true,
       "showing": false,
       "valid": true,
@@ -178,7 +178,12 @@
       "showing": false,
       "valid": false,
       "node_type": "pc",
-      "nodecount": 1
+      "nodecount": 1,
+      "mem": 0,
+      "disk": "",
+      "diskcount": "",
+      "net": "",
+      "proc": ""
     },
     {
       "id": {
@@ -208,7 +213,12 @@
       "showing": false,
       "valid": false,
       "node_type": "pc",
-      "nodecount": 10
+      "nodecount": 10,
+      "mem": 0,
+      "disk": "",
+      "diskcount": "",
+      "net": "",
+      "proc": ""
     },
     {
       "id": {
@@ -1204,7 +1214,6 @@
               "tableid": "5c86f89a-833f-af1c-f0c0-af2a08f07a25"
             }
           ],
-          "aggregate": [],
           "joins": [],
           "projection": [
             {
@@ -1371,7 +1380,6 @@
               "tableid": "dcbb6dd6-768f-5a04-8bc9-2a81d142b2aa"
             }
           ],
-          "aggregate": [],
           "joins": [
             {
               "id": {
@@ -1565,7 +1573,6 @@
               "tableid": "3d92fc66-714f-5265-9fb9-9cb81ca3fe8e"
             }
           ],
-          "aggregate": [],
           "joins": [
             {
               "id": {
@@ -1713,6 +1720,10 @@
             {
               "tableid": "ea1baf25-0245-45d2-4c0c-f16f85e71e69",
               "attributeid": "7f4c3820-050d-5435-a931-052c678ae94e"
+            },
+            {
+              "tableid": "55c5d5fc-d672-2f93-c088-253d62b56911",
+              "attributeid": "4f58defe-524a-4fb8-f2dc-0929612483b7"
             }
           ],
           "order": [],
@@ -1756,7 +1767,6 @@
               "tableid": "7d08082a-2926-0318-121c-3d1a041a8814"
             }
           ],
-          "aggregate": [],
           "joins": [],
           "projection": [
             {
@@ -1827,9 +1837,32 @@
               "tableid": "97c1e33a-b2d0-1df3-9b86-7db47a701e04"
             }
           ],
-          "aggregate": [],
           "joins": [],
           "projection": [
+            {
+              "tableid": "07760fb1-342f-5078-11ba-c68ee28decc8",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "07760fb1-342f-5078-11ba-c68ee28decc8",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            },
+            {
+              "tableid": "07760fb1-342f-5078-11ba-c68ee28decc8",
+              "attributeid": "d81c59d8-6fc6-929f-de4f-e3516d2c7d69"
+            },
+            {
+              "tableid": "2cb22b6d-b898-e8dd-5826-9bfe9547f822",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "2cb22b6d-b898-e8dd-5826-9bfe9547f822",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            },
+            {
+              "tableid": "2cb22b6d-b898-e8dd-5826-9bfe9547f822",
+              "attributeid": "d81c59d8-6fc6-929f-de4f-e3516d2c7d69"
+            },
             {
               "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
               "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
@@ -1845,6 +1878,22 @@
           ],
           "order": [
             {
+              "tableid": "07760fb1-342f-5078-11ba-c68ee28decc8",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "07760fb1-342f-5078-11ba-c68ee28decc8",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            },
+            {
+              "tableid": "2cb22b6d-b898-e8dd-5826-9bfe9547f822",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "2cb22b6d-b898-e8dd-5826-9bfe9547f822",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            },
+            {
               "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
               "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
             },
@@ -1854,6 +1903,22 @@
             }
           ],
           "group": [
+            {
+              "tableid": "07760fb1-342f-5078-11ba-c68ee28decc8",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "07760fb1-342f-5078-11ba-c68ee28decc8",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            },
+            {
+              "tableid": "2cb22b6d-b898-e8dd-5826-9bfe9547f822",
+              "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"
+            },
+            {
+              "tableid": "2cb22b6d-b898-e8dd-5826-9bfe9547f822",
+              "attributeid": "28b868c8-05f7-98f3-2a42-62734ae7217a"
+            },
             {
               "tableid": "3ec3a9ef-228a-1df5-117a-1ac64e6f2668",
               "attributeid": "17f3d8b4-4dc9-1aae-f251-db51960e4eac"

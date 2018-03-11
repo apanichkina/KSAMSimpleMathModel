@@ -12,6 +12,7 @@ var TESTSEQUENCE []int
 var TESTQUERYNAME string
 
 func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVariables) (parser.RequestsResults, error) {
+	fmt.Println("VERSION: ", 1.0)
 	//var output = parser.Errors{parser.Error{Message: "test"}}
 	GLOBALVARS = globalVariables
 	TEST = false
