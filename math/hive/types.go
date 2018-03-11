@@ -11,6 +11,7 @@ type Table struct {
 // Attribute represents attribute of the table with estimate size in bytes
 type Attribute struct {
 	Size float64
+	V    float64
 
 	parent *Table
 }
@@ -60,9 +61,4 @@ func (c Cost) Add(val Cost) Cost {
 		CPU: c.CPU + val.CPU,
 		IO:  c.IO + val.IO,
 	}
-}
-
-// QueryEvaluation describes plan evaluation, saves history of query execution and counts plan cost
-type QueryEvaluationPlan struct {
-	fullPlanCost Cost
 }
