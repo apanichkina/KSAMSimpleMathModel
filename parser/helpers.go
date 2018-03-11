@@ -14,8 +14,6 @@ func (c TableAttribute) GetID() string {
 	return fmt.Sprintf("%s_%s", c.TableId, c.AttributeId)
 }
 
-
-
 //////// NOT USED ///////
 
 func (o ID) GetID() string {
@@ -101,14 +99,14 @@ func (d *InputParams) setMaps() {
 	}
 
 	for _, i := range d.Increment {
-		var incrementvals, ok = INCREMENTVALS[i.FieldName]
+		var incrementField, ok = INCREMENTVALS[i.FieldName]
 		if !ok {
 			panic("Can't find such increment field")
 		}
-		i.FieldName = incrementvals.Name
-		i.PosibleValues = incrementvals.Values
-		if incrementvals.Values != nil {
-			i.StepsCount = len(incrementvals.Values)
+		i.FieldName = incrementField.Name
+		i.PosibleValues = incrementField.Values
+		if incrementField.Values != nil {
+			i.StepsCount = len(incrementField.Values)
 		} else {
 			i.StepsCount = int((i.To - i.From) / i.Step)
 		}
@@ -170,7 +168,3 @@ func (q *Transaction) setMaps() error {
 	}
 	return nil
 }
-
-
-
-

@@ -59,7 +59,7 @@ func (q Query) GetRowSizeAfterProjection(table *TableInQuery) float64 {
 	return result
 }
 
-func (q Query) GetRowCountAfterGroupBy() (float64) {
+func (q Query) GetRowCountAfterGroupBy() float64 {
 	var result float64 = 1
 	var hasGroupBy = false
 
@@ -74,12 +74,11 @@ func (q Query) GetRowCountAfterGroupBy() (float64) {
 		}
 	}
 	if hasGroupBy {
-		return  result
+		return result
 	}
 
 	return math.MaxFloat64
 }
-
 
 //
 // правая таблица может быть указана в нескольких джоинах с таблицами из X, поэтому нужно учесть все условия Ex.:p=p1*p2
@@ -150,4 +149,3 @@ func (p DataModel) findTable(id string) (*Table, error) {
 
 	return nil, fmt.Errorf("can't get table %q in params", id)
 }
-

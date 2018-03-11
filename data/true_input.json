@@ -1286,18 +1286,14 @@
               "tableid": "5c86f89a-833f-af1c-f0c0-af2a08f07a25"
             }
           ],
-          "aggregates": [],
-          "joins": [],
-          "projection": [
+          "aggregates": [
             {
-              "tableid": "ba87ae52-a4b3-1200-edbe-c3a4e26cb43d",
-              "attributeid": "10d77ea2-2977-25a4-83b6-9d5f536d54d2"
-            },
-            {
-              "tableid": "ba87ae52-a4b3-1200-edbe-c3a4e26cb43d",
-              "attributeid": "1dfd7989-f95a-a0b9-a250-3c17a68f48ee"
+              "name": "revenue",
+              "size": 8
             }
           ],
+          "joins": [],
+          "projection": [],
           "order": [],
           "group": [],
           "condition": [
