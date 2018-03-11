@@ -5,6 +5,7 @@ import (
 	"math"
 	"fmt"
 	"github.com/apanichkina/KSAMSimpleMathModel/helper"
+	"reflect"
 )
 
 type Str struct {
@@ -92,9 +93,7 @@ func IndexScan(Table parser.Table, p float64, L float64, C_filter float64, C_b f
 
 
 
-func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.QueriesMinTimes, error) {
-	var C_filter float64 = GLOBALVARS.K / helper.GigagertzToGertz(node.Proc)
-	var C_b float64 = GLOBALVARS.D / helper.MegabyteToByte(node.Disk)
+func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (parser.QueriesMinTimes, error) {
 
 	fmt.Println("C_filter", C_filter, "C_b", C_b)
 
@@ -107,6 +106,9 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 	var queriesMinTime parser.QueriesMinTimes // минимальное время выполнения всех запросов
 	// проход по всем запоросам
 	for _, query := range params.Queries {
+		if TEST && query.Name != TESTQUERYNAME {
+			continue
+		}
 		var queryMinTime float64 = -1 // минимальное время выполнения запроса
 		var queryMinTimeIO float64 = 0 // минимальное время выполнения запроса
 		var resulRowCount float64 = 0
@@ -150,7 +152,7 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 				}
 				T *= condition
 				T_x *= T // Если в простом запросе более одной таблицы, то декартово произведение
-				Size_x += query.GetRowSizeAfterProjection(t, nil)
+				Size_x += query.GetRowSizeAfterProjection(t)
 			}
 			queryMinTime = Z_x
 			queryMinTimeIO = Z_io_x
@@ -175,7 +177,7 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 				return nil, fmt.Errorf("too few tabels for any joins (< 2)")
 			}
 			if TEST {
-				queryTables = []string{"69d0efeb-1f49-faa1-e622-f3aaea84d164", "2e6ff751-593c-fddf-7372-ac37521da565", "9fa9d612-5f6c-496a-e5bb-7459f70e8c24"} // PARTSUPP LINEITEM PART
+				queryTables = []string{"8500d2ce-9c4d-1001-60fc-4899dd820e4d", "2268b2fb-117b-b5c8-2fbc-366dbca7ce4b", "9fa9d612-5f6c-496a-e5bb-7459f70e8c24", "eea05159-6d22-1815-dcd4-0819261fb8af", "2e6ff751-593c-fddf-7372-ac37521da565", "69d0efeb-1f49-faa1-e622-f3aaea84d164"} // [{NATION} {SUPPLIER} {PART} {ORDERS} {LINEITEM} {PARTSUPP}]
 			}
 			// конструирование всех вариантов соединения таблиц n! штук
 			var allJoinVariations = PermutationsOfN(len(queryTables))
@@ -288,7 +290,6 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 							// Число записей при декартовом произведении
 							// B_x = math.Ceil(T / (t.Table.L * L_b))
 							T = math.Ceil(T_x * T)
-							Size_x += query.GetRowSizeAfterProjection(t, nil)
 						} else {
 							// Число записей при соединении по условию
 							T = math.Ceil((T_x * T) / (math.Max(I_x, math.Min(T ,AttrJoin.I)))) // I_x - мощность атрибута соединения (a) в X;
@@ -296,11 +297,11 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 							// I - мощность атрибута соединения (а) в Y;
 							// T - число записей в Y
 							// B_x = math.Ceil(T / (t.Table.L * L_b))
-							Size_x += query.GetRowSizeAfterProjection(t, AttrJoin)
 						}
 
 						// B_x_join = math.Ceil(T / L_join)
 					}
+					Size_x += query.GetRowSizeAfterProjection(t)
 
 					// Оценка соединения
 					Z_x += Z
@@ -321,9 +322,19 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 				}
 				// fmt.Println(resulRowCount)
 			}
+
 		}
 
-		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime, TimeIO: queryMinTimeIO, RowsCount: resulRowCount, RowSize: resultRowSize}) // запись в массив минимального времени выполнение очередного запроса
+		resulRowCount = math.Min(query.GetRowCountAfterGroupBy(), resulRowCount)
+
+		var orderTime float64 = 0
+		if len(query.Group) + len(query.Order) > 0 {
+			orderTime = C_filter * C_order * resulRowCount * math.Log2(resulRowCount)
+		}
+		fmt.Println("Oreder: ", query.Name, orderTime)
+
+
+		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime, TimeIO: queryMinTimeIO, OrderTime: orderTime, RowsCount: resulRowCount, RowSize: resultRowSize}) // запись в массив минимального времени выполнение очередного запроса
 	}
 	fmt.Printf("%v \n", parser.QueriesMinTimes(queriesMinTime))
 	return queriesMinTime, nil
@@ -335,8 +346,8 @@ func EvaluateQueries(params *parser.DataModel, node *parser.Node) (parser.Querie
 
 type QueryTimesCache map[string] parser.QueriesMinTimes // key = datamodel.id + '_' node.id
 
-func getQueryTimesCacheID(datamodel *parser.DataModel, node *parser.Node) (string) {
-	return fmt.Sprint(datamodel.GetID(), "_", node.GetID())
+func getQueryTimesCacheID(datamodel *parser.DataModel, nodeID string) (string) {
+	return fmt.Sprint(datamodel.GetID(), "_", nodeID)
 }
 
 func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, error) {
@@ -345,25 +356,32 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 	var result parser.RequestsResults
 
 	for _, request := range inputParams.Request {
-		if request.Frequency == 0 {
+		var frequency = request.Frequency
+		var mode = request.Mode
+		var node = request.Database.Node //Cluster node -> NodeCount  DiskCount  Proc  Disk Name
+		var nodeClient = request.Node //PC or Cluster -> NodeCount Name
+
+		var C_filter float64 = GLOBALVARS.K / helper.GigagertzToGertz(node.Proc)
+		var C_b float64 = GLOBALVARS.D / helper.MegabyteToByte(node.Disk)
+
+		if frequency == 0 {
 			return parser.RequestsResults(nil), nil // TODO вывод с нулевым временем
 		}
 		var datamodel = request.Database.DataModel
-		var node = request.Database.Node
 		var resultByQuery parser.QueriesMinTimes
-		q, ok := alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node)]
+		q, ok := alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node.GetID())]
 		if !ok {
 			var err error
-			resultByQuery, err = EvaluateQueries(datamodel, node)
+			resultByQuery, err = EvaluateQueries(datamodel, C_filter, C_b)
 			if err != nil {
 				return nil, err
 			}
-			alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node)] = resultByQuery
+			alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node.GetID())] = resultByQuery
 		} else  {
 			resultByQuery = q
 		}
-		var N_proc= request.Database.Node.NodeCount                        //число машин в кластере, на котором размещена БД и транзакция
-		var N_disc= request.Database.Node.DiskCount                        //число дисков в кластере, на котором размещена БД и транзакция
+		var N_proc= node.NodeCount                        //число машин в кластере, на котором размещена БД и транзакция
+		var N_disc= node.DiskCount                        //число дисков в кластере, на котором размещена БД и транзакция
 		var QueriesSumTime float64 = 0
 		var QueriesSumTimeIO float64 = 0
 		var TransactionSize float64 = 0 //размер транзакции в байтах
@@ -372,7 +390,9 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 				if rq.Query.GetID() == q.GetID() {
 					QueriesSumTime += rq.Time * q.Count
 					QueriesSumTimeIO += rq.TimeIO * q.Count
-					TransactionSize += rq.RowsCount * rq.RowSize
+					if !q.Subquery { // поздапросы не влияют на объем
+						TransactionSize += rq.RowsCount * rq.RowSize
+					}
 					break
 				}
 			}
@@ -380,16 +400,16 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 
 		//передача по сети
 		var NetworkSpeed float64 = -1
-		if request.Node.GetID() != request.Database.Node.GetID() { //кластер обращается не сам к себе
+		if nodeClient.GetID() != node.GetID() && mode != OfflineTransactionType { //кластер обращается не сам к себе
 			// Ищем сеть, связывающую request.Node и request.Database.Node
 			for _, net := range inputParams.Network {
 				var findClient = false
 				var findClaster = false
 				for _, nodeID := range net.NodesID {
-					if nodeID == request.Node.GetID() {
+					if nodeID == nodeClient.GetID() {
 						findClient = true
 					}
-					if nodeID == request.Database.Node.GetID() {
+					if nodeID == node.GetID() {
 						findClaster = true
 					}
 				}
@@ -402,7 +422,7 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 				}
 			}
 			if NetworkSpeed == -1 {
-				return nil, fmt.Errorf("Can`t request from node %s to %s without network. ", request.Node.Name, request.Database.Node.Name)
+				return nil, fmt.Errorf("Can`t request from node %s to %s without network. ", nodeClient.Name, node.Name)
 			}
 		}
 		var TransactionTime float64 = 0
@@ -412,8 +432,8 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 		var ProcCharge float64 = 0
 		var T_network_time float64 = 0
 		// расчет транзакции Online
-		if request.Mode == OnlineTransactionType {
-			var intension= helper.HourToSecond(request.Frequency) * request.Node.NodeCount //число клиентов
+		if mode == OnlineTransactionType {
+			var intension= helper.HourToSecond(frequency) * nodeClient.NodeCount //число клиентов
 			DiscCharge = intension * QueriesSumTimeIO / N_disc
 			ProcCharge = intension * QueriesSumTime / N_proc // TODO нужно ли считать время для всех транзакций?
 			for _, q := range request.Transaction.Queries {
@@ -432,9 +452,9 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 			TransactionTime += T_network
 		}
 
-		if request.Mode == OfflineTransactionType {
+		if mode == OfflineTransactionType {
 			NetworkSpeed = 0 // сеть для offline не играет роли
-			var n = request.Frequency
+			var n = frequency
 			var P_proc = (QueriesSumTime * n / N_proc) / ((QueriesSumTime * n / N_proc) + (QueriesSumTimeIO * n / N_disc))
 			var P_disc = 1 - P_proc
 			var K_proc = P_proc * (n - 1) / N_proc
@@ -448,7 +468,7 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 				}
 			}
 		}
-		result= append(result, parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network_time, NetworkSpeed: helper.MbitToByte(NetworkSpeed)}) // запись в массив минимального времени выполнение очередного запроса
+		result= append(result, parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network, NetworkSpeed: helper.MbitToByte(NetworkSpeed)}) // запись в массив минимального времени выполнение очередного запроса
 
 	}
 	return result, nil
@@ -457,15 +477,50 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 var GLOBALVARS parser.GlobalVariables
 var TEST bool
 var TESTSEQUENCE []int
+var TESTQUERYNAME string
 func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVariables) (parser.RequestsResults, error){
 	//var output = parser.Errors{parser.Error{Message: "test"}}
 	GLOBALVARS = globalVariables
 	TEST = false
-	TESTSEQUENCE = []int{2, 0, 1}
+	TESTSEQUENCE = []int{0, 1, 2, 3, 4, 5}
+	TESTQUERYNAME = "Q91"
+	Increment(inputParams)
 	resultByRequest, err := EvaluateRequest(inputParams)
 	if err != nil {
 		return nil, err
 	}
 
 	return resultByRequest, nil // []parser.CSVData{{TransactionsResults: resultByTransaction, QueriesMinTimes: resultByQuery}}, nil
+}
+
+func Increment(inputParams parser.InputParams) {
+	fmt.Println("%v", inputParams.IncrementMap)
+	//var index
+	//var indexVal
+	var incrementCount = len(inputParams.Increment)
+	fmt.Println(reflect.TypeOf(incrementCount))
+	// Инициализация первичными значениями
+	var IncrementValues = make(map[string]interface{})
+	for i, val := range inputParams.Increment {
+		IncrementValues[getIncrementID(val.ObjId, val.FieldName)] = val.From
+		fmt.Println(i, " ", val, val.PosibleValues)
+	}
+	fmt.Println(IncrementValues)
+	// Проход по всем значениям
+	Incr(0, inputParams.Increment, IncrementValues)
+	fmt.Println(IncrementValues)
+
+}
+
+func Incr(ind int, increments []*parser.Increment, IncrementValues map[string]interface{}) bool {
+	if ind >= len(increments) {
+		return false
+	}
+	var value = increments[ind].To
+	IncrementValues[getIncrementID(increments[ind].ObjId, increments[ind].FieldName)] = value
+	return Incr(ind + 1, increments, IncrementValues)
+}
+
+func getIncrementID(nodeID string, fieldID string) (string) {
+	return fmt.Sprint(nodeID, "_", fieldID)
 }

@@ -17,3 +17,5 @@ const C_join_io = 0
 
 const OnlineTransactionType = "online"
 const OfflineTransactionType = "offline"
+
+const C_order float64 = 6.5
