@@ -42,36 +42,14 @@ func (q Query) FindJoins(leftTableId string, rightTableId string) ([]JoinAttribu
 	return result, canSearchJoinSequence, nil
 }
 
-func (q Query) GetRowSizeAfterProjection(table *TableInQuery) float64 {
-	var result float64 = 0
-
-	for _, p := range q.Projections {
-		if p.TableId == table.GetID() {
-			var attr, hasAttr = table.Table.AttributesMap[p.AttributeId]
-			if hasAttr {
-				result += attr.Size
-			}
-
-		}
-	}
-	// TODO ошибка
-
-	return result
-}
-
 func (q Query) GetRowCountAfterGroupBy() float64 {
 	var result float64 = 1
 	var hasGroupBy = false
 
-	for _, g := range q.Group {
-		var table, hasTable = q.TablesInQueryMap[g.TableId]
-		if hasTable { // модель может содержать ссылки на таблицы не из этого запроса, это нужно валидировать на клиенте до модели, но ту проверять дешевле
-			var attr, hasAttr = table.Table.AttributesMap[g.AttributeId]
-			if hasAttr {
-				result *= attr.I
-				hasGroupBy = true
-			}
-		}
+	for _, g := range q.GroupMap {
+		var attr, _ = q.TablesInQueryMap[g.TableId].Table.AttributesMap[g.AttributeId] // без проверки так как мапки валидируются при составлении
+		result *= attr.I
+		hasGroupBy = true
 	}
 	if hasGroupBy {
 		return result

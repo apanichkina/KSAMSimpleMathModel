@@ -64,3 +64,46 @@ func getQueryTimesCacheID(datamodel *parser.DataModel, nodeID string) string {
 	return fmt.Sprint(datamodel.GetID(), "_", nodeID)
 }
 
+func getResultRowCountAndSize(query *parser.Query, readRowCount float64) (float64, float64, float64, error){ //grop by, aggregate, order by
+	if readRowCount == 0 {
+		return 0.0, 0.0, 0.0, fmt.Errorf("Query %s result is empty after read and filter. ", query.Name)
+	}
+	var orderTime float64 = 0
+	var resultRowCount float64 = 0
+	var resultRowSize float64 = 0
+	var groupsCount float64 = float64(len(query.GroupMap))
+	var orderCount float64 = float64(len(query.OrderMap))
+
+	// group by
+	if groupsCount > 0 {
+		orderTime += groupsCount * C_filter * C_order * readRowCount * math.Log2(readRowCount)
+		resultRowCount = math.Min(query.GetRowCountAfterGroupBy(), readRowCount)
+	}
+
+	// agregate
+	for _, aggregate := range query.Aggregates {
+		resultRowSize += aggregate.Size
+	}
+	if groupsCount == 0 {
+		if resultRowSize != 0 {
+			// нет группировки, но есть агрегация
+			resultRowCount = 1
+		} else {
+			// нет группировки и агрегации
+			resultRowCount = readRowCount
+		}
+	}
+
+	// order
+	if orderCount > 0 {
+		orderTime += orderCount * C_filter * C_order * readRowCount * math.Log2(readRowCount)
+	}
+
+	// projection
+	for _, p := range query.ProjectionsMap {
+		var attr = query.TablesInQueryMap[p.TableId].Table.AttributesMap[p.AttributeId]
+		resultRowSize += attr.Size
+	}
+
+	return resultRowCount, resultRowSize, orderTime, nil
+}

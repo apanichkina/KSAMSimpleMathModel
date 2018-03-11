@@ -25,18 +25,16 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 		var queryMinTime float64 = -1  // минимальное время выполнения запроса
 		var queryMinTimeIO float64 = 0 // минимальное время выполнения запроса
 		var readRowCount float64 = 0
-		var readRowSize float64 = 0
 
 		if len(query.Joins) == 0 {
 			// нет джоинов -> это простой запрос
-			if len(query.TablesInQuery) == 0 {
+			if len(query.TablesInQueryMap) == 0 {
 				return nil, fmt.Errorf("too few tabels in query %s", query.Name)
 			}
 			var T_x float64 = 1
-			var Size_x float64 = 0
 			var Z_x float64 = 0
 			var Z_io_x float64 = 0
-			for _, t := range query.TablesInQuery {
+			for _, t := range query.TablesInQueryMap {
 				Z, Z_io, err := TableScan(*t.Table, C_filter, C_b)
 				if err != nil {
 					return nil, fmt.Errorf("SimpleJoin TableScan error: %s", err)
@@ -63,12 +61,10 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 				}
 				T *= condition
 				T_x *= T // Если в простом запросе более одной таблицы, то декартово произведение
-				Size_x += query.GetRowSizeAfterProjection(t)
 			}
 			queryMinTime = Z_x
 			queryMinTimeIO = Z_io_x
 			readRowCount = T_x
-			readRowSize = Size_x
 
 		} else {
 			// выбор уникальных id таблиц, участвующих во всех join //этот шаг нужен чтобы таблицы не повторялись
@@ -98,13 +94,10 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 
 			// проход по всем вариантам из n!
 			for _, jv := range allJoinVariations {
-
-				// fmt.Println("jv", jv)
 				var Z_x float64 = 0
 				var Z_io_x float64 = 0
 				var T_x float64 = 1
 				var X []*parser.TableInQuery // Левый аргумент соединения
-				var Size_x float64 = 0
 
 				// Обработка первого аргумента соединения
 				for _, i := range jv {
@@ -198,7 +191,6 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 							// T - число записей в Y
 						}
 					}
-					Size_x += query.GetRowSizeAfterProjection(t)
 
 					// Оценка соединения
 					Z_x += Z
@@ -206,7 +198,6 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 					T_x = T
 
 					// Конец итерации
-					// fmt.Printf("table %s %.2f %.2f %.2f %.2f \n", t.Table.Name, Z_x, Z_io_x, T_x, B_x)
 					X = append(X, t)
 				}
 
@@ -214,25 +205,17 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 					queryMinTime = Z_x
 					queryMinTimeIO = Z_io_x
 					readRowCount = T_x
-					readRowSize = Size_x
-					fmt.Println(query.Name, Z_x, Z_io_x, T_x, Size_x, X)
+					// fmt.Println(query.Name, Z_x, Z_io_x, T_x, X)
 				}
 			}
 
 		}
-
-		var orderTime float64 = 0
-		if len(query.Group) > 0 {
-			orderTime += C_filter * C_order * readRowCount * math.Log2(readRowCount) // TODO посчитать для всех и почему такие большие числа
+		var resultRowCount, resultRowSize, orderTime, err = getResultRowCountAndSize(query, readRowCount)
+		if err != nil {
+			return nil, err
 		}
-		readRowCount = math.Min(query.GetRowCountAfterGroupBy(), readRowCount)
-
-		if len(query.Order) > 0 {
-			orderTime += C_filter * C_order * readRowCount * math.Log2(readRowCount)
-		}
-		fmt.Println("Oreder: ", query.Name, orderTime)
-
-		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime, TimeIO: queryMinTimeIO, OrderTime: orderTime, RowsCount: readRowCount, RowSize: readRowSize}) // запись в массив минимального времени выполнение очередного запроса
+		queryMinTime += orderTime
+		queriesMinTime = append(queriesMinTime, parser.QueriesMinTime{Query: query, Time: queryMinTime, TimeIO: queryMinTimeIO, OrderTime: orderTime, RowsCount: resultRowCount, RowSize: resultRowSize}) // запись в массив минимального времени выполнение очередного запроса
 	}
 	fmt.Printf("%v \n", parser.QueriesMinTimes(queriesMinTime))
 	return queriesMinTime, nil

@@ -19,60 +19,60 @@ type Object struct {
 }
 
 type InputParams struct {
-	ID           `json:"_id"`
-	Name         string       `json:"name"`
-	DataModel    []*DataModel `json:"datamodel"`
+	ID           				`json:"_id"`
+	Name         string       	`json:"name"`
+	DataModel    []*DataModel 	`json:"datamodel"`
 	DataModelMap map[string]*DataModel
 
-	Increment    []*Increment `json:"increment"`
+	Increment    []*Increment 	`json:"increment"`
 	IncrementMap map[string]*Increment
 
-	Node    []*Node `json:"nodes"`
+	Node    []*Node 			`json:"nodes"`
 	NodeMap map[string]*Node
 
-	Network     []*Network  `json:"networks"`
-	Database    []*Database `json:"database"`
+	Network     []*Network  	`json:"networks"`
+	Database    []*Database 	`json:"database"`
 	DatabaseMap map[string]*Database
-	Request     []*Request `json:"requests"`
+	Request     []*Request 		`json:"requests"`
 }
 
 type Request struct {
 	Object
-	Name      string  `json:"name"`
-	Mode      string  `json:"mode"`
-	Frequency float64 `json:"frequency"`
+	Name      string  		`json:"name"`
+	Mode      string  		`json:"mode"`
+	Frequency float64 		`json:"frequency"`
 
-	NodeID string `json:"node"` // узел обращения
+	NodeID string			`json:"node"` // узел обращения
 	Node   *Node
 
-	DatabaseID string `json:"database"`
+	DatabaseID string		`json:"database"`
 	Database   *Database
 
-	TransactionID  string `json:"transaction"`
+	TransactionID  string	`json:"transaction"`
 	Transaction    *Transaction
 	PossibleValues map[string]IncrementField
 }
 
 type Database struct {
 	Object
-	Name string `json:"name"`
+	Name string			`json:"name"`
 
-	NodeID string `json:"node"` // кластер размещения
+	NodeID string		`json:"node"` // кластер размещения
 	Node   *Node
 
-	DatamodelID string `json:"datamodel"`
+	DatamodelID string	`json:"datamodel"`
 	DataModel   *DataModel
 }
 
 type Increment struct {
 	Object
-	ObjId   string `json:"obj"`
-	ObjType string `json:"objtype"`
+	ObjId   string			`json:"obj"`
+	ObjType string			`json:"objtype"`
 
-	FieldName     string  `json:"field"`
-	From          float64 `json:"from"`
-	Step          float64 `json:"incr"`
-	To            float64 `json:"to"`
+	FieldName     string  	`json:"field"`
+	From          float64 	`json:"from"`
+	Step          float64 	`json:"incr"`
+	To            float64 	`json:"to"`
 	PosibleValues []string
 	StepsCount    int
 }
@@ -99,24 +99,24 @@ type Network struct {
 
 type DataModel struct {
 	Object
-	Name      string   `json:"name"`
-	Tables    []*Table `json:"tables"`
+	Name      string   				`json:"name"`
+	Tables    []*Table 				`json:"tables"`
 	TablesMap map[string]*Table
 
-	Queries    []*Query `json:"queries"`
+	Queries    []*Query 			`json:"queries"`
 	QueriesMap map[string]*Query
 
-	Transactions    []*Transaction `json:"transactions"`
+	Transactions    []*Transaction 	`json:"transactions"`
 	TransactionsMap map[string]*Transaction
 }
 
 type Table struct {
 	Object
-	Name string  `json:"name"`  // имя
-	T    float64 `json:"nrows"` // количество записей
-	L    float64 `json:"L"`     // количество записей в блоке
+	Name string  				`json:"name"`  // имя
+	T    float64 				`json:"nrows"` // количество записей
+	L    float64 				`json:"L"`     // количество записей в блоке
 
-	Attributes    []*Attribute `json:"attributes"`
+	Attributes    []*Attribute 	`json:"attributes"`
 	AttributesMap map[string]*Attribute
 
 	PKAttribute *Attribute
@@ -139,17 +139,24 @@ type TableNames []*TableInQuery
 
 type Query struct {
 	Object
-	Name string `json:"name"` // имя
+	Name string 						`json:"name"` // имя
 
-	TablesInQuery    []*TableInQuery `json:"tables"` //таблицы с псевдонимами и без, участвующие в запросе
+	TablesInQuery    []*TableInQuery 	`json:"tables"` //таблицы с псевдонимами и без, участвующие в запросе
 	TablesInQueryMap map[string]*TableInQuery
 
-	Aggregates  []*Aggregate      `json:"aggregates"`
-	Joins       []*Join           `json:"joins"`
-	Projections []*TableAttribute `json:"projection"`
-	Conditions  []*Condition      `json:"condition"`
-	Group       []*TableAttribute `json:"group"`
-	Order       []*TableAttribute `json:"order"`
+	Aggregates []*Aggregate 			`json:"aggregate"`
+	Joins      []*Join      			`json:"joins"`
+
+	Projection     []*TableAttribute 	`json:"projection"`
+	ProjectionsMap map[string]*TableAttribute
+
+	Conditions []*Condition 			`json:"condition"`
+
+	Group    []*TableAttribute 			`json:"group"`
+	GroupMap map[string]*TableAttribute
+
+	Order    []*TableAttribute 			`json:"order"`
+	OrderMap map[string]*TableAttribute
 }
 
 type Aggregate struct {
@@ -158,9 +165,9 @@ type Aggregate struct {
 }
 type TableInQuery struct {
 	Object
-	Pseudoname string `json:"pseudoname"` // имя
+	Pseudoname string	`json:"pseudoname"` // имя
 
-	TableId string `json:"tableid"`
+	TableId string		`json:"tableid"`
 	Table   *Table
 }
 
