@@ -4,19 +4,19 @@ package hive
 
 import "math"
 
-// TableScan
+// TableScanCost
 //
 // CPU Usage = 0.
 //
 // IO Usage = Hr * T(R) * Tsz.
-func TableScan(t Table) (Table, Cost) {
-	return t, NewCost(
+func TableScanCost(t Table) Cost {
+	return NewCost(
 		0,
-		Hr*t.Tr*t.Tsz,
+		Hr*t.Tr*t.Tsz(),
 	)
 }
 
-// Common Join
+// CommonJoinCost
 //
 // CPU Usage = Sorting Cost for each of the relation
 // + Merge Cost for sorted stream
@@ -32,7 +32,7 @@ func TableScan(t Table) (Table, Cost) {
 //
 // R1, R2... Rm is the relations involved in join.
 // Tsz1, Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
-func CommonJoin(
+func CommonJoinCost(
 	tables ...Table,
 ) Cost {
 	// cpu
@@ -50,7 +50,7 @@ func CommonJoin(
 		sortCost += v.Tr * math.Log(v.Tr) * CPUc
 		mergeCost += v.Tr * CPUc
 
-		workingDataSize += v.Tr * v.Tsz
+		workingDataSize += v.Tr * v.Tsz()
 	}
 
 	return NewCost(
@@ -59,7 +59,7 @@ func CommonJoin(
 	)
 }
 
-// Map Join
+// MapJoinCost
 //
 // CPU Usage = HashTable Construction cost + Cost of Join
 // = (T(R2) + ...+ T(Rm)) + (T(R1) + T(R2) + ...+ T(Rm)) * CPUc nano seconds
@@ -69,7 +69,7 @@ func CommonJoin(
 //
 // R1, R2... Rm is the relations involved in join and R1 is the big table that will be streamed.
 // Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
-func MapJoin(
+func MapJoinCost(
 	tables ...Table,
 ) Cost {
 	if len(tables) == 0 {
@@ -100,7 +100,7 @@ func MapJoin(
 		}
 
 		hashTableConstructionCost += v.Tr
-		transferingTablesCost += v.Tr * v.Tsz
+		transferingTablesCost += v.Tr * v.Tsz()
 	}
 
 	return NewCost(
@@ -109,7 +109,7 @@ func MapJoin(
 	)
 }
 
-// Bucket Map Join
+// BucketMapJoinCost
 //
 // CPU Usage = Hash Table Construction cost
 // + Cost of Join
@@ -121,7 +121,7 @@ func MapJoin(
 //
 // R1, R2... Rm is the relations involved in join and R1 is the big table that will be streamed.
 // Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
-func BucketMapJoin(
+func BucketMapJoinCost(
 	tables ...Table,
 ) Cost {
 	if len(tables) == 0 {
@@ -152,7 +152,7 @@ func BucketMapJoin(
 		}
 
 		hashTableConstructionCost += v.Tr
-		transferingTablesCost += v.Tr * v.Tsz
+		transferingTablesCost += v.Tr * v.Tsz()
 	}
 
 	return NewCost(
@@ -161,7 +161,7 @@ func BucketMapJoin(
 	)
 }
 
-// SMB Join
+// SMBJoinCost
 //
 // CPU Usage = Cost of Join
 // = (T(R1) + T(R2) + ...+ T(Rm)) * CPUc nano seconds
@@ -171,7 +171,7 @@ func BucketMapJoin(
 //
 // R1, R2... Rm is the relations involved in join.
 // Tsz2... Tszm are the average size of tuple in relations R2...Rm.
-func SMBJoin(
+func SMBJoinCost(
 	tables ...Table,
 ) Cost {
 	var workingDataSize float64
@@ -179,7 +179,7 @@ func SMBJoin(
 
 	for _, v := range tables {
 		cpu += v.Tr * CPUc
-		workingDataSize += v.Tr * v.Tsz
+		workingDataSize += v.Tr * v.Tsz()
 	}
 
 	return NewCost(
@@ -188,7 +188,7 @@ func SMBJoin(
 	)
 }
 
-// Distinct/Group By
+// DistinctOrGroupByCost
 //
 // CPU Usage = Cost of Sorting
 // + Cost of categorizing into group = (T(R) * log T(R) + T(R)) * CPUc nano seconds;
@@ -197,30 +197,32 @@ func SMBJoin(
 // + Cost of reading from local FS for transferring to GB reducer operator node
 // + Cost of transferring data set to GB Node
 // = Lw * T(R) * Tsz + Lr * T(R) * Tsz + NEt * T(R) * Tsz
-func DistinctOrGroupBy(t Table) Cost {
+func DistinctOrGroupByCost(t Table) Cost {
 	return NewCost(
 		(t.Tr*math.Log(t.Tr)+t.Tr)*CPUc,
-		Lw*t.Tr*t.Tsz+Lr*t.Tr*t.Tsz+NEt*t.Tr*t.Tsz,
+		Lw*t.Tr*t.Tsz()+Lr*t.Tr*t.Tsz()+NEt*t.Tr*t.Tsz(),
 	)
 }
 
+// FilterCost
+//
 // Filter/Having
 //
 // CPU Usage = T(R) * CPUc nano seconds
 //
 // IO Usage = 0
-func Filter(t Table) Cost {
+func FilterCost(t Table) Cost {
 	return NewCost(
 		t.Tr*CPUc,
 		0,
 	)
 }
 
-// Select
+// SelectCost
 //
 // CPU Usage = 0
 //
 // IO Usage = 0
-func Select(t Table) Cost {
+func SelectCost(t Table) Cost {
 	return NewCost(0, 0)
 }
