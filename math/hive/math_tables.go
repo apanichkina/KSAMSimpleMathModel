@@ -6,9 +6,18 @@ func TableScan(t Table) Table {
 	return t
 }
 
+type Projection struct {
+	Table      *Table
+	Attributes []*Attribute
+}
+
+type joinPresentation struct {
+	joins []JoinTable
+}
+
 type JoinTable struct {
-	Table
-	Attributes []Attribute
+	Table      *Table
+	Attributes []*Attribute
 }
 
 func (j JoinTable) getFirstAttrV() float64 {
@@ -51,9 +60,9 @@ func joinSelectivity(tables ...JoinTable) float64 {
 func Join(
 	name string,
 	tables ...JoinTable,
-) Table {
+) *Table {
 	tr := joinSelectivity(tables...)
-	resultAttributes := []Attribute{}
+	resultAttributes := []*Attribute{}
 
 	for _, t := range tables {
 		tr *= t.Table.Tr
@@ -69,6 +78,6 @@ func Filter(t Table, selectivity float64) Table {
 	return t
 }
 
-func Select(t Table, a ...Attribute) Table {
+func Select(t Table, a ...*Attribute) *Table {
 	return NewTable(t.Name, t.Tr, a...)
 }

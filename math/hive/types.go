@@ -5,7 +5,7 @@ type Table struct {
 	Name string  // name of table in query
 	Tr   float64 // number of rows
 
-	attrs []Attribute
+	attrs []*Attribute
 }
 
 // Attribute represents attribute of the table with estimate size in bytes
@@ -14,10 +14,13 @@ type Attribute struct {
 	V    float64
 
 	parent *Table
+
+	projection bool
+	filter     float64
 }
 
 // NewTable constructor for Table struct
-func NewTable(name string, tr float64, attrs ...Attribute) Table {
+func NewTable(name string, tr float64, attrs ...*Attribute) *Table {
 	t := Table{
 		Name: name,
 		Tr:   tr,
@@ -28,7 +31,7 @@ func NewTable(name string, tr float64, attrs ...Attribute) Table {
 		t.attrs = append(t.attrs, a)
 	}
 
-	return t
+	return &t
 }
 
 func (t Table) Tsz() float64 {
