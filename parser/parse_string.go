@@ -39,6 +39,10 @@ func (a QueriesMinTime) String() string { // правило печати объ�
 	return fmt.Sprintf("{%s, %f, %f, %f, %f, %f}", a.Query.Name, a.Time, a.TimeIO, a.OrderTime, a.RowsCount, a.RowSize)
 }
 
-func (a TransactionResult) String() string { // правило печати объектов типа QueriesMinTime
+func (a TransactionResult) String() string {
 	return fmt.Sprintf("{%s, %f, %f, %f}", a.Transaction, a.Time, a.DiscCharge, a.ProcCharge)
+}
+
+func (a RequestResultInc) String() string {
+	return fmt.Sprintf("{%s, %v}", a.RequestResult, a.Increments)
 }

@@ -205,7 +205,7 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 					queryMinTime = Z_x
 					queryMinTimeIO = Z_io_x
 					readRowCount = T_x
-					// fmt.Println(query.Name, Z_x, Z_io_x, T_x, X)
+					fmt.Println(query.Name, Z_x, Z_io_x, T_x, X)
 				}
 			}
 
@@ -343,7 +343,7 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 				}
 			}
 		}
-		result = append(result, parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network, NetworkSpeed: helper.MbitToByte(NetworkSpeed)}) // запись в массив минимального времени выполнение очередного запроса
+		result = append(result, parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction.Name, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network, NetworkSpeed: helper.MbitToByte(NetworkSpeed)}) // запись в массив минимального времени выполнение очередного запроса
 
 	}
 	return result, nil

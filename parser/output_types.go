@@ -21,7 +21,7 @@ type QueriesMinTime struct {
 }
 
 type TransactionResult struct {
-	Transaction *Transaction `csv:"transaction"`
+	Transaction string `csv:"transaction_name"`
 	Time        float64      `csv:"time"`
 	DiscCharge  float64      `csv:"disc-p"`
 	ProcCharge  float64      `csv:"proc-p"`
@@ -35,7 +35,14 @@ type RequestResult struct {
 	NetworkSpeed  float64 `csv:"net-speed"`
 }
 
+type RequestResultInc struct {
+	RequestResult
+	Increments map[string]interface{}
+}
+
 type RequestsResults []RequestResult
+
+type RequestsResultsInc []RequestResultInc
 
 type TransactionsResults []TransactionResult
 
