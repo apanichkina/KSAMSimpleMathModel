@@ -2,8 +2,9 @@ package helper
 
 import (
 	"fmt"
-	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"log"
+
+	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 )
 
 func CheckError(message string, err error) {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/apanichkina/KSAMSimpleMathModel/helper"
 	"github.com/apanichkina/KSAMSimpleMathModel/math"
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
@@ -21,6 +22,6 @@ func main() {
 	helper.CheckError("math core error. ", err)
 
 	// генерация csv
-	err = parser.PrintToCsv("data/result.csv", result)
+	err = parser.PrintToFile("data/result.csv", result)
 	helper.CheckError("", err)
 }

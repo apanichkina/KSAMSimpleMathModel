@@ -21,11 +21,11 @@ type QueriesMinTime struct {
 }
 
 type TransactionResult struct {
-	Transaction string `csv:"transaction_name"`
-	Time        float64      `csv:"time"`
-	DiscCharge  float64      `csv:"disc-p"`
-	ProcCharge  float64      `csv:"proc-p"`
-	Size        float64      `csv:"size-byte"`
+	Transaction string  `csv:"transaction_name"`
+	Time        float64 `csv:"time"`
+	DiscCharge  float64 `csv:"disc-p"`
+	ProcCharge  float64 `csv:"proc-p"`
+	Size        float64 `csv:"size-byte"`
 }
 
 type RequestResult struct {
