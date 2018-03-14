@@ -2,8 +2,9 @@ package parser
 
 import (
 	"fmt"
-	"github.com/gocarina/gocsv"
 	"os"
+
+	"github.com/gocarina/gocsv"
 )
 
 func PrintToCsv(filename string, output interface{}) error {
@@ -14,6 +15,20 @@ func PrintToCsv(filename string, output interface{}) error {
 	defer f.Close()
 
 	err = gocsv.MarshalFile(output, f) // Use this to save the CSV back to the file
+	if err != nil {
+		return fmt.Errorf("can't write to %q csv: %s", filename, err)
+	}
+	return nil
+}
+
+func PrintToFile(filename string, output []byte) error {
+	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("can't open %q to write: %s", filename, err)
+	}
+	defer f.Close()
+
+	_, err = f.Write(output)
 	if err != nil {
 		return fmt.Errorf("can't write to %q csv: %s", filename, err)
 	}
