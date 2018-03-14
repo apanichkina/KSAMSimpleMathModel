@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"reflect"
+	"sort"
 	"strings"
 )
 
@@ -88,6 +89,7 @@ func ToCSV(arr []interface{}) ([]byte, error) {
 	for k, _ := range headers {
 		headersArr = append(headersArr, k)
 	}
+	sort.Strings(headersArr)
 
 	result := [][]string{headersArr}
 	for _, m := range allMaps {
