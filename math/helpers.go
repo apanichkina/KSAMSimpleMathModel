@@ -64,7 +64,7 @@ func getQueryTimesCacheID(datamodel *parser.DataModel, nodeID string) string {
 	return fmt.Sprint(datamodel.GetID(), "_", nodeID)
 }
 
-func getResultRowCountAndSize(query *parser.Query, readRowCount float64) (float64, float64, float64, error){ //grop by, aggregate, order by
+func getResultRowCountAndSize(query *parser.Query, readRowCount float64, n_proc float64) (float64, float64, float64, error){ //grop by, aggregate, order by
 	if readRowCount == 0 {
 		return 0.0, 0.0, 0.0, fmt.Errorf("Query %s result is empty after read and filter. ", query.Name)
 	}
@@ -73,17 +73,36 @@ func getResultRowCountAndSize(query *parser.Query, readRowCount float64) (float6
 	var resultRowSize float64 = 0
 	var groupsCount float64 = float64(len(query.GroupMap))
 	var orderCount float64 = float64(len(query.OrderMap))
-
+	var I_group float64 = 1
+	for _, q := range query.GroupMap {
+		var table = query.TablesInQueryMap[q.TableId].Table
+		var attr = table.AttributesMap[q.AttributeId]
+		if attr.I == 0 {
+			return 0, 0, 0, fmt.Errorf("groppin attr %s in table %s I mast be", attr.Name, table.Name)
+		}
+		I_group *= attr.I
+	}
+	var N1 = readRowCount / n_proc
+	var T1 = C_filter * C_order * N1 * math.Log2(N1)
 	// group by
 	if groupsCount > 0 {
-		orderTime += groupsCount * C_filter * C_order * readRowCount * math.Log2(readRowCount)
-		resultRowCount = math.Min(query.GetRowCountAfterGroupBy(), readRowCount)
+		var Kr = math.Min(readRowCount, I_group)
+		var T2 = C_filter * Kr * n_proc
+		var T3 = C_filter * C_order * Kr * math.Log2(Kr)
+		if orderCount > 0 { //есть группировка и сортировка
+			orderTime = T1 + T2 + T3
+			resultRowCount = math.Min(query.GetRowCountAfterGroupBy(), readRowCount)
+		} else {
+			orderTime = T1 + T2
+		}
+
 	}
 
 	// agregate
 	for _, aggregate := range query.Aggregates {
 		resultRowSize += aggregate.Size
 	}
+
 	if groupsCount == 0 {
 		if resultRowSize != 0 {
 			// нет группировки, но есть агрегация
@@ -95,8 +114,10 @@ func getResultRowCountAndSize(query *parser.Query, readRowCount float64) (float6
 	}
 
 	// order
-	if orderCount > 0 {
-		orderTime += orderCount * C_filter * C_order * readRowCount * math.Log2(readRowCount)
+	if orderCount > 0 && groupsCount <= 0 { // только сортировка
+		var T4 = C_filter * C_order * readRowCount * math.Log2(n_proc)
+		orderTime = T1 + T4
+		resultRowCount = readRowCount
 	}
 
 	// projection

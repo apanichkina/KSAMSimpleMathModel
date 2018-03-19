@@ -11,10 +11,10 @@
       "obj": "ea2036a5-f5e8-cfe0-57a2-1c438fae47c0",
       "field": "nodecount",
       "type": "",
-      "to": 50,
-      "incr": 10,
+      "to": 3,
+      "incr": 1,
       "objtype": "node",
-      "from": 10
+      "from": 1
     },
     {
       "id": {
@@ -23,22 +23,10 @@
       "obj": "abc47bdf-0620-cd6b-07a5-89b59201549e",
       "field": "frequency",
       "type": "",
-      "to": 10,
-      "incr": 3.1,
+      "to": 2,
+      "incr": 1,
       "objtype": "request",
-      "from": 0.1
-    },
-    {
-      "id": {
-        "$oid": "0c5bf5b9-95c2-ad8d-cc5c-da90486b7a79"
-      },
-      "obj": "c951ff22-2f1d-5732-bc28-829eac37a377",
-      "field": "type",
-      "type": "",
-      "to": 0,
-      "incr": 0,
-      "objtype": "request",
-      "from": 0
+      "from": 1
     }
   ],
   "requests": [
