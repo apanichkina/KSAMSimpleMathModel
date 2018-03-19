@@ -2,12 +2,21 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 )
 
 //////// NOT USED ///////
 
 func (a *Increment) getIncrementID() string {
 	return fmt.Sprint(a.ObjId, "_", a.FieldName)
+}
+
+func ParseIncrementID(id string) (string, string, error) {
+	var split = strings.Split(id, "_")
+	if len(split) != 2 {
+		return "", "", fmt.Errorf("can't parse incement id %s", id)
+	}
+	return split[0], split[1], nil
 }
 
 func (c TableAttribute) GetID() string {

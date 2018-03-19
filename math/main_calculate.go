@@ -5,12 +5,13 @@ import (
 	"github.com/apanichkina/KSAMSimpleMathModel/helper"
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"math"
+	"reflect"
 )
 
-func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (parser.QueriesMinTimes, error) {
+func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64, n_proc float64) (parser.QueriesMinTimes, error) {
 
-	fmt.Println("C_filter", C_filter, "C_b", C_b)
-	fmt.Println("Считается концептуальная модель: ", params.Name)
+	// fmt.Println("C_filter", C_filter, "C_b", C_b)
+	// fmt.Println("Считается концептуальная модель: ", params.Name)
 	// подготовительные расчеты для входных параметров
 
 	if len(params.Queries) < 1 {
@@ -205,12 +206,12 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 					queryMinTime = Z_x
 					queryMinTimeIO = Z_io_x
 					readRowCount = T_x
-					fmt.Println(query.Name, Z_x, Z_io_x, T_x, X)
+					// fmt.Println(query.Name, Z_x, Z_io_x, T_x, X)
 				}
 			}
 
 		}
-		var resultRowCount, resultRowSize, orderTime, err = getResultRowCountAndSize(query, readRowCount)
+		var resultRowCount, resultRowSize, orderTime, err = getResultRowCountAndSize(query, readRowCount, n_proc)
 		if err != nil {
 			return nil, err
 		}
@@ -225,29 +226,96 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64) (p
 //	return parser.TransactionResult(nil), nil
 //}
 
-func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, error) {
+//func SetRequestIncrementValues() {
+//
+//}
+//
+//func SetNodeIncrementValues(node parser.Node) parser.Node {
+//
+//}
+
+func SetField(obj interface{}, fieldName string, value interface{}) error {
+	val := reflect.ValueOf(obj)
+	if val.Kind() != reflect.Ptr {
+		return fmt.Errorf("object must be a pointer (can't set field of not pointer)")
+	}
+	val = val.Elem()
+
+	field := val.FieldByName(fieldName)
+	if !field.IsValid() {
+		return fmt.Errorf("field is not valid")
+	}
+	if !field.CanSet() {
+		return fmt.Errorf("field can't be set")
+	}
+	newVal := reflect.ValueOf(value)
+	fieldType := field.Type()
+	newType := newVal.Type()
+	if fieldType != newType {
+		if !newType.ConvertibleTo(fieldType) {
+			return fmt.Errorf("can't set new val: expected %s, got %s", fieldType, newType)
+		}
+		newVal = newVal.Convert(fieldType)
+	}
+	field.Set(newVal)
+	return nil
+}
+
+func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementValueMap, sn int) (parser.RequestsResultsInc, error) {
 	// по итерациям
 	var alredyCalculatedDataModel = make(QueryTimesCache)
-	var result parser.RequestsResults
+	var result parser.RequestsResultsInc
 
-	for _, request := range inputParams.Request {
+	// var Increment = parser.IncrementValueMap{"ea2036a5-f5e8-cfe0-57a2-1c438fae47c0_NodeCount":50, "abc47bdf-0620-cd6b-07a5-89b59201549e_Frequency":10.0, "c951ff22-2f1d-5732-bc28-829eac37a377_Mode":"online"}
+	for _, r:= range inputParams.Request {
+		var request = *r // копия объекта r
+		var node = *request.Database.Node //Cluster node -> NodeCount  DiskCount  Proc  Disk Name
+		var nodeClient = *request.Node    //PC or Cluster -> NodeCount Name
+
+		var IncrementForPrint = make(parser.IncrementValueMap)
+		// выставляем инкрементные значения
+		for k, v := range Increment {
+			var id, field, err = parser.ParseIncrementID(k)
+			if err != nil {
+				return nil, err
+			}
+			var obj interface{}
+			var name = ""
+			switch id {
+				case request.GetID():
+					obj = &request
+					name = request.Name
+				case request.DatabaseID:
+					obj = &node
+					name = node.Name
+				case request.NodeID:
+					obj = &nodeClient
+					name = nodeClient.Name
+				default:
+					continue
+
+			}
+			err = SetField(obj, field, v)
+			if err != nil {
+				return nil, err
+			}
+			IncrementForPrint[fmt.Sprintf("_changed_%s_%s", name, field)] = v
+		}
 		var frequency = request.Frequency
 		var mode = request.Mode
-		var node = request.Database.Node //Cluster node -> NodeCount  DiskCount  Proc  Disk Name
-		var nodeClient = request.Node    //PC or Cluster -> NodeCount Name
 
 		var C_filter float64 = GLOBALVARS.K / helper.GigagertzToGertz(node.Proc)
 		var C_b float64 = GLOBALVARS.D / helper.MegabyteToByte(node.Disk)
 
 		if frequency == 0 {
-			return parser.RequestsResults(nil), nil // TODO вывод с нулевым временем
+			return parser.RequestsResultsInc(nil), nil // TODO вывод с нулевым временем
 		}
 		var datamodel = request.Database.DataModel
 		var resultByQuery parser.QueriesMinTimes
 		q, ok := alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node.GetID())]
 		if !ok {
 			var err error
-			resultByQuery, err = EvaluateQueries(datamodel, C_filter, C_b)
+			resultByQuery, err = EvaluateQueries(datamodel, C_filter, C_b, node.DiskCount)
 			if err != nil {
 				return nil, err
 			}
@@ -343,7 +411,12 @@ func EvaluateRequest(inputParams parser.InputParams) (parser.RequestsResults, er
 				}
 			}
 		}
-		result = append(result, parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction.Name, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network, NetworkSpeed: helper.MbitToByte(NetworkSpeed)}) // запись в массив минимального времени выполнение очередного запроса
+
+		result = append(result, parser.RequestResultInc{
+			sn,
+			parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction.Name, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network, NetworkSpeed: helper.MbitToByte(NetworkSpeed)},
+			IncrementForPrint,
+		}) // запись в массив минимального времени выполнение очередного запроса
 
 	}
 	return result, nil

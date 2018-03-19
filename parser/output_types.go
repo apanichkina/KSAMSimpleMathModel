@@ -36,9 +36,13 @@ type RequestResult struct {
 }
 
 type RequestResultInc struct {
+	SerialNumber int
 	RequestResult
-	Increments map[string]interface{}
+	Increments IncrementValueMap
 }
+
+type IncrementValueMap map[string]interface{}
+
 
 type RequestsResults []RequestResult
 
