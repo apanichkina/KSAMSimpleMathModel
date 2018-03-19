@@ -35,7 +35,10 @@ func DeepFields(object interface{}) []valueWithName {
 		case reflect.Struct:
 			fields = append(fields, DeepFields(v.Interface())...)
 		default:
-			fields = append(fields, valueWithName{Value: v, name: getCSVTypeName(ift.Field(i))})
+			name := getCSVTypeName(ift.Field(i))
+			if name != "-" {
+				fields = append(fields, valueWithName{Value: v, name: getCSVTypeName(ift.Field(i))})
+			}
 		}
 	}
 
@@ -49,7 +52,7 @@ func GetValues(object interface{}) map[string]string {
 	}
 
 	val := reflect.ValueOf(object)
-	if val.Kind() == reflect.Ptr {
+	if val.Kind() == reflect.Ptr || val.Kind() == reflect.Interface {
 		val = val.Elem()
 	}
 

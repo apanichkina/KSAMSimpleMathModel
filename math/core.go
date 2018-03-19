@@ -26,11 +26,7 @@ func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVaria
 		return nil, err
 	}
 
-	var result []interface{}
-	for _, v := range resultByRequest {
-		result = append(result, v)
-	}
-
+	result := parser.TransformBeforeOutput(resultByRequest)
 	return csv.ToCSV(result) // []parser.CSVData{{TransactionsResults: resultByTransaction, QueriesMinTimes: resultByQuery}}, nil
 }
 
@@ -68,7 +64,7 @@ func Increment(inputParams parser.InputParams) (parser.RequestsResultsInc, error
 	//
 	//final = append(final, resultByRequest...)
 
-// second
+	// second
 	for Incr(0, inputParams.Increment, IncrementValues, incrIndex) {
 		fmt.Println(IncrementValues, incrIndex)
 
@@ -88,7 +84,6 @@ func Increment(inputParams parser.InputParams) (parser.RequestsResultsInc, error
 
 	// final = append(final, parser.RequestResultInc{}) разделитель
 
-
 	fmt.Println(final)
 
 	return final, nil
@@ -101,8 +96,6 @@ func Incr(ind int, increments []*parser.Increment, IncrementValues parser.Increm
 		return true
 	}
 
-
-
 	var obj = increments[ind]
 	var length = len(obj.PosibleValues)
 
@@ -111,7 +104,7 @@ func Incr(ind int, increments []*parser.Increment, IncrementValues parser.Increm
 		if curInd < length {
 			IncrementValues[getIncrementID(obj.ObjId, obj.FieldName)] = obj.PosibleValues[curInd]
 		} else {
-			if ind == len(increments) - 1 {
+			if ind == len(increments)-1 {
 				return false
 			} else {
 				incrIndex[ind] = 0
@@ -121,12 +114,12 @@ func Incr(ind int, increments []*parser.Increment, IncrementValues parser.Increm
 		}
 
 	} else {
-		var newVal = obj.From + obj.Step * float64(curInd)
+		var newVal = obj.From + obj.Step*float64(curInd)
 		if newVal <= obj.To {
 			IncrementValues[getIncrementID(obj.ObjId, obj.FieldName)] = newVal
 
 		} else {
-			if ind == len(increments) - 1 {
+			if ind == len(increments)-1 {
 				return false
 			} else {
 				incrIndex[ind] = 0
@@ -137,17 +130,6 @@ func Incr(ind int, increments []*parser.Increment, IncrementValues parser.Increm
 	}
 
 	return Incr(ind+1, increments, IncrementValues, incrIndex)
-
-
-
-
-
-
-
-
-
-
-
 
 	//
 	//

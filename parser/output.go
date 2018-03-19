@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"sort"
+
+	"github.com/apanichkina/KSAMSimpleMathModel/csv"
 	"github.com/gocarina/gocsv"
 )
 
@@ -33,4 +36,72 @@ func PrintToFile(filename string, output []byte) error {
 		return fmt.Errorf("can't write to %q csv: %s", filename, err)
 	}
 	return nil
+}
+
+type mergeable interface {
+	Prefix() string
+	GetUniq() map[string]interface{}
+}
+
+func mergeStructs(input ...mergeable) map[string]string {
+	result := map[string]string{}
+	for _, elem := range input {
+		for k, v := range csv.GetValues(elem) {
+			result[fmt.Sprintf("%s_%s", elem.Prefix(), k)] = v
+		}
+		for k, v := range elem.GetUniq() {
+			result[k] = fmt.Sprintf("%+v", v)
+		}
+
+	}
+	return result
+}
+
+type mergeInputRequest struct {
+	RequestResultInc
+}
+
+func (m mergeInputRequest) Prefix() string {
+	return m.Transaction
+}
+
+func (m mergeInputRequest) GetUniq() map[string]interface{} {
+	return m.Increments
+}
+
+type mergedResult struct {
+	Serial int
+	Result map[string]string
+}
+
+func TransformBeforeOutput(input RequestsResultsInc) []interface{} {
+	inputBySerial := map[int][]mergeable{}
+	for _, v := range input {
+		if _, ok := inputBySerial[v.SerialNumber]; !ok {
+			inputBySerial[v.SerialNumber] = []mergeable{}
+		}
+		inputBySerial[v.SerialNumber] = append(inputBySerial[v.SerialNumber], mergeInputRequest{v})
+	}
+
+	fmt.Println(inputBySerial)
+
+	resultForSort := []mergedResult{}
+
+	for k, values := range inputBySerial {
+		resultForSort = append(resultForSort, mergedResult{
+			Serial: k,
+			Result: mergeStructs(values...),
+		})
+	}
+
+	sort.Slice(resultForSort, func(i, j int) bool {
+		return resultForSort[i].Serial < resultForSort[j].Serial
+	})
+
+	result := []interface{}{}
+	for _, v := range resultForSort {
+		result = append(result, v)
+	}
+
+	return result
 }
