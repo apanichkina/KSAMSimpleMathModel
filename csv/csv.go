@@ -23,19 +23,56 @@ func getCSVTypeName(field reflect.StructField) string {
 	return field.Name
 }
 
+func addPrefix(prefix string, arr []valueWithName) []valueWithName {
+	fields := make([]valueWithName, len(arr))
+	for i, v := range arr {
+		v.name = fmt.Sprintf("%s_%s", prefix, v.name)
+		fields[i] = v
+	}
+	return fields
+}
+
+func DeepMapFields(object interface{}) []valueWithName {
+	fields := make([]valueWithName, 0)
+
+	mapValue := reflect.ValueOf(object)
+	for _, key := range mapValue.MapKeys() {
+		keyName := fmt.Sprintf("%+v", key.Interface())
+
+		v := mapValue.MapIndex(key)
+		switch v.Kind() {
+		case reflect.Struct:
+			fields = append(fields, addPrefix(keyName, DeepFields(v.Interface()))...)
+		case reflect.Map:
+			fields = append(fields, addPrefix(keyName, DeepMapFields(v.Interface()))...)
+		default:
+			fields = append(fields, valueWithName{Value: v, name: keyName})
+		}
+	}
+	return fields
+}
+
 func DeepFields(object interface{}) []valueWithName {
 	fields := make([]valueWithName, 0)
 	ifv := reflect.ValueOf(object)
-	ift := reflect.TypeOf(object)
+	if ifv.Kind() == reflect.Ptr {
+		ifv = ifv.Elem()
+	}
+	ift := ifv.Type()
 
 	for i := 0; i < ift.NumField(); i++ {
 		v := ifv.Field(i)
 
+		name := getCSVTypeName(ift.Field(i))
+
 		switch v.Kind() {
 		case reflect.Struct:
 			fields = append(fields, DeepFields(v.Interface())...)
+		case reflect.Map:
+			if name != "-" {
+				fields = append(fields, addPrefix(name, DeepMapFields(v.Interface()))...)
+			}
 		default:
-			name := getCSVTypeName(ift.Field(i))
 			if name != "-" {
 				fields = append(fields, valueWithName{Value: v, name: getCSVTypeName(ift.Field(i))})
 			}

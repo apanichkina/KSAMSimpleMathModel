@@ -40,7 +40,7 @@ func PrintToFile(filename string, output []byte) error {
 
 type mergeable interface {
 	Prefix() string
-	GetUniq() map[string]interface{}
+	GetUniq() map[string]string
 }
 
 func mergeStructs(input ...mergeable) map[string]string {
@@ -50,7 +50,7 @@ func mergeStructs(input ...mergeable) map[string]string {
 			result[fmt.Sprintf("%s_%s", elem.Prefix(), k)] = v
 		}
 		for k, v := range elem.GetUniq() {
-			result[k] = fmt.Sprintf("%+v", v)
+			result[k] = v
 		}
 
 	}
@@ -65,13 +65,19 @@ func (m mergeInputRequest) Prefix() string {
 	return m.Transaction
 }
 
-func (m mergeInputRequest) GetUniq() map[string]interface{} {
-	return m.Increments
+func (m mergeInputRequest) GetUniq() map[string]string {
+	return csv.GetValues(struct {
+		IncrementValueMap `csv:"changed"`
+		DatabaseValueMap  `csv:"model"`
+	}{
+		m.Increments,
+		m.Queries,
+	})
 }
 
 type mergedResult struct {
 	Serial int
-	Result map[string]string
+	Result map[string]string `csv:"_"`
 }
 
 func TransformBeforeOutput(input RequestsResultsInc) []interface{} {

@@ -12,7 +12,7 @@ type Errors []Error
 //////// NOT USED ///////
 
 type QueriesMinTime struct {
-	Query     *Query  `csv:"query"`
+	Query     *Query  `csv:"-"`
 	Time      float64 `csv:"time"`
 	TimeIO    float64 `csv:"timeIO"`
 	OrderTime float64 `csv:"Ordertime"`
@@ -39,11 +39,12 @@ type RequestResultInc struct {
 	SerialNumber int `csv:"-"`
 	RequestResult
 	Increments IncrementValueMap `csv:"-"`
-	Queries DatabaseValueMap
+	Queries    DatabaseValueMap  `csv:"-"`
 }
 
 type IncrementValueMap map[string]interface{}
-type DatabaseValueMap map[string]QueriesMinTimes
+type DatabaseValueMap map[string]QueryValueMap
+type QueryValueMap map[string]QueriesMinTime
 
 type RequestsResults []RequestResult
 
@@ -57,3 +58,11 @@ type CSVData struct {
 }
 
 type QueriesMinTimes []QueriesMinTime
+
+func (q QueriesMinTimes) ToQueryValueMap() QueryValueMap {
+	var result QueryValueMap = map[string]QueriesMinTime{}
+	for _, v := range q {
+		result[v.Query.Name] = v
+	}
+	return result
+}
