@@ -14,10 +14,10 @@ type Errors []Error
 type QueriesMinTime struct {
 	Query     *Query  `csv:"-"`
 	Time      float64 `csv:"time"`
-	TimeIO    float64 `csv:"timeIO"`
+	TimeIO    float64 `csv:"-"`
 	OrderTime float64 `csv:"-"`
-	RowsCount float64 `csv:"RowsCount"`
-	RowSize   float64 `csv:"RowsSize"`
+	RowsCount float64 `csv:"-"`
+	RowSize   float64 `csv:"-"`
 }
 
 type TransactionResult struct {
@@ -25,14 +25,14 @@ type TransactionResult struct {
 	Time        float64 `csv:"time"`
 	DiscCharge  float64 `csv:"disc-p"`
 	ProcCharge  float64 `csv:"proc-p"`
-	Size        float64 `csv:"size-byte"`
+	Size        float64 `csv:"size"`
 }
 
 type RequestResult struct {
 	TransactionResult
 	NetworkCharge float64 `csv:"net-p"`
-	NetworkTime   float64 `csv:"net-M"`
-	NetworkSpeed  float64 `csv:"net-speed"`
+	NetworkTime   float64 `csv:"-"`
+	NetworkSpeed  float64 `csv:"-"`
 }
 
 type RequestResultInc struct {

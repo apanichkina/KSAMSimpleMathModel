@@ -37,7 +37,8 @@ func IndexScanRead(Table parser.Table, Query parser.Query, C_filter float64, C_b
 	var T float64 = Table.T * p
 	var B_ind float64 = GLOBALVARS.D_ind / Table.PKAttribute.Size
 	var C_cpu float64 = T * C_filter
-	var C_io float64 = (math.Ceil(B_ind*p) + math.Ceil(Table.T*p)) * C_b
+	var Lr = math.Ceil(GLOBALVARS.D / Table.Size)
+	var C_io float64 = (math.Ceil(B_ind*p) + math.Ceil((Table.T/Lr)*p)) * C_b
 	var C = C_cpu + C_io
 
 	return C, C_io, nil
@@ -48,11 +49,17 @@ func JoinPlanRead(Table parser.Table, Attr *parser.Attribute, N float64, C_filte
 	if I == 0 {
 		return 0.0, 0.0, 0.0, fmt.Errorf("%s Attr.I cann`t be 0 for join. ", Table.Name)
 	}
-
 	var T float64 = Table.T * 1 / I
 	var C_cpu float64 = N * T * C_filter
-	var B_ind float64 = math.Ceil(T * (Attr.Size / GLOBALVARS.D_ind))
-	var C_io float64 = N * (B_ind + math.Ceil(Table.T*1/I)) * C_b
+	var L = math.Ceil(GLOBALVARS.D_ind / Attr.Size)
+	var B_ind float64 = math.Ceil((Table.T / L) / I)
+	var T_ind float64 = math.Ceil(Table.T*1/I)
+	if (Table.AttributesMap[Attr.GetID()].PK) {
+		var Lr = math.Ceil(GLOBALVARS.D / Table.Size)
+		T_ind = math.Ceil((Table.T / Lr) * 1 / I)
+	}
+
+	var C_io float64 = N * (B_ind + T_ind) * C_b
 	var C = C_cpu + C_io
 
 	return C, C_io, T, nil
@@ -64,7 +71,7 @@ func getQueryTimesCacheID(datamodel *parser.DataModel, node parser.Node) string 
 	return fmt.Sprintf("%s_%s_%s_%s", datamodel.GetID(), node.GetID(), node.Proc, node.Disk)
 }
 
-func getResultRowCountAndSize(query *parser.Query, readRowCount float64, n_proc float64) (float64, float64, float64, error){ //grop by, aggregate, order by
+func getResultRowCountAndSize(query *parser.Query, readRowCount float64, n_proc float64, C_filter float64) (float64, float64, float64, error){ //grop by, aggregate, order by
 	if readRowCount == 0 {
 		return 0.0, 0.0, 0.0, fmt.Errorf("Query %s result is empty after read and filter. ", query.Name)
 	}
@@ -91,10 +98,10 @@ func getResultRowCountAndSize(query *parser.Query, readRowCount float64, n_proc 
 		var T3 = C_filter * C_order * Kr * math.Log2(Kr)
 		if orderCount > 0 { //есть группировка и сортировка
 			orderTime = T1 + T2 + T3
-			resultRowCount = math.Min(query.GetRowCountAfterGroupBy(), readRowCount)
 		} else {
 			orderTime = T1 + T2
 		}
+		resultRowCount = math.Min(query.GetRowCountAfterGroupBy(), readRowCount)
 
 	}
 

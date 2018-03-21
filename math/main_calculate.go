@@ -212,7 +212,7 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64, n_
 			}
 
 		}
-		var resultRowCount, resultRowSize, orderTime, err = getResultRowCountAndSize(query, readRowCount, n_proc)
+		var resultRowCount, resultRowSize, orderTime, err = getResultRowCountAndSize(query, readRowCount, n_proc, C_filter)
 		if err != nil {
 			return nil, err
 		}
@@ -309,7 +309,6 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 		var C_filter float64 = GLOBALVARS.K / helper.GigagertzToGertz(node.Proc)
 		var C_b float64 = GLOBALVARS.D / helper.MegabyteToByte(node.Disk)
 
-		fmt.Println(C_filter, node, frequency)
 		if frequency == 0 {
 			return parser.RequestsResultsInc(nil), nil // TODO вывод с нулевым временем
 		}
