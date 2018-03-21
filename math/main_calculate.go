@@ -263,16 +263,17 @@ func SetField(obj interface{}, fieldName string, value interface{}) error {
 
 func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementValueMap, sn int) (parser.RequestsResultsInc, error) {
 	// по итерациям
-	var alredyCalculatedDataModel = make(QueryTimesCache)
 	var result parser.RequestsResultsInc
 
 	// var Increment = parser.IncrementValueMap{"ea2036a5-f5e8-cfe0-57a2-1c438fae47c0_NodeCount":50, "abc47bdf-0620-cd6b-07a5-89b59201549e_Frequency":10.0, "c951ff22-2f1d-5732-bc28-829eac37a377_Mode":"online"}
 	for _, r:= range inputParams.Request {
 		var request = *r // копия объекта r
 		var node = *request.Database.Node //Cluster node -> NodeCount  DiskCount  Proc  Disk Name
+		var database = request.Database
 		var nodeClient = *request.Node    //PC or Cluster -> NodeCount Name
 
 		var IncrementForPrint = make(parser.IncrementValueMap)
+		var QueriesForPrint = make(parser.DatabaseValueMap)
 		// выставляем инкрементные значения
 		for k, v := range Increment {
 			var id, field, err = parser.ParseIncrementID(k)
@@ -285,7 +286,7 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 				case request.GetID():
 					obj = &request
 					name = request.Name
-				case request.DatabaseID:
+				case request.Database.NodeID:
 					obj = &node
 					name = node.Name
 				case request.NodeID:
@@ -307,22 +308,25 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 		var C_filter float64 = GLOBALVARS.K / helper.GigagertzToGertz(node.Proc)
 		var C_b float64 = GLOBALVARS.D / helper.MegabyteToByte(node.Disk)
 
+		fmt.Println(C_filter, node, frequency)
 		if frequency == 0 {
 			return parser.RequestsResultsInc(nil), nil // TODO вывод с нулевым временем
 		}
-		var datamodel = request.Database.DataModel
+
 		var resultByQuery parser.QueriesMinTimes
-		q, ok := alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node.GetID())]
+		q, ok := ALREADY_CALCULATED_DATA_MODEL[getQueryTimesCacheID(database.DataModel, node)]
 		if !ok {
 			var err error
-			resultByQuery, err = EvaluateQueries(datamodel, C_filter, C_b, node.DiskCount)
+			resultByQuery, err = EvaluateQueries(database.DataModel, C_filter, C_b, node.DiskCount)
 			if err != nil {
 				return nil, err
 			}
-			alredyCalculatedDataModel[getQueryTimesCacheID(datamodel, node.GetID())] = resultByQuery
+			ALREADY_CALCULATED_DATA_MODEL[getQueryTimesCacheID(database.DataModel, node)] = resultByQuery
+			fmt.Println("QUERY_CALCULATE")
 		} else {
 			resultByQuery = q
 		}
+		QueriesForPrint[database.Name] = resultByQuery
 		var N_proc = node.NodeCount //число машин в кластере, на котором размещена БД и транзакция
 		var N_disc = node.DiskCount //число дисков в кластере, на котором размещена БД и транзакция
 		var QueriesSumTime float64 = 0
@@ -412,10 +416,13 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 			}
 		}
 
+		fmt.Println(QueriesForPrint)
+
 		result = append(result, parser.RequestResultInc{
 			sn,
 			parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction.Name, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network, NetworkSpeed: helper.MbitToByte(NetworkSpeed)},
 			IncrementForPrint,
+			QueriesForPrint,
 		}) // запись в массив минимального времени выполнение очередного запроса
 
 	}

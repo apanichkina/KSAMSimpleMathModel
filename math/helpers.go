@@ -60,8 +60,8 @@ func JoinPlanRead(Table parser.Table, Attr *parser.Attribute, N float64, C_filte
 
 type QueryTimesCache map[string]parser.QueriesMinTimes // key = datamodel.id + '_' node.id
 
-func getQueryTimesCacheID(datamodel *parser.DataModel, nodeID string) string {
-	return fmt.Sprint(datamodel.GetID(), "_", nodeID)
+func getQueryTimesCacheID(datamodel *parser.DataModel, node parser.Node) string {
+	return fmt.Sprintf("%s_%s_%s_%s", datamodel.GetID(), node.GetID(), node.Proc, node.Disk)
 }
 
 func getResultRowCountAndSize(query *parser.Query, readRowCount float64, n_proc float64) (float64, float64, float64, error){ //grop by, aggregate, order by
