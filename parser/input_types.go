@@ -218,7 +218,7 @@ var INCREMENTVALS = map[string]IncrementField{
 	"type":      IncrementField{"Mode", []string{"online", "offline"}},
 	"frequency": IncrementField{"Frequency", nil},
 	"nodecount": IncrementField{"NodeCount", nil},
-	"CPU":       IncrementField{"NodeCount", nil},
+	"CPU":       IncrementField{"Proc", nil},
 	"disk":      IncrementField{"Disk", nil},
 	"countdisk": IncrementField{"DiskCount", nil},
 }

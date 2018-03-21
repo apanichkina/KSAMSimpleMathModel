@@ -39,9 +39,11 @@ type RequestResultInc struct {
 	SerialNumber int `csv:"-"`
 	RequestResult
 	Increments IncrementValueMap `csv:"-"`
+	Queries DatabaseValueMap
 }
 
 type IncrementValueMap map[string]interface{}
+type DatabaseValueMap map[string]QueriesMinTimes
 
 type RequestsResults []RequestResult
 

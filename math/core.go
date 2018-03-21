@@ -12,6 +12,7 @@ var GLOBALVARS parser.GlobalVariables
 var TEST bool
 var TESTSEQUENCE []int
 var TESTQUERYNAME string
+var ALREADY_CALCULATED_DATA_MODEL QueryTimesCache
 
 func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVariables) ([]byte, error) {
 	fmt.Println("VERSION: ", 1.1)
@@ -20,6 +21,7 @@ func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVaria
 	TEST = false
 	TESTSEQUENCE = []int{0, 1, 2, 3, 4, 5}
 	TESTQUERYNAME = "Q91"
+	ALREADY_CALCULATED_DATA_MODEL = make(QueryTimesCache)
 	resultByRequest, err := Increment(inputParams)
 	// resultByRequest, err := EvaluateRequest(inputParams)
 	if err != nil {

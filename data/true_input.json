@@ -8,11 +8,11 @@
       "id": {
         "$oid": "a2399b04-958f-618e-54b7-db8459be7906"
       },
-      "obj": "ea2036a5-f5e8-cfe0-57a2-1c438fae47c0",
-      "field": "nodecount",
+      "obj": "a4fc4a6b-e95f-5196-2dba-a5eaf600654e",
+      "field": "CPU",
       "type": "",
-      "to": 3,
-      "incr": 1,
+      "to": 2,
+      "incr": 0.2,
       "objtype": "node",
       "from": 1
     },
