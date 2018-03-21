@@ -15,7 +15,7 @@ type QueriesMinTime struct {
 	Query     *Query  `csv:"-"`
 	Time      float64 `csv:"time"`
 	TimeIO    float64 `csv:"timeIO"`
-	OrderTime float64 `csv:"Ordertime"`
+	OrderTime float64 `csv:"-"`
 	RowsCount float64 `csv:"RowsCount"`
 	RowSize   float64 `csv:"RowsSize"`
 }
@@ -36,10 +36,10 @@ type RequestResult struct {
 }
 
 type RequestResultInc struct {
-	SerialNumber int `csv:"-"`
+	SerialNumber int `csv:"-"` // выводится уникально
 	RequestResult
-	Increments IncrementValueMap `csv:"-"`
-	Queries    DatabaseValueMap  `csv:"-"`
+	Increments IncrementValueMap `csv:"-"` // выводится уникально
+	Queries    DatabaseValueMap  `csv:"-"` // выводится уникально
 }
 
 type IncrementValueMap map[string]interface{}
