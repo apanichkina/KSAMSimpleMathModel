@@ -2,10 +2,11 @@ package math
 
 import (
 	"fmt"
-	"github.com/apanichkina/KSAMSimpleMathModel/helper"
-	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"math"
 	"reflect"
+
+	"github.com/apanichkina/KSAMSimpleMathModel/helper"
+	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 )
 
 func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64, n_proc float64) (parser.QueriesMinTimes, error) {
@@ -266,11 +267,11 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 	var result parser.RequestsResultsInc
 
 	// var Increment = parser.IncrementValueMap{"ea2036a5-f5e8-cfe0-57a2-1c438fae47c0_NodeCount":50, "abc47bdf-0620-cd6b-07a5-89b59201549e_Frequency":10.0, "c951ff22-2f1d-5732-bc28-829eac37a377_Mode":"online"}
-	for _, r:= range inputParams.Request {
-		var request = *r // копия объекта r
+	for _, r := range inputParams.Request {
+		var request = *r                  // копия объекта r
 		var node = *request.Database.Node //Cluster node -> NodeCount  DiskCount  Proc  Disk Name
 		var database = request.Database
-		var nodeClient = *request.Node    //PC or Cluster -> NodeCount Name
+		var nodeClient = *request.Node //PC or Cluster -> NodeCount Name
 
 		var IncrementForPrint = make(parser.IncrementValueMap)
 		var QueriesForPrint = make(parser.DatabaseValueMap)
@@ -283,17 +284,17 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 			var obj interface{}
 			var name = ""
 			switch id {
-				case request.GetID():
-					obj = &request
-					name = request.Name
-				case request.Database.NodeID:
-					obj = &node
-					name = node.Name
-				case request.NodeID:
-					obj = &nodeClient
-					name = nodeClient.Name
-				default:
-					continue
+			case request.GetID():
+				obj = &request
+				name = request.Name
+			case request.Database.NodeID:
+				obj = &node
+				name = node.Name
+			case request.NodeID:
+				obj = &nodeClient
+				name = nodeClient.Name
+			default:
+				continue
 
 			}
 			err = SetField(obj, field, v)
@@ -326,7 +327,7 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 		} else {
 			resultByQuery = q
 		}
-		QueriesForPrint[database.Name] = resultByQuery
+		QueriesForPrint[database.Name] = resultByQuery.ToQueryValueMap()
 		var N_proc = node.NodeCount //число машин в кластере, на котором размещена БД и транзакция
 		var N_disc = node.DiskCount //число дисков в кластере, на котором размещена БД и транзакция
 		var QueriesSumTime float64 = 0
@@ -428,4 +429,3 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 	}
 	return result, nil
 }
-
