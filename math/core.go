@@ -15,7 +15,7 @@ var TESTQUERYNAME string
 var ALREADY_CALCULATED_DATA_MODEL QueryTimesCache
 
 func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVariables) ([]byte, error) {
-	fmt.Println("VERSION: ", 1.1)
+	fmt.Println("VERSION: ", 1.2)
 	//var output = parser.Errors{parser.Error{Message: "test"}}
 	GLOBALVARS = globalVariables
 	TEST = false

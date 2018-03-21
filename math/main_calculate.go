@@ -301,7 +301,7 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 			if err != nil {
 				return nil, err
 			}
-			IncrementForPrint[fmt.Sprintf("_changed_%s_%s", name, field)] = v
+			IncrementForPrint[fmt.Sprintf("%s_%s", name, field)] = v
 		}
 		var frequency = request.Frequency
 		var mode = request.Mode

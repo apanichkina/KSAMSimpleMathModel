@@ -68,7 +68,7 @@ func (m mergeInputRequest) Prefix() string {
 func (m mergeInputRequest) GetUniq() map[string]string {
 	return csv.GetValues(struct {
 		IncrementValueMap `csv:"changed"`
-		DatabaseValueMap  `csv:"model"`
+		DatabaseValueMap  `csv:"db"`
 	}{
 		m.Increments,
 		m.Queries,
