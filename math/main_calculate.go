@@ -382,11 +382,11 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 		if mode == OnlineTransactionType {
 			var intension = helper.HourToSecond(frequency) * nodeClient.NodeCount //число клиентов
 			DiscCharge = intension * QueriesSumTimeIO / N_disc
-			ProcCharge = intension * QueriesSumTime / N_proc // TODO нужно ли считать время для всех транзакций?
+			ProcCharge = intension * (QueriesSumTime - QueriesSumTimeIO) / N_proc // TODO нужно ли считать время для всех транзакций?
 			for _, q := range request.Transaction.Queries {
 				for _, rq := range resultByQuery {
 					if rq.Query.GetID() == q.GetID() {
-						TransactionTime += q.Count * (rq.Time/(N_proc*(1-ProcCharge)) + rq.TimeIO/(N_disc*(1-DiscCharge)))
+						TransactionTime += q.Count * ((rq.Time-rq.TimeIO)/(N_proc*(1-ProcCharge)) + rq.TimeIO/(N_disc*(1-DiscCharge)))
 						break
 					}
 				}
