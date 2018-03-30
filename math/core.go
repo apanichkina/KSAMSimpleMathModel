@@ -14,7 +14,7 @@ var TESTQUERYNAME string
 var ALREADY_CALCULATED_DATA_MODEL QueryTimesCache
 
 func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVariables) ([]byte, error) {
-	fmt.Println("VERSION: ", 1.3)
+	fmt.Println("VERSION: ", 1.4)
 	//var output = parser.Errors{parser.Error{Message: "test"}}
 	GLOBALVARS = globalVariables
 	TEST = false
@@ -53,7 +53,6 @@ func Increment(inputParams parser.InputParams) (parser.RequestsResultsInc, error
 	//fmt.Println(IncrementValues, incrIndex)
 	// Проход по всем значениям
 
-
 	for Incr(0, inputParams.Increment, IncrementValues, incrIndex) {
 		// fmt.Println(IncrementValues, incrIndex)
 
@@ -70,7 +69,6 @@ func Increment(inputParams parser.InputParams) (parser.RequestsResultsInc, error
 		final = append(final, resultByRequest...)
 		sn += 1
 	}
-
 
 	fmt.Println(final)
 

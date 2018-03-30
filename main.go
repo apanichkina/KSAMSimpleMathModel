@@ -8,7 +8,7 @@ import (
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 )
 
-var fileInput = flag.String("in", "./data/true_input.json", "in - input model file")
+var fileInput = flag.String("in", "./data/true_input2.json", "in - input model file")
 
 func main() {
 	flag.Parse()
