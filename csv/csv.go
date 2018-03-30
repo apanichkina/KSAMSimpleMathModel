@@ -144,10 +144,16 @@ func ToCSV(arr []interface{}) ([]byte, error) {
 	buf := bytes.NewBuffer(resultBytes)
 
 	w := csv.NewWriter(buf)
-	err := w.WriteAll(result)
-	if err != nil {
+	w.Comma = ';'
+
+	if err := w.WriteAll(result); err != nil {
 		return nil, err
 	}
 
-	return buf.Bytes(), nil
+	return changePointsToCommas(buf.Bytes()), nil
+}
+
+func changePointsToCommas(arr []byte) []byte {
+	str := string(arr)
+	return []byte(strings.Replace(str, ".", ",", -1))
 }
