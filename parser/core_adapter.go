@@ -67,6 +67,9 @@ func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64
 	var P float64 = 1      // P для Y по условиям join, по которым не читается таблица
 	var Attr *Attribute = nil
 	var JoinLeftI float64 = 0
+	if N < 1 {
+		return Attr, P, JoinLeftI, fmt.Errorf("nothing to join %s", q.Name)
+	}
 	for _, leftTable := range x {
 		var joinAttrs, canSearchJoinSequence, err = q.FindJoins(leftTable.GetID(), rightTable.GetID())
 		if err != nil {
@@ -112,7 +115,7 @@ func (q Query) GetJoinAttr(x []*TableInQuery, rightTable TableInQuery, N float64
 func (q Query) GetAllCondition(tableId string) (float64, error) {
 	var result float64 = 1
 	for _, c := range q.Conditions {
-		if c.TableId == tableId {
+		if c.TableId == tableId && c.P > 0.0 {
 			result *= c.P
 		}
 	}

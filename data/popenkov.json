@@ -1,0 +1,4881 @@
+{"name": "Model0409",
+  "_id": {
+    "$oid": "6da6c661-c57d-2cd6-8507-5b0112867b4b"
+  },
+  "increment": [
+  ],
+  "requests": [
+    {
+      "id": {
+        "$oid": "283993a2-719a-b13f-0d60-b2630b798c25"
+      },
+      "name": "REQUEST1",
+      "type": "object_request",
+      "toggled": true,
+      "showing": false,
+      "valid": true,
+      "mode": "online",
+      "frequency": 2,
+      "database": "30dfe50b-698e-c06b-609e-f0663786ae4d",
+      "node": "68b8ddbe-ef81-fcff-add9-b1009545bae1",
+      "transaction": "c8e843f1-ebe5-4eaf-fc02-5299c98d27d8"
+    },
+    {
+      "id": {
+        "$oid": "0eea9759-a238-6a11-6e6b-76ceabce6966"
+      },
+      "name": "REQUEST4",
+      "type": "object_request",
+      "toggled": true,
+      "showing": true,
+      "valid": true,
+      "mode": "offline",
+      "frequency": 20,
+      "database": "30dfe50b-698e-c06b-609e-f0663786ae4d",
+      "transaction": "049ae6a8-d02f-7563-a1c4-2064a77a97a0"
+    }
+  ],
+  "database": [
+    {
+      "id": {
+        "$oid": "30dfe50b-698e-c06b-609e-f0663786ae4d"
+      },
+      "name": "PHYSICAL_DATABASE",
+      "type": "object_database",
+      "showing": false,
+      "valid": true,
+      "dbtype": "ColumnarDataBase",
+      "node": "ea54ab1b-e205-210c-1200-a6cea46613e4",
+      "datamodel": "077a88ea-b608-4f36-3d7a-ea51df88e1fb"
+    }
+  ],
+  "networks": [
+    {
+      "id": {
+        "$oid": "8b5f11f5-89bd-3d97-c88a-f5d27fb4efd0"
+      },
+      "name": "NET",
+      "type": "object_network",
+      "nodes": [
+        "ea54ab1b-e205-210c-1200-a6cea46613e4",
+        "68b8ddbe-ef81-fcff-add9-b1009545bae1"
+      ],
+      "showing": false,
+      "valid": true,
+      "speed": 1000,
+      "toggled": true
+    }
+  ],
+  "nodes": [
+    {
+      "id": {
+        "$oid": "ea54ab1b-e205-210c-1200-a6cea46613e4"
+      },
+      "name": "CLUSTER1",
+      "type": "cluster",
+      "showing": false,
+      "valid": true,
+      "node_type": "cluster",
+      "nodecount": 36,
+      "mode": "SN",
+      "mem": 10000,
+      "disk": 200,
+      "diskcount": 36,
+      "net": 10000,
+      "proc": 2.3
+    },
+    {
+      "id": {
+        "$oid": "68b8ddbe-ef81-fcff-add9-b1009545bae1"
+      },
+      "name": "PC2",
+      "type": "pc",
+      "toggled": true,
+      "showing": false,
+      "valid": true,
+      "node_type": "pc",
+      "nodecount": 10
+    }
+  ],
+  "datamodel": [
+    {
+      "id": {
+        "$oid": "077a88ea-b608-4f36-3d7a-ea51df88e1fb"
+      },
+      "name": "Schema",
+      "type": "object_datamodel",
+      "children": [
+        {
+          "name": "Таблицы",
+          "id": "meta_tables077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "meta_tables",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "children": [
+            {
+              "id": {
+                "$oid": "ba2f10bd-14ca-041b-cfa0-494df04fda6d"
+              },
+              "name": "SUPPLIER",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "0e2dd883-a530-ded4-74c6-1b5b33c46cb1"
+                  },
+                  "name": "S_SUPPKEY",
+                  "type": "long",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 50000000,
+                  "pk": true,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "909b0402-0986-ae35-b868-1e5b01a5fbcc"
+                  },
+                  "name": "S_NAME",
+                  "type": "text",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "d0105f6f-7a99-b38b-a831-e16f51aed5be"
+                  },
+                  "name": "S_ADDRESS",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 40,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+                  },
+                  "name": "S_NATIONKEY",
+                  "type": "long",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 25,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "33e615c8-9caa-d126-aab8-df3cba9a6752"
+                  },
+                  "name": "S_PHONE",
+                  "type": "text",
+                  "toggled": false,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 15,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "a23b8de4-1ad3-c2fb-a830-6b2a897a56e2"
+                  },
+                  "name": "S_ACCTBAL",
+                  "type": "decimal",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "decimal",
+                  "size": 4,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "375fd7de-6c5a-60a4-eec1-d93dd66b742b"
+                  },
+                  "name": "S_COMMENT",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 101,
+                  "attr_I": "",
+                  "pk": false
+                }
+              ],
+              "showing": false,
+              "valid": true,
+              "nrows": 50000000,
+              "toggled": false,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "0e2dd883-a530-ded4-74c6-1b5b33c46cb1"
+                  },
+                  "name": "S_SUPPKEY",
+                  "type": "long",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 50000000,
+                  "pk": true,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "909b0402-0986-ae35-b868-1e5b01a5fbcc"
+                  },
+                  "name": "S_NAME",
+                  "type": "text",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "d0105f6f-7a99-b38b-a831-e16f51aed5be"
+                  },
+                  "name": "S_ADDRESS",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 40,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+                  },
+                  "name": "S_NATIONKEY",
+                  "type": "long",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 25,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "33e615c8-9caa-d126-aab8-df3cba9a6752"
+                  },
+                  "name": "S_PHONE",
+                  "type": "text",
+                  "toggled": false,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 15,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "a23b8de4-1ad3-c2fb-a830-6b2a897a56e2"
+                  },
+                  "name": "S_ACCTBAL",
+                  "type": "decimal",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "decimal",
+                  "size": 4,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "375fd7de-6c5a-60a4-eec1-d93dd66b742b"
+                  },
+                  "name": "S_COMMENT",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 101,
+                  "attr_I": "",
+                  "pk": false
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "222f89d3-2d5a-b970-619d-56e485374641"
+              },
+              "name": "PART",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "9a046cc8-5b52-98f7-b6d0-87accc955452"
+                  },
+                  "name": "P_PARTKEY",
+                  "type": "long",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 1000000000,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "8805f4ad-d132-9d56-2dac-99a45bd00786"
+                  },
+                  "name": "P_NAME",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 55,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "e25def97-d5de-0e23-d596-229790e5ad69"
+                  },
+                  "name": "P_MFGR",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "1dcd3534-cd26-f7ec-f5fc-9ff75044c28a"
+                  },
+                  "name": "P_BRAND",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 10
+                },
+                {
+                  "id": {
+                    "$oid": "35daf22b-9f74-8aa0-536c-875e86520fcc"
+                  },
+                  "name": "P_TYPE",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25
+                },
+                {
+                  "id": {
+                    "$oid": "3eef0a41-9a24-61b0-109d-6159fa7d70da"
+                  },
+                  "name": "P_SIZE",
+                  "type": "integer",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "integer",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "0a93cb8d-1a07-13b7-dcd7-fc8805f249ce"
+                  },
+                  "name": "P_CONTAINER",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 10,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "78276ae0-0b57-c687-8315-7307fd022a3f"
+                  },
+                  "name": "P_RETAILPRICE",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "884b12da-6386-0870-9793-6161dd640d16"
+                  },
+                  "name": "P_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 23
+                }
+              ],
+              "showing": false,
+              "valid": true,
+              "nrows": 1000000000,
+              "toggled": false,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "9a046cc8-5b52-98f7-b6d0-87accc955452"
+                  },
+                  "name": "P_PARTKEY",
+                  "type": "long",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 1000000000,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "8805f4ad-d132-9d56-2dac-99a45bd00786"
+                  },
+                  "name": "P_NAME",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 55,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "e25def97-d5de-0e23-d596-229790e5ad69"
+                  },
+                  "name": "P_MFGR",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "1dcd3534-cd26-f7ec-f5fc-9ff75044c28a"
+                  },
+                  "name": "P_BRAND",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 10
+                },
+                {
+                  "id": {
+                    "$oid": "35daf22b-9f74-8aa0-536c-875e86520fcc"
+                  },
+                  "name": "P_TYPE",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25
+                },
+                {
+                  "id": {
+                    "$oid": "3eef0a41-9a24-61b0-109d-6159fa7d70da"
+                  },
+                  "name": "P_SIZE",
+                  "type": "integer",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "integer",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "0a93cb8d-1a07-13b7-dcd7-fc8805f249ce"
+                  },
+                  "name": "P_CONTAINER",
+                  "type": "text",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 10,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "78276ae0-0b57-c687-8315-7307fd022a3f"
+                  },
+                  "name": "P_RETAILPRICE",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "884b12da-6386-0870-9793-6161dd640d16"
+                  },
+                  "name": "P_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 23
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "3508398f-2e8f-cc87-4c1f-72e15804cf30"
+              },
+              "name": "PARTSUPP",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "2f5a90cf-83b0-b944-cadd-acab39907517"
+                  },
+                  "name": "PS_PARTKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 1000000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "7a63191a-ebcc-8aff-9ec8-02be4e2e3c49"
+                  },
+                  "name": "PS_SUPPKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 50000000
+                },
+                {
+                  "id": {
+                    "$oid": "d4834b71-ce49-c314-5397-f066b5521db9"
+                  },
+                  "name": "PS_AVAILQTY",
+                  "type": "integer",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "integer",
+                  "size": 8
+                },
+                {
+                  "id": {
+                    "$oid": "1b2deca7-7650-bf5e-7825-9d2fc8a63bde"
+                  },
+                  "name": "PS_SUPPLYCOST",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "eb748b43-375f-6fb8-c525-d2d7a98b5900"
+                  },
+                  "name": "PS_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 199
+                }
+              ],
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "nrows": 4000000000,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "2f5a90cf-83b0-b944-cadd-acab39907517"
+                  },
+                  "name": "PS_PARTKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 1000000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "7a63191a-ebcc-8aff-9ec8-02be4e2e3c49"
+                  },
+                  "name": "PS_SUPPKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 50000000
+                },
+                {
+                  "id": {
+                    "$oid": "d4834b71-ce49-c314-5397-f066b5521db9"
+                  },
+                  "name": "PS_AVAILQTY",
+                  "type": "integer",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "integer",
+                  "size": 8
+                },
+                {
+                  "id": {
+                    "$oid": "1b2deca7-7650-bf5e-7825-9d2fc8a63bde"
+                  },
+                  "name": "PS_SUPPLYCOST",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "eb748b43-375f-6fb8-c525-d2d7a98b5900"
+                  },
+                  "name": "PS_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 199
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "026e7ec5-a872-27de-7d78-5f862fa68376"
+              },
+              "name": "CUSTOMER",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+                  },
+                  "name": "C_CUSTKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 750000000,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "6d9126c8-f895-10f5-4324-38c96d3584c9"
+                  },
+                  "name": "C_NAME",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": 750000000,
+                  "pk": false,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "e698a0a0-3fe6-ef28-3ff4-549fef9b4a75"
+                  },
+                  "name": "C_ADDRESS",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 40,
+                  "attr_I": 750000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "45e368be-5e18-0098-eef6-edc7c9a30fe4"
+                  },
+                  "name": "C_NATIONKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 25
+                },
+                {
+                  "id": {
+                    "$oid": "28cb331c-c0b2-3652-5030-16580dc6414c"
+                  },
+                  "name": "C_PHONE",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 15,
+                  "toggled": true,
+                  "attr_I": 750000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "1059236f-bb0e-d07c-63ea-55196467f09a"
+                  },
+                  "name": "C_ACCTBAL",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4,
+                  "toggled": true,
+                  "attr_I": 1099998,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "afa4fc28-6f52-4b4b-4668-0bac012d9acd"
+                  },
+                  "name": "C_MKTSEGMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 10
+                },
+                {
+                  "id": {
+                    "$oid": "edf9e348-f568-ca01-7a60-545fe3909ece"
+                  },
+                  "name": "C_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 117,
+                  "attr_I": 750000000,
+                  "pk": false
+                }
+              ],
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "nrows": 750000000,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+                  },
+                  "name": "C_CUSTKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 750000000,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "6d9126c8-f895-10f5-4324-38c96d3584c9"
+                  },
+                  "name": "C_NAME",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": 750000000,
+                  "pk": false,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "e698a0a0-3fe6-ef28-3ff4-549fef9b4a75"
+                  },
+                  "name": "C_ADDRESS",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 40,
+                  "attr_I": 750000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "45e368be-5e18-0098-eef6-edc7c9a30fe4"
+                  },
+                  "name": "C_NATIONKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 25
+                },
+                {
+                  "id": {
+                    "$oid": "28cb331c-c0b2-3652-5030-16580dc6414c"
+                  },
+                  "name": "C_PHONE",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 15,
+                  "toggled": true,
+                  "attr_I": 750000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "1059236f-bb0e-d07c-63ea-55196467f09a"
+                  },
+                  "name": "C_ACCTBAL",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4,
+                  "toggled": true,
+                  "attr_I": 1099998,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "afa4fc28-6f52-4b4b-4668-0bac012d9acd"
+                  },
+                  "name": "C_MKTSEGMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 10
+                },
+                {
+                  "id": {
+                    "$oid": "edf9e348-f568-ca01-7a60-545fe3909ece"
+                  },
+                  "name": "C_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 117,
+                  "attr_I": 750000000,
+                  "pk": false
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "1f64d843-7c55-0f61-b457-05863292a8be"
+              },
+              "name": "ORDERS",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+                  },
+                  "name": "O_ORDERKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 7500000000,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "c2d35ac2-e277-520c-bad4-7067f97de2f3"
+                  },
+                  "name": "O_CUSTKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 750000000
+                },
+                {
+                  "id": {
+                    "$oid": "d7ae5d8d-add8-db3f-dbb0-1c5dfcd6f17e"
+                  },
+                  "name": "O_ORDERSTATUS",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 1
+                },
+                {
+                  "id": {
+                    "$oid": "6a2164a8-2d29-635e-debf-bf48e2fe870e"
+                  },
+                  "name": "O_TOTALPRICE",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "2ca8b930-434e-74de-8fdb-b8d282de7180"
+                  },
+                  "name": "O_ORDERDATE",
+                  "type": "date",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "date",
+                  "size": 4,
+                  "attr_I": 2405
+                },
+                {
+                  "id": {
+                    "$oid": "1390509b-65e1-eef3-97c1-7d213f89fe29"
+                  },
+                  "name": "O_ORDERPRIORITY",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 15,
+                  "attr_I": 5,
+                  "pk": false,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "fc229108-7003-73cb-dae5-6ffdc025a91d"
+                  },
+                  "name": "O_CLERK",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 15
+                },
+                {
+                  "id": {
+                    "$oid": "f2cc1bd5-d491-2680-4682-14c13420ee32"
+                  },
+                  "name": "O_SHIPPRIORITY",
+                  "type": "integer",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "integer",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "0719a680-fba2-55c8-0919-8e4cd69eb316"
+                  },
+                  "name": "O_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 79
+                }
+              ],
+              "showing": false,
+              "valid": true,
+              "nrows": 7500000000,
+              "toggled": false,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+                  },
+                  "name": "O_ORDERKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 7500000000,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "c2d35ac2-e277-520c-bad4-7067f97de2f3"
+                  },
+                  "name": "O_CUSTKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 750000000
+                },
+                {
+                  "id": {
+                    "$oid": "d7ae5d8d-add8-db3f-dbb0-1c5dfcd6f17e"
+                  },
+                  "name": "O_ORDERSTATUS",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 1
+                },
+                {
+                  "id": {
+                    "$oid": "6a2164a8-2d29-635e-debf-bf48e2fe870e"
+                  },
+                  "name": "O_TOTALPRICE",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "2ca8b930-434e-74de-8fdb-b8d282de7180"
+                  },
+                  "name": "O_ORDERDATE",
+                  "type": "date",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "date",
+                  "size": 4,
+                  "attr_I": 2405
+                },
+                {
+                  "id": {
+                    "$oid": "1390509b-65e1-eef3-97c1-7d213f89fe29"
+                  },
+                  "name": "O_ORDERPRIORITY",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 15,
+                  "attr_I": 5,
+                  "pk": false,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "fc229108-7003-73cb-dae5-6ffdc025a91d"
+                  },
+                  "name": "O_CLERK",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 15
+                },
+                {
+                  "id": {
+                    "$oid": "f2cc1bd5-d491-2680-4682-14c13420ee32"
+                  },
+                  "name": "O_SHIPPRIORITY",
+                  "type": "integer",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "integer",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "0719a680-fba2-55c8-0919-8e4cd69eb316"
+                  },
+                  "name": "O_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 79
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "55d9374a-70fd-7ba4-381d-317a79fa2ad9"
+              },
+              "name": "LINEITEM",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+                  },
+                  "name": "L_ORDERKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 7500000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "afb2cf5f-fb49-59d8-18b6-0c7dfb10d3e6"
+                  },
+                  "name": "L_PARTKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 1000000000
+                },
+                {
+                  "id": {
+                    "$oid": "66fca9bc-5fd7-db1b-88e1-d608d8cc6f17"
+                  },
+                  "name": "L_SUPPKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 50000000
+                },
+                {
+                  "id": {
+                    "$oid": "a9e7cb0a-6596-05ec-ef2e-e1054aa308f9"
+                  },
+                  "name": "L_LINENUMBER",
+                  "type": "integer",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "integer",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "646017e2-cfe7-0a92-e7a6-6a9d0cd7a49d"
+                  },
+                  "name": "L_QUANTITY",
+                  "type": "decimal",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "decimal",
+                  "size": 4,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "a7c002a1-0288-e43c-f4e0-0a47cbd00ee4"
+                  },
+                  "name": "L_EXTENDEDPRICE",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "e8a3592f-4a90-a9be-d737-34a6dd7fa112"
+                  },
+                  "name": "L_DISCOUNT",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "40abc986-3376-381a-8ce1-5ab151ead5e0"
+                  },
+                  "name": "L_TAX",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "14a6c4b7-c644-2a04-737c-d72cda79bcc3"
+                  },
+                  "name": "L_RETURNFLAG",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 1
+                },
+                {
+                  "id": {
+                    "$oid": "37bae503-35ad-fcf2-f8cf-74729fa389e4"
+                  },
+                  "name": "L_LINESTATUS",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 1
+                },
+                {
+                  "id": {
+                    "$oid": "c9ee3992-4e87-b8b7-e026-a853d9b9ea68"
+                  },
+                  "name": "L_SHIPDATE",
+                  "type": "date",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "date",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "b4e2b7da-e101-edae-af6b-0a904cbb6400"
+                  },
+                  "name": "L_COMMITDATE",
+                  "type": "date",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "date",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "4e9d52b5-80a5-6663-a5d7-3657aa49ba34"
+                  },
+                  "name": "L_RECEIPTDATE",
+                  "type": "date",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "date",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "cf98fc81-ddcc-e8ad-ce0c-6f1aaa582ae2"
+                  },
+                  "name": "L_SHIPINSTRUCT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25
+                },
+                {
+                  "id": {
+                    "$oid": "9dbef027-83a7-7f2f-e0c0-cd07f34af557"
+                  },
+                  "name": "L_SHIPMODE",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 10
+                },
+                {
+                  "id": {
+                    "$oid": "6b46b8e8-61f8-0cde-b63d-675bb3753acf"
+                  },
+                  "name": "L_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 44
+                }
+              ],
+              "showing": false,
+              "valid": true,
+              "nrows": 30006075000,
+              "toggled": false,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+                  },
+                  "name": "L_ORDERKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 7500000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "afb2cf5f-fb49-59d8-18b6-0c7dfb10d3e6"
+                  },
+                  "name": "L_PARTKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 1000000000
+                },
+                {
+                  "id": {
+                    "$oid": "66fca9bc-5fd7-db1b-88e1-d608d8cc6f17"
+                  },
+                  "name": "L_SUPPKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 50000000
+                },
+                {
+                  "id": {
+                    "$oid": "a9e7cb0a-6596-05ec-ef2e-e1054aa308f9"
+                  },
+                  "name": "L_LINENUMBER",
+                  "type": "integer",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "integer",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "646017e2-cfe7-0a92-e7a6-6a9d0cd7a49d"
+                  },
+                  "name": "L_QUANTITY",
+                  "type": "decimal",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "decimal",
+                  "size": 4,
+                  "attr_I": "",
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "a7c002a1-0288-e43c-f4e0-0a47cbd00ee4"
+                  },
+                  "name": "L_EXTENDEDPRICE",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "e8a3592f-4a90-a9be-d737-34a6dd7fa112"
+                  },
+                  "name": "L_DISCOUNT",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "40abc986-3376-381a-8ce1-5ab151ead5e0"
+                  },
+                  "name": "L_TAX",
+                  "type": "decimal",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "14a6c4b7-c644-2a04-737c-d72cda79bcc3"
+                  },
+                  "name": "L_RETURNFLAG",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 1
+                },
+                {
+                  "id": {
+                    "$oid": "37bae503-35ad-fcf2-f8cf-74729fa389e4"
+                  },
+                  "name": "L_LINESTATUS",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 1
+                },
+                {
+                  "id": {
+                    "$oid": "c9ee3992-4e87-b8b7-e026-a853d9b9ea68"
+                  },
+                  "name": "L_SHIPDATE",
+                  "type": "date",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "date",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "b4e2b7da-e101-edae-af6b-0a904cbb6400"
+                  },
+                  "name": "L_COMMITDATE",
+                  "type": "date",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "date",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "4e9d52b5-80a5-6663-a5d7-3657aa49ba34"
+                  },
+                  "name": "L_RECEIPTDATE",
+                  "type": "date",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "date",
+                  "size": 4
+                },
+                {
+                  "id": {
+                    "$oid": "cf98fc81-ddcc-e8ad-ce0c-6f1aaa582ae2"
+                  },
+                  "name": "L_SHIPINSTRUCT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25
+                },
+                {
+                  "id": {
+                    "$oid": "9dbef027-83a7-7f2f-e0c0-cd07f34af557"
+                  },
+                  "name": "L_SHIPMODE",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 10
+                },
+                {
+                  "id": {
+                    "$oid": "6b46b8e8-61f8-0cde-b63d-675bb3753acf"
+                  },
+                  "name": "L_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 44
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "ae53d68f-a0c9-1a52-e2d5-6b28d6f37e5d"
+              },
+              "name": "NATION",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+                  },
+                  "name": "N_NATIONKEY",
+                  "type": "long",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 25,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+                  },
+                  "name": "N_NAME",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": 25,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "10ba1117-9e7d-79bc-2919-67abe7018ee6"
+                  },
+                  "name": "N_REGIONKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 5
+                },
+                {
+                  "id": {
+                    "$oid": "e4619689-bbfb-13fe-436b-dcc7f3b291c3"
+                  },
+                  "name": "N_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 152
+                }
+              ],
+              "showing": false,
+              "valid": true,
+              "nrows": 25,
+              "toggled": false,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+                  },
+                  "name": "N_NATIONKEY",
+                  "type": "long",
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 25,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+                  },
+                  "name": "N_NAME",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": 25,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "10ba1117-9e7d-79bc-2919-67abe7018ee6"
+                  },
+                  "name": "N_REGIONKEY",
+                  "type": "long",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 5
+                },
+                {
+                  "id": {
+                    "$oid": "e4619689-bbfb-13fe-436b-dcc7f3b291c3"
+                  },
+                  "name": "N_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 152
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "df912c17-0dba-3e51-a993-8f4fadb80f80"
+              },
+              "name": "REGION",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "b25bc5db-244c-2ca7-5352-54ffbdbb5eb2"
+                  },
+                  "name": "R_REGIONKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 5,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "6e3cf200-4ade-5bc6-a0dd-79f8a6c6b4cb"
+                  },
+                  "name": "R_NAME",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "cb841412-3162-1eeb-d234-4b080f007cc2"
+                  },
+                  "name": "R_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 152
+                }
+              ],
+              "showing": false,
+              "valid": true,
+              "nrows": 5,
+              "toggled": false,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "b25bc5db-244c-2ca7-5352-54ffbdbb5eb2"
+                  },
+                  "name": "R_REGIONKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 5,
+                  "pk": true
+                },
+                {
+                  "id": {
+                    "$oid": "6e3cf200-4ade-5bc6-a0dd-79f8a6c6b4cb"
+                  },
+                  "name": "R_NAME",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 25,
+                  "toggled": true
+                },
+                {
+                  "id": {
+                    "$oid": "cb841412-3162-1eeb-d234-4b080f007cc2"
+                  },
+                  "name": "R_COMMENT",
+                  "type": "text",
+                  "valid": true,
+                  "showing": false,
+                  "attr_type": "text",
+                  "size": 152
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "10a08fc6-25cf-2339-702d-b7c0ad04ae47"
+              },
+              "name": "TABLQ41",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "a77e74ba-7042-9734-8198-961376b86624"
+                  },
+                  "name": "O_ORDERKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 7500000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "5ce465c1-a80f-f27b-a493-1a36433269a1"
+                  },
+                  "name": "OCOUNT",
+                  "type": "long",
+                  "toggled": false,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": "",
+                  "pk": false
+                }
+              ],
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "nrows": 300000000,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "a77e74ba-7042-9734-8198-961376b86624"
+                  },
+                  "name": "O_ORDERKEY",
+                  "type": "long",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": 7500000000,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "5ce465c1-a80f-f27b-a493-1a36433269a1"
+                  },
+                  "name": "OCOUNT",
+                  "type": "long",
+                  "toggled": false,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "long",
+                  "size": 8,
+                  "attr_I": "",
+                  "pk": false
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "4a3ceb3e-8727-847d-36c8-3b0210031fb3"
+              },
+              "name": "TABLQ71",
+              "type": "object_table",
+              "children": [
+                {
+                  "id": {
+                    "$oid": "ec868f7a-d523-0dda-df75-9ce1c6c1e977"
+                  },
+                  "name": "SUPP_NATION",
+                  "type": "text",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": 25,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "78c600ab-40ef-6acc-a825-ba33f5021ad3"
+                  },
+                  "name": "CUST_NATION",
+                  "type": "text",
+                  "toggled": false,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": 25,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "5dadcde8-d7e4-8509-82da-73114dab7cc5"
+                  },
+                  "name": "L_YEAR",
+                  "type": "integer",
+                  "toggled": false,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "integer",
+                  "size": 4,
+                  "attr_I": 6,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "cb6f602f-198f-24db-97e0-a28f837c2792"
+                  },
+                  "name": "VOLUME",
+                  "type": "decimal",
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4,
+                  "valid": true
+                }
+              ],
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "nrows": 696140940,
+              "attributes": [
+                {
+                  "id": {
+                    "$oid": "ec868f7a-d523-0dda-df75-9ce1c6c1e977"
+                  },
+                  "name": "SUPP_NATION",
+                  "type": "text",
+                  "toggled": true,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": 25,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "78c600ab-40ef-6acc-a825-ba33f5021ad3"
+                  },
+                  "name": "CUST_NATION",
+                  "type": "text",
+                  "toggled": false,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "text",
+                  "size": 25,
+                  "attr_I": 25,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "5dadcde8-d7e4-8509-82da-73114dab7cc5"
+                  },
+                  "name": "L_YEAR",
+                  "type": "integer",
+                  "toggled": false,
+                  "showing": false,
+                  "valid": true,
+                  "attr_type": "integer",
+                  "size": 4,
+                  "attr_I": 6,
+                  "pk": false
+                },
+                {
+                  "id": {
+                    "$oid": "cb6f602f-198f-24db-97e0-a28f837c2792"
+                  },
+                  "name": "VOLUME",
+                  "type": "decimal",
+                  "showing": false,
+                  "attr_type": "decimal",
+                  "size": 4,
+                  "valid": true
+                }
+              ]
+            }
+          ],
+          "valid": true,
+          "toggled": true
+        },
+        {
+          "name": "Запросы",
+          "id": "meta_queries077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "meta_queries",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "children": [
+            {
+              "id": {
+                "$oid": "4f168f20-d630-1c8f-b45c-06554fb6bb2a"
+              },
+              "name": "Q5",
+              "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+              "type": "complex",
+              "tables": [
+                {
+                  "pseudoname": "CUSTOMER",
+                  "id": {
+                    "$oid": "be6cedb6-17d2-eaaa-6667-1386c070da2a"
+                  },
+                  "tableid": "026e7ec5-a872-27de-7d78-5f862fa68376"
+                },
+                {
+                  "pseudoname": "ORDERS",
+                  "id": {
+                    "$oid": "dd9c42a9-9d47-d2a1-9022-8dfaac7f4763"
+                  },
+                  "tableid": "1f64d843-7c55-0f61-b457-05863292a8be"
+                },
+                {
+                  "pseudoname": "LINEITEM",
+                  "id": {
+                    "$oid": "b8c7071f-1d3f-3ccc-1b18-41c938fe7d27"
+                  },
+                  "tableid": "55d9374a-70fd-7ba4-381d-317a79fa2ad9"
+                },
+                {
+                  "pseudoname": "SUPPLIER",
+                  "id": {
+                    "$oid": "f9e03749-325e-14b6-160b-828ac4d8f443"
+                  },
+                  "tableid": "ba2f10bd-14ca-041b-cfa0-494df04fda6d"
+                },
+                {
+                  "pseudoname": "NATION",
+                  "id": {
+                    "$oid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0"
+                  },
+                  "tableid": "ae53d68f-a0c9-1a52-e2d5-6b28d6f37e5d"
+                },
+                {
+                  "pseudoname": "REGION",
+                  "id": {
+                    "$oid": "e20def1c-5b47-fa18-a66b-3cbd1895edae"
+                  },
+                  "tableid": "df912c17-0dba-3e51-a993-8f4fadb80f80"
+                }
+              ],
+              "joins": [
+                {
+                  "id": {
+                    "$oid": "5ce56485-679d-9f45-c9e6-202f1955f64e"
+                  },
+                  "join": [
+                    {
+                      "tableid": "be6cedb6-17d2-eaaa-6667-1386c070da2a",
+                      "attributes": [
+                        "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+                      ]
+                    },
+                    {
+                      "tableid": "dd9c42a9-9d47-d2a1-9022-8dfaac7f4763",
+                      "attributes": [
+                        "c2d35ac2-e277-520c-bad4-7067f97de2f3"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": {
+                    "$oid": "ea8f6585-7932-f00e-3674-04ba4dbd5f32"
+                  },
+                  "join": [
+                    {
+                      "tableid": "b8c7071f-1d3f-3ccc-1b18-41c938fe7d27",
+                      "attributes": [
+                        "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+                      ]
+                    },
+                    {
+                      "tableid": "dd9c42a9-9d47-d2a1-9022-8dfaac7f4763",
+                      "attributes": [
+                        "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": {
+                    "$oid": "96d65c72-9d72-be59-c327-5a1a64554e81"
+                  },
+                  "join": [
+                    {
+                      "tableid": "b8c7071f-1d3f-3ccc-1b18-41c938fe7d27",
+                      "attributes": [
+                        "66fca9bc-5fd7-db1b-88e1-d608d8cc6f17"
+                      ]
+                    },
+                    {
+                      "tableid": "f9e03749-325e-14b6-160b-828ac4d8f443",
+                      "attributes": [
+                        "0e2dd883-a530-ded4-74c6-1b5b33c46cb1"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": {
+                    "$oid": "373f4210-570e-5691-a67a-afa1c89e3cb0"
+                  },
+                  "join": [
+                    {
+                      "tableid": "be6cedb6-17d2-eaaa-6667-1386c070da2a",
+                      "attributes": [
+                        "45e368be-5e18-0098-eef6-edc7c9a30fe4"
+                      ]
+                    },
+                    {
+                      "tableid": "f9e03749-325e-14b6-160b-828ac4d8f443",
+                      "attributes": [
+                        "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": {
+                    "$oid": "778d1943-d212-428a-1ada-ec6e0eaa0ac6"
+                  },
+                  "join": [
+                    {
+                      "tableid": "f9e03749-325e-14b6-160b-828ac4d8f443",
+                      "attributes": [
+                        "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+                      ]
+                    },
+                    {
+                      "tableid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0",
+                      "attributes": [
+                        "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": {
+                    "$oid": "9883725f-8d57-c982-c091-9e479bf50ea1"
+                  },
+                  "join": [
+                    {
+                      "tableid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0",
+                      "attributes": [
+                        "10ba1117-9e7d-79bc-2919-67abe7018ee6"
+                      ]
+                    },
+                    {
+                      "tableid": "e20def1c-5b47-fa18-a66b-3cbd1895edae",
+                      "attributes": [
+                        "b25bc5db-244c-2ca7-5352-54ffbdbb5eb2"
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "projection": [
+                {
+                  "tableid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0",
+                  "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+                }
+              ],
+              "order": [],
+              "group": [
+                {
+                  "tableid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0",
+                  "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+                }
+              ],
+              "condition": [
+                {
+                  "tableid": "e20def1c-5b47-fa18-a66b-3cbd1895edae",
+                  "attributeid": "6e3cf200-4ade-5bc6-a0dd-79f8a6c6b4cb",
+                  "P": 0.15
+                },
+                {
+                  "tableid": "e20def1c-5b47-fa18-a66b-3cbd1895edae",
+                  "attributeid": "6e3cf200-4ade-5bc6-a0dd-79f8a6c6b4cb",
+                  "P": null
+                }
+              ],
+              "showing": false,
+              "valid": true,
+              "toggled": true,
+              "stepIndex": 1,
+              "query_type": "complex",
+              "aggregate": [
+                {
+                  "name": "REVENUE",
+                  "size": 4
+                }
+              ]
+            }
+          ],
+          "valid": true,
+          "toggled": true
+        },
+        {
+          "name": "Транзакции",
+          "id": "meta_transactions077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "meta_transactions",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "children": [
+            {
+              "id": {
+                "$oid": "c8e843f1-ebe5-4eaf-fc02-5299c98d27d8"
+              },
+              "name": "TR1",
+              "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+              "type": "object_transaction",
+              "queries": [
+                {
+                  "queryid": "4f168f20-d630-1c8f-b45c-06554fb6bb2a",
+                  "rep": 1
+                },
+                {
+                  "queryid": "1cccc5f4-00be-b73e-74be-a82463ff0aad",
+                  "rep": 1
+                },
+                {
+                  "queryid": "443a0533-b6be-64bd-2aa0-bfba64680707",
+                  "rep": 1,
+                  "sub": true
+                }
+              ],
+              "showing": false,
+              "valid": true,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "049ae6a8-d02f-7563-a1c4-2064a77a97a0"
+              },
+              "name": "TR2",
+              "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+              "type": "object_transaction",
+              "queries": [
+                {
+                  "queryid": "f4a4b46c-c85a-32ba-f7fc-35806217ab18",
+                  "rep": 1
+                },
+                {
+                  "queryid": "3d953471-1f2a-2d34-fa21-75f999d32334",
+                  "rep": 1,
+                  "sub": false
+                },
+                {
+                  "queryid": "9d2dc696-01f7-88ca-aff1-548d256beb79",
+                  "rep": 1,
+                  "sub": true
+                }
+              ],
+              "showing": false,
+              "valid": true
+            }
+          ],
+          "valid": true,
+          "toggled": true
+        }
+      ],
+      "showing": false,
+      "valid": true,
+      "toggled": true,
+      "tables": [
+        {
+          "id": {
+            "$oid": "ba2f10bd-14ca-041b-cfa0-494df04fda6d"
+          },
+          "name": "SUPPLIER",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "0e2dd883-a530-ded4-74c6-1b5b33c46cb1"
+              },
+              "name": "S_SUPPKEY",
+              "type": "long",
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 50000000,
+              "pk": true,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "909b0402-0986-ae35-b868-1e5b01a5fbcc"
+              },
+              "name": "S_NAME",
+              "type": "text",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "d0105f6f-7a99-b38b-a831-e16f51aed5be"
+              },
+              "name": "S_ADDRESS",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 40,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+              },
+              "name": "S_NATIONKEY",
+              "type": "long",
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 25,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "33e615c8-9caa-d126-aab8-df3cba9a6752"
+              },
+              "name": "S_PHONE",
+              "type": "text",
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 15,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "a23b8de4-1ad3-c2fb-a830-6b2a897a56e2"
+              },
+              "name": "S_ACCTBAL",
+              "type": "decimal",
+              "showing": false,
+              "valid": true,
+              "attr_type": "decimal",
+              "size": 4,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "375fd7de-6c5a-60a4-eec1-d93dd66b742b"
+              },
+              "name": "S_COMMENT",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 101,
+              "attr_I": "",
+              "pk": false
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "nrows": 50000000,
+          "toggled": false,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "0e2dd883-a530-ded4-74c6-1b5b33c46cb1"
+              },
+              "name": "S_SUPPKEY",
+              "type": "long",
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 50000000,
+              "pk": true,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "909b0402-0986-ae35-b868-1e5b01a5fbcc"
+              },
+              "name": "S_NAME",
+              "type": "text",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "d0105f6f-7a99-b38b-a831-e16f51aed5be"
+              },
+              "name": "S_ADDRESS",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 40,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+              },
+              "name": "S_NATIONKEY",
+              "type": "long",
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 25,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "33e615c8-9caa-d126-aab8-df3cba9a6752"
+              },
+              "name": "S_PHONE",
+              "type": "text",
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 15,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "a23b8de4-1ad3-c2fb-a830-6b2a897a56e2"
+              },
+              "name": "S_ACCTBAL",
+              "type": "decimal",
+              "showing": false,
+              "valid": true,
+              "attr_type": "decimal",
+              "size": 4,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "375fd7de-6c5a-60a4-eec1-d93dd66b742b"
+              },
+              "name": "S_COMMENT",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 101,
+              "attr_I": "",
+              "pk": false
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "222f89d3-2d5a-b970-619d-56e485374641"
+          },
+          "name": "PART",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "9a046cc8-5b52-98f7-b6d0-87accc955452"
+              },
+              "name": "P_PARTKEY",
+              "type": "long",
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 1000000000,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "8805f4ad-d132-9d56-2dac-99a45bd00786"
+              },
+              "name": "P_NAME",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 55,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "e25def97-d5de-0e23-d596-229790e5ad69"
+              },
+              "name": "P_MFGR",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "1dcd3534-cd26-f7ec-f5fc-9ff75044c28a"
+              },
+              "name": "P_BRAND",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 10
+            },
+            {
+              "id": {
+                "$oid": "35daf22b-9f74-8aa0-536c-875e86520fcc"
+              },
+              "name": "P_TYPE",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25
+            },
+            {
+              "id": {
+                "$oid": "3eef0a41-9a24-61b0-109d-6159fa7d70da"
+              },
+              "name": "P_SIZE",
+              "type": "integer",
+              "valid": true,
+              "showing": false,
+              "attr_type": "integer",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "0a93cb8d-1a07-13b7-dcd7-fc8805f249ce"
+              },
+              "name": "P_CONTAINER",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 10,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "78276ae0-0b57-c687-8315-7307fd022a3f"
+              },
+              "name": "P_RETAILPRICE",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "884b12da-6386-0870-9793-6161dd640d16"
+              },
+              "name": "P_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 23
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "nrows": 1000000000,
+          "toggled": false,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "9a046cc8-5b52-98f7-b6d0-87accc955452"
+              },
+              "name": "P_PARTKEY",
+              "type": "long",
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 1000000000,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "8805f4ad-d132-9d56-2dac-99a45bd00786"
+              },
+              "name": "P_NAME",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 55,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "e25def97-d5de-0e23-d596-229790e5ad69"
+              },
+              "name": "P_MFGR",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "1dcd3534-cd26-f7ec-f5fc-9ff75044c28a"
+              },
+              "name": "P_BRAND",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 10
+            },
+            {
+              "id": {
+                "$oid": "35daf22b-9f74-8aa0-536c-875e86520fcc"
+              },
+              "name": "P_TYPE",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25
+            },
+            {
+              "id": {
+                "$oid": "3eef0a41-9a24-61b0-109d-6159fa7d70da"
+              },
+              "name": "P_SIZE",
+              "type": "integer",
+              "valid": true,
+              "showing": false,
+              "attr_type": "integer",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "0a93cb8d-1a07-13b7-dcd7-fc8805f249ce"
+              },
+              "name": "P_CONTAINER",
+              "type": "text",
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 10,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "78276ae0-0b57-c687-8315-7307fd022a3f"
+              },
+              "name": "P_RETAILPRICE",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "884b12da-6386-0870-9793-6161dd640d16"
+              },
+              "name": "P_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 23
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "3508398f-2e8f-cc87-4c1f-72e15804cf30"
+          },
+          "name": "PARTSUPP",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "2f5a90cf-83b0-b944-cadd-acab39907517"
+              },
+              "name": "PS_PARTKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 1000000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "7a63191a-ebcc-8aff-9ec8-02be4e2e3c49"
+              },
+              "name": "PS_SUPPKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 50000000
+            },
+            {
+              "id": {
+                "$oid": "d4834b71-ce49-c314-5397-f066b5521db9"
+              },
+              "name": "PS_AVAILQTY",
+              "type": "integer",
+              "valid": true,
+              "showing": false,
+              "attr_type": "integer",
+              "size": 8
+            },
+            {
+              "id": {
+                "$oid": "1b2deca7-7650-bf5e-7825-9d2fc8a63bde"
+              },
+              "name": "PS_SUPPLYCOST",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "eb748b43-375f-6fb8-c525-d2d7a98b5900"
+              },
+              "name": "PS_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 199
+            }
+          ],
+          "toggled": false,
+          "showing": false,
+          "valid": true,
+          "nrows": 4000000000,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "2f5a90cf-83b0-b944-cadd-acab39907517"
+              },
+              "name": "PS_PARTKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 1000000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "7a63191a-ebcc-8aff-9ec8-02be4e2e3c49"
+              },
+              "name": "PS_SUPPKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 50000000
+            },
+            {
+              "id": {
+                "$oid": "d4834b71-ce49-c314-5397-f066b5521db9"
+              },
+              "name": "PS_AVAILQTY",
+              "type": "integer",
+              "valid": true,
+              "showing": false,
+              "attr_type": "integer",
+              "size": 8
+            },
+            {
+              "id": {
+                "$oid": "1b2deca7-7650-bf5e-7825-9d2fc8a63bde"
+              },
+              "name": "PS_SUPPLYCOST",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "eb748b43-375f-6fb8-c525-d2d7a98b5900"
+              },
+              "name": "PS_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 199
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "026e7ec5-a872-27de-7d78-5f862fa68376"
+          },
+          "name": "CUSTOMER",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+              },
+              "name": "C_CUSTKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 750000000,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "6d9126c8-f895-10f5-4324-38c96d3584c9"
+              },
+              "name": "C_NAME",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": 750000000,
+              "pk": false,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "e698a0a0-3fe6-ef28-3ff4-549fef9b4a75"
+              },
+              "name": "C_ADDRESS",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 40,
+              "attr_I": 750000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "45e368be-5e18-0098-eef6-edc7c9a30fe4"
+              },
+              "name": "C_NATIONKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 25
+            },
+            {
+              "id": {
+                "$oid": "28cb331c-c0b2-3652-5030-16580dc6414c"
+              },
+              "name": "C_PHONE",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 15,
+              "toggled": true,
+              "attr_I": 750000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "1059236f-bb0e-d07c-63ea-55196467f09a"
+              },
+              "name": "C_ACCTBAL",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4,
+              "toggled": true,
+              "attr_I": 1099998,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "afa4fc28-6f52-4b4b-4668-0bac012d9acd"
+              },
+              "name": "C_MKTSEGMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 10
+            },
+            {
+              "id": {
+                "$oid": "edf9e348-f568-ca01-7a60-545fe3909ece"
+              },
+              "name": "C_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 117,
+              "attr_I": 750000000,
+              "pk": false
+            }
+          ],
+          "toggled": false,
+          "showing": false,
+          "valid": true,
+          "nrows": 750000000,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+              },
+              "name": "C_CUSTKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 750000000,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "6d9126c8-f895-10f5-4324-38c96d3584c9"
+              },
+              "name": "C_NAME",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": 750000000,
+              "pk": false,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "e698a0a0-3fe6-ef28-3ff4-549fef9b4a75"
+              },
+              "name": "C_ADDRESS",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 40,
+              "attr_I": 750000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "45e368be-5e18-0098-eef6-edc7c9a30fe4"
+              },
+              "name": "C_NATIONKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 25
+            },
+            {
+              "id": {
+                "$oid": "28cb331c-c0b2-3652-5030-16580dc6414c"
+              },
+              "name": "C_PHONE",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 15,
+              "toggled": true,
+              "attr_I": 750000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "1059236f-bb0e-d07c-63ea-55196467f09a"
+              },
+              "name": "C_ACCTBAL",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4,
+              "toggled": true,
+              "attr_I": 1099998,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "afa4fc28-6f52-4b4b-4668-0bac012d9acd"
+              },
+              "name": "C_MKTSEGMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 10
+            },
+            {
+              "id": {
+                "$oid": "edf9e348-f568-ca01-7a60-545fe3909ece"
+              },
+              "name": "C_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 117,
+              "attr_I": 750000000,
+              "pk": false
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "1f64d843-7c55-0f61-b457-05863292a8be"
+          },
+          "name": "ORDERS",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+              },
+              "name": "O_ORDERKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 7500000000,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "c2d35ac2-e277-520c-bad4-7067f97de2f3"
+              },
+              "name": "O_CUSTKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 750000000
+            },
+            {
+              "id": {
+                "$oid": "d7ae5d8d-add8-db3f-dbb0-1c5dfcd6f17e"
+              },
+              "name": "O_ORDERSTATUS",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 1
+            },
+            {
+              "id": {
+                "$oid": "6a2164a8-2d29-635e-debf-bf48e2fe870e"
+              },
+              "name": "O_TOTALPRICE",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "2ca8b930-434e-74de-8fdb-b8d282de7180"
+              },
+              "name": "O_ORDERDATE",
+              "type": "date",
+              "valid": true,
+              "showing": false,
+              "attr_type": "date",
+              "size": 4,
+              "attr_I": 2405
+            },
+            {
+              "id": {
+                "$oid": "1390509b-65e1-eef3-97c1-7d213f89fe29"
+              },
+              "name": "O_ORDERPRIORITY",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 15,
+              "attr_I": 5,
+              "pk": false,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "fc229108-7003-73cb-dae5-6ffdc025a91d"
+              },
+              "name": "O_CLERK",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 15
+            },
+            {
+              "id": {
+                "$oid": "f2cc1bd5-d491-2680-4682-14c13420ee32"
+              },
+              "name": "O_SHIPPRIORITY",
+              "type": "integer",
+              "valid": true,
+              "showing": false,
+              "attr_type": "integer",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "0719a680-fba2-55c8-0919-8e4cd69eb316"
+              },
+              "name": "O_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 79
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "nrows": 7500000000,
+          "toggled": false,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+              },
+              "name": "O_ORDERKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 7500000000,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "c2d35ac2-e277-520c-bad4-7067f97de2f3"
+              },
+              "name": "O_CUSTKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 750000000
+            },
+            {
+              "id": {
+                "$oid": "d7ae5d8d-add8-db3f-dbb0-1c5dfcd6f17e"
+              },
+              "name": "O_ORDERSTATUS",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 1
+            },
+            {
+              "id": {
+                "$oid": "6a2164a8-2d29-635e-debf-bf48e2fe870e"
+              },
+              "name": "O_TOTALPRICE",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "2ca8b930-434e-74de-8fdb-b8d282de7180"
+              },
+              "name": "O_ORDERDATE",
+              "type": "date",
+              "valid": true,
+              "showing": false,
+              "attr_type": "date",
+              "size": 4,
+              "attr_I": 2405
+            },
+            {
+              "id": {
+                "$oid": "1390509b-65e1-eef3-97c1-7d213f89fe29"
+              },
+              "name": "O_ORDERPRIORITY",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 15,
+              "attr_I": 5,
+              "pk": false,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "fc229108-7003-73cb-dae5-6ffdc025a91d"
+              },
+              "name": "O_CLERK",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 15
+            },
+            {
+              "id": {
+                "$oid": "f2cc1bd5-d491-2680-4682-14c13420ee32"
+              },
+              "name": "O_SHIPPRIORITY",
+              "type": "integer",
+              "valid": true,
+              "showing": false,
+              "attr_type": "integer",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "0719a680-fba2-55c8-0919-8e4cd69eb316"
+              },
+              "name": "O_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 79
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "55d9374a-70fd-7ba4-381d-317a79fa2ad9"
+          },
+          "name": "LINEITEM",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+              },
+              "name": "L_ORDERKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 7500000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "afb2cf5f-fb49-59d8-18b6-0c7dfb10d3e6"
+              },
+              "name": "L_PARTKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 1000000000
+            },
+            {
+              "id": {
+                "$oid": "66fca9bc-5fd7-db1b-88e1-d608d8cc6f17"
+              },
+              "name": "L_SUPPKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 50000000
+            },
+            {
+              "id": {
+                "$oid": "a9e7cb0a-6596-05ec-ef2e-e1054aa308f9"
+              },
+              "name": "L_LINENUMBER",
+              "type": "integer",
+              "valid": true,
+              "showing": false,
+              "attr_type": "integer",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "646017e2-cfe7-0a92-e7a6-6a9d0cd7a49d"
+              },
+              "name": "L_QUANTITY",
+              "type": "decimal",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "decimal",
+              "size": 4,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "a7c002a1-0288-e43c-f4e0-0a47cbd00ee4"
+              },
+              "name": "L_EXTENDEDPRICE",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "e8a3592f-4a90-a9be-d737-34a6dd7fa112"
+              },
+              "name": "L_DISCOUNT",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "40abc986-3376-381a-8ce1-5ab151ead5e0"
+              },
+              "name": "L_TAX",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "14a6c4b7-c644-2a04-737c-d72cda79bcc3"
+              },
+              "name": "L_RETURNFLAG",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 1
+            },
+            {
+              "id": {
+                "$oid": "37bae503-35ad-fcf2-f8cf-74729fa389e4"
+              },
+              "name": "L_LINESTATUS",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 1
+            },
+            {
+              "id": {
+                "$oid": "c9ee3992-4e87-b8b7-e026-a853d9b9ea68"
+              },
+              "name": "L_SHIPDATE",
+              "type": "date",
+              "valid": true,
+              "showing": false,
+              "attr_type": "date",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "b4e2b7da-e101-edae-af6b-0a904cbb6400"
+              },
+              "name": "L_COMMITDATE",
+              "type": "date",
+              "valid": true,
+              "showing": false,
+              "attr_type": "date",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "4e9d52b5-80a5-6663-a5d7-3657aa49ba34"
+              },
+              "name": "L_RECEIPTDATE",
+              "type": "date",
+              "valid": true,
+              "showing": false,
+              "attr_type": "date",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "cf98fc81-ddcc-e8ad-ce0c-6f1aaa582ae2"
+              },
+              "name": "L_SHIPINSTRUCT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25
+            },
+            {
+              "id": {
+                "$oid": "9dbef027-83a7-7f2f-e0c0-cd07f34af557"
+              },
+              "name": "L_SHIPMODE",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 10
+            },
+            {
+              "id": {
+                "$oid": "6b46b8e8-61f8-0cde-b63d-675bb3753acf"
+              },
+              "name": "L_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 44
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "nrows": 30006075000,
+          "toggled": false,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+              },
+              "name": "L_ORDERKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 7500000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "afb2cf5f-fb49-59d8-18b6-0c7dfb10d3e6"
+              },
+              "name": "L_PARTKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 1000000000
+            },
+            {
+              "id": {
+                "$oid": "66fca9bc-5fd7-db1b-88e1-d608d8cc6f17"
+              },
+              "name": "L_SUPPKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 50000000
+            },
+            {
+              "id": {
+                "$oid": "a9e7cb0a-6596-05ec-ef2e-e1054aa308f9"
+              },
+              "name": "L_LINENUMBER",
+              "type": "integer",
+              "valid": true,
+              "showing": false,
+              "attr_type": "integer",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "646017e2-cfe7-0a92-e7a6-6a9d0cd7a49d"
+              },
+              "name": "L_QUANTITY",
+              "type": "decimal",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "decimal",
+              "size": 4,
+              "attr_I": "",
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "a7c002a1-0288-e43c-f4e0-0a47cbd00ee4"
+              },
+              "name": "L_EXTENDEDPRICE",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "e8a3592f-4a90-a9be-d737-34a6dd7fa112"
+              },
+              "name": "L_DISCOUNT",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "40abc986-3376-381a-8ce1-5ab151ead5e0"
+              },
+              "name": "L_TAX",
+              "type": "decimal",
+              "valid": true,
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "14a6c4b7-c644-2a04-737c-d72cda79bcc3"
+              },
+              "name": "L_RETURNFLAG",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 1
+            },
+            {
+              "id": {
+                "$oid": "37bae503-35ad-fcf2-f8cf-74729fa389e4"
+              },
+              "name": "L_LINESTATUS",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 1
+            },
+            {
+              "id": {
+                "$oid": "c9ee3992-4e87-b8b7-e026-a853d9b9ea68"
+              },
+              "name": "L_SHIPDATE",
+              "type": "date",
+              "valid": true,
+              "showing": false,
+              "attr_type": "date",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "b4e2b7da-e101-edae-af6b-0a904cbb6400"
+              },
+              "name": "L_COMMITDATE",
+              "type": "date",
+              "valid": true,
+              "showing": false,
+              "attr_type": "date",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "4e9d52b5-80a5-6663-a5d7-3657aa49ba34"
+              },
+              "name": "L_RECEIPTDATE",
+              "type": "date",
+              "valid": true,
+              "showing": false,
+              "attr_type": "date",
+              "size": 4
+            },
+            {
+              "id": {
+                "$oid": "cf98fc81-ddcc-e8ad-ce0c-6f1aaa582ae2"
+              },
+              "name": "L_SHIPINSTRUCT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25
+            },
+            {
+              "id": {
+                "$oid": "9dbef027-83a7-7f2f-e0c0-cd07f34af557"
+              },
+              "name": "L_SHIPMODE",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 10
+            },
+            {
+              "id": {
+                "$oid": "6b46b8e8-61f8-0cde-b63d-675bb3753acf"
+              },
+              "name": "L_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 44
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "ae53d68f-a0c9-1a52-e2d5-6b28d6f37e5d"
+          },
+          "name": "NATION",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+              },
+              "name": "N_NATIONKEY",
+              "type": "long",
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 25,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+              },
+              "name": "N_NAME",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": 25,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "10ba1117-9e7d-79bc-2919-67abe7018ee6"
+              },
+              "name": "N_REGIONKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 5
+            },
+            {
+              "id": {
+                "$oid": "e4619689-bbfb-13fe-436b-dcc7f3b291c3"
+              },
+              "name": "N_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 152
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "nrows": 25,
+          "toggled": false,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+              },
+              "name": "N_NATIONKEY",
+              "type": "long",
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 25,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+              },
+              "name": "N_NAME",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": 25,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "10ba1117-9e7d-79bc-2919-67abe7018ee6"
+              },
+              "name": "N_REGIONKEY",
+              "type": "long",
+              "valid": true,
+              "showing": false,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 5
+            },
+            {
+              "id": {
+                "$oid": "e4619689-bbfb-13fe-436b-dcc7f3b291c3"
+              },
+              "name": "N_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 152
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "df912c17-0dba-3e51-a993-8f4fadb80f80"
+          },
+          "name": "REGION",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "b25bc5db-244c-2ca7-5352-54ffbdbb5eb2"
+              },
+              "name": "R_REGIONKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 5,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "6e3cf200-4ade-5bc6-a0dd-79f8a6c6b4cb"
+              },
+              "name": "R_NAME",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "cb841412-3162-1eeb-d234-4b080f007cc2"
+              },
+              "name": "R_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 152
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "nrows": 5,
+          "toggled": false,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "b25bc5db-244c-2ca7-5352-54ffbdbb5eb2"
+              },
+              "name": "R_REGIONKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 5,
+              "pk": true
+            },
+            {
+              "id": {
+                "$oid": "6e3cf200-4ade-5bc6-a0dd-79f8a6c6b4cb"
+              },
+              "name": "R_NAME",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 25,
+              "toggled": true
+            },
+            {
+              "id": {
+                "$oid": "cb841412-3162-1eeb-d234-4b080f007cc2"
+              },
+              "name": "R_COMMENT",
+              "type": "text",
+              "valid": true,
+              "showing": false,
+              "attr_type": "text",
+              "size": 152
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "10a08fc6-25cf-2339-702d-b7c0ad04ae47"
+          },
+          "name": "TABLQ41",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "a77e74ba-7042-9734-8198-961376b86624"
+              },
+              "name": "O_ORDERKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 7500000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "5ce465c1-a80f-f27b-a493-1a36433269a1"
+              },
+              "name": "OCOUNT",
+              "type": "long",
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": "",
+              "pk": false
+            }
+          ],
+          "toggled": false,
+          "showing": false,
+          "valid": true,
+          "nrows": 300000000,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "a77e74ba-7042-9734-8198-961376b86624"
+              },
+              "name": "O_ORDERKEY",
+              "type": "long",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": 7500000000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "5ce465c1-a80f-f27b-a493-1a36433269a1"
+              },
+              "name": "OCOUNT",
+              "type": "long",
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "attr_type": "long",
+              "size": 8,
+              "attr_I": "",
+              "pk": false
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "4a3ceb3e-8727-847d-36c8-3b0210031fb3"
+          },
+          "name": "TABLQ71",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "ec868f7a-d523-0dda-df75-9ce1c6c1e977"
+              },
+              "name": "SUPP_NATION",
+              "type": "text",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": 25,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "78c600ab-40ef-6acc-a825-ba33f5021ad3"
+              },
+              "name": "CUST_NATION",
+              "type": "text",
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": 25,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "5dadcde8-d7e4-8509-82da-73114dab7cc5"
+              },
+              "name": "L_YEAR",
+              "type": "integer",
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "attr_type": "integer",
+              "size": 4,
+              "attr_I": 6,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "cb6f602f-198f-24db-97e0-a28f837c2792"
+              },
+              "name": "VOLUME",
+              "type": "decimal",
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4,
+              "valid": true
+            }
+          ],
+          "toggled": false,
+          "showing": false,
+          "valid": true,
+          "nrows": 696140940,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "ec868f7a-d523-0dda-df75-9ce1c6c1e977"
+              },
+              "name": "SUPP_NATION",
+              "type": "text",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": 25,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "78c600ab-40ef-6acc-a825-ba33f5021ad3"
+              },
+              "name": "CUST_NATION",
+              "type": "text",
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 25,
+              "attr_I": 25,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "5dadcde8-d7e4-8509-82da-73114dab7cc5"
+              },
+              "name": "L_YEAR",
+              "type": "integer",
+              "toggled": false,
+              "showing": false,
+              "valid": true,
+              "attr_type": "integer",
+              "size": 4,
+              "attr_I": 6,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "cb6f602f-198f-24db-97e0-a28f837c2792"
+              },
+              "name": "VOLUME",
+              "type": "decimal",
+              "showing": false,
+              "attr_type": "decimal",
+              "size": 4,
+              "valid": true
+            }
+          ]
+        }
+      ],
+      "queries": [
+        {
+          "id": {
+            "$oid": "4f168f20-d630-1c8f-b45c-06554fb6bb2a"
+          },
+          "name": "Q5",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "complex",
+          "tables": [
+            {
+              "pseudoname": "CUSTOMER",
+              "id": {
+                "$oid": "be6cedb6-17d2-eaaa-6667-1386c070da2a"
+              },
+              "tableid": "026e7ec5-a872-27de-7d78-5f862fa68376"
+            },
+            {
+              "pseudoname": "ORDERS",
+              "id": {
+                "$oid": "dd9c42a9-9d47-d2a1-9022-8dfaac7f4763"
+              },
+              "tableid": "1f64d843-7c55-0f61-b457-05863292a8be"
+            },
+            {
+              "pseudoname": "LINEITEM",
+              "id": {
+                "$oid": "b8c7071f-1d3f-3ccc-1b18-41c938fe7d27"
+              },
+              "tableid": "55d9374a-70fd-7ba4-381d-317a79fa2ad9"
+            },
+            {
+              "pseudoname": "SUPPLIER",
+              "id": {
+                "$oid": "f9e03749-325e-14b6-160b-828ac4d8f443"
+              },
+              "tableid": "ba2f10bd-14ca-041b-cfa0-494df04fda6d"
+            },
+            {
+              "pseudoname": "NATION",
+              "id": {
+                "$oid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0"
+              },
+              "tableid": "ae53d68f-a0c9-1a52-e2d5-6b28d6f37e5d"
+            },
+            {
+              "pseudoname": "REGION",
+              "id": {
+                "$oid": "e20def1c-5b47-fa18-a66b-3cbd1895edae"
+              },
+              "tableid": "df912c17-0dba-3e51-a993-8f4fadb80f80"
+            }
+          ],
+          "joins": [
+            {
+              "id": {
+                "$oid": "5ce56485-679d-9f45-c9e6-202f1955f64e"
+              },
+              "join": [
+                {
+                  "tableid": "be6cedb6-17d2-eaaa-6667-1386c070da2a",
+                  "attributes": [
+                    "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+                  ]
+                },
+                {
+                  "tableid": "dd9c42a9-9d47-d2a1-9022-8dfaac7f4763",
+                  "attributes": [
+                    "c2d35ac2-e277-520c-bad4-7067f97de2f3"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "ea8f6585-7932-f00e-3674-04ba4dbd5f32"
+              },
+              "join": [
+                {
+                  "tableid": "b8c7071f-1d3f-3ccc-1b18-41c938fe7d27",
+                  "attributes": [
+                    "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+                  ]
+                },
+                {
+                  "tableid": "dd9c42a9-9d47-d2a1-9022-8dfaac7f4763",
+                  "attributes": [
+                    "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "96d65c72-9d72-be59-c327-5a1a64554e81"
+              },
+              "join": [
+                {
+                  "tableid": "b8c7071f-1d3f-3ccc-1b18-41c938fe7d27",
+                  "attributes": [
+                    "66fca9bc-5fd7-db1b-88e1-d608d8cc6f17"
+                  ]
+                },
+                {
+                  "tableid": "f9e03749-325e-14b6-160b-828ac4d8f443",
+                  "attributes": [
+                    "0e2dd883-a530-ded4-74c6-1b5b33c46cb1"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "373f4210-570e-5691-a67a-afa1c89e3cb0"
+              },
+              "join": [
+                {
+                  "tableid": "be6cedb6-17d2-eaaa-6667-1386c070da2a",
+                  "attributes": [
+                    "45e368be-5e18-0098-eef6-edc7c9a30fe4"
+                  ]
+                },
+                {
+                  "tableid": "f9e03749-325e-14b6-160b-828ac4d8f443",
+                  "attributes": [
+                    "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "778d1943-d212-428a-1ada-ec6e0eaa0ac6"
+              },
+              "join": [
+                {
+                  "tableid": "f9e03749-325e-14b6-160b-828ac4d8f443",
+                  "attributes": [
+                    "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+                  ]
+                },
+                {
+                  "tableid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0",
+                  "attributes": [
+                    "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "9883725f-8d57-c982-c091-9e479bf50ea1"
+              },
+              "join": [
+                {
+                  "tableid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0",
+                  "attributes": [
+                    "10ba1117-9e7d-79bc-2919-67abe7018ee6"
+                  ]
+                },
+                {
+                  "tableid": "e20def1c-5b47-fa18-a66b-3cbd1895edae",
+                  "attributes": [
+                    "b25bc5db-244c-2ca7-5352-54ffbdbb5eb2"
+                  ]
+                }
+              ]
+            }
+          ],
+          "projection": [
+            {
+              "tableid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0",
+              "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+            }
+          ],
+          "order": [],
+          "group": [
+            {
+              "tableid": "9947e0d6-3fc5-ba1c-ccae-c40cf922a2d0",
+              "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+            }
+          ],
+          "condition": [
+            {
+              "tableid": "dd9c42a9-9d47-d2a1-9022-8dfaac7f4763",
+              "attributeid": "2ca8b930-434e-74de-8fdb-b8d282de7180",
+              "P": 0.15
+            },
+            {
+              "tableid": "e20def1c-5b47-fa18-a66b-3cbd1895edae",
+              "attributeid": "6e3cf200-4ade-5bc6-a0dd-79f8a6c6b4cb",
+              "P": 0.15
+            },
+            {
+              "tableid": "e20def1c-5b47-fa18-a66b-3cbd1895edae",
+              "attributeid": "6e3cf200-4ade-5bc6-a0dd-79f8a6c6b4cb",
+              "P": null
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "toggled": true,
+          "stepIndex": 1,
+          "query_type": "complex",
+          "aggregate": [
+            {
+              "name": "REVENUE",
+              "size": 4
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "f4a4b46c-c85a-32ba-f7fc-35806217ab18"
+          },
+          "name": "Q10",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "complex",
+          "tables": [
+            {
+              "pseudoname": "CUSTOMER",
+              "id": {
+                "$oid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163"
+              },
+              "tableid": "026e7ec5-a872-27de-7d78-5f862fa68376"
+            },
+            {
+              "pseudoname": "ORDERS",
+              "id": {
+                "$oid": "c92476c2-350d-828b-e86c-d63b390f019b"
+              },
+              "tableid": "1f64d843-7c55-0f61-b457-05863292a8be"
+            },
+            {
+              "pseudoname": "LINEITEM",
+              "id": {
+                "$oid": "16d48a87-c1ca-9ab2-c3cb-37dfd57fe49b"
+              },
+              "tableid": "55d9374a-70fd-7ba4-381d-317a79fa2ad9"
+            },
+            {
+              "pseudoname": "NATION",
+              "id": {
+                "$oid": "e3fdece4-d5e3-581f-8a14-f9e99b8cce41"
+              },
+              "tableid": "ae53d68f-a0c9-1a52-e2d5-6b28d6f37e5d"
+            }
+          ],
+          "joins": [
+            {
+              "id": {
+                "$oid": "d90be717-ec6a-b4b3-1561-30ddab593bd6"
+              },
+              "join": [
+                {
+                  "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+                  "attributes": [
+                    "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+                  ]
+                },
+                {
+                  "tableid": "c92476c2-350d-828b-e86c-d63b390f019b",
+                  "attributes": [
+                    "c2d35ac2-e277-520c-bad4-7067f97de2f3"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "bea159b3-aa56-009e-9590-16fd76b1e2e0"
+              },
+              "join": [
+                {
+                  "tableid": "16d48a87-c1ca-9ab2-c3cb-37dfd57fe49b",
+                  "attributes": [
+                    "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+                  ]
+                },
+                {
+                  "tableid": "c92476c2-350d-828b-e86c-d63b390f019b",
+                  "attributes": [
+                    "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "54537155-9912-416e-d81c-40a96f9a8353"
+              },
+              "join": [
+                {
+                  "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+                  "attributes": [
+                    "45e368be-5e18-0098-eef6-edc7c9a30fe4"
+                  ]
+                },
+                {
+                  "tableid": "e3fdece4-d5e3-581f-8a14-f9e99b8cce41",
+                  "attributes": [
+                    "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+                  ]
+                }
+              ]
+            }
+          ],
+          "projection": [
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "6d9126c8-f895-10f5-4324-38c96d3584c9"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "1059236f-bb0e-d07c-63ea-55196467f09a"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "edf9e348-f568-ca01-7a60-545fe3909ece"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "28cb331c-c0b2-3652-5030-16580dc6414c"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "e698a0a0-3fe6-ef28-3ff4-549fef9b4a75"
+            },
+            {
+              "tableid": "e3fdece4-d5e3-581f-8a14-f9e99b8cce41",
+              "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+            }
+          ],
+          "order": [],
+          "group": [
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "6d9126c8-f895-10f5-4324-38c96d3584c9"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "e698a0a0-3fe6-ef28-3ff4-549fef9b4a75"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "28cb331c-c0b2-3652-5030-16580dc6414c"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "1059236f-bb0e-d07c-63ea-55196467f09a"
+            },
+            {
+              "tableid": "1428d0d2-9b70-7d6f-d3fe-3e43d79c4163",
+              "attributeid": "edf9e348-f568-ca01-7a60-545fe3909ece"
+            },
+            {
+              "tableid": "e3fdece4-d5e3-581f-8a14-f9e99b8cce41",
+              "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+            }
+          ],
+          "condition": [
+            {
+              "tableid": "c92476c2-350d-828b-e86c-d63b390f019b",
+              "attributeid": "2ca8b930-434e-74de-8fdb-b8d282de7180",
+              "P": 0.04
+            },
+            {
+              "tableid": "16d48a87-c1ca-9ab2-c3cb-37dfd57fe49b",
+              "attributeid": "14a6c4b7-c644-2a04-737c-d72cda79bcc3",
+              "P": 0.25
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "stepIndex": 2,
+          "query_type": "complex",
+          "toggled": false,
+          "aggregate": [
+            {
+              "name": "REVENUE",
+              "size": 4
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "443a0533-b6be-64bd-2aa0-bfba64680707"
+          },
+          "name": "Q41",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "complex",
+          "tables": [
+            {
+              "pseudoname": "ORDERS",
+              "id": {
+                "$oid": "fa139f35-afd7-4fd7-ed89-dd50fd4acd07"
+              },
+              "tableid": "1f64d843-7c55-0f61-b457-05863292a8be"
+            },
+            {
+              "pseudoname": "LINEITEM",
+              "id": {
+                "$oid": "5d37b3ae-23fb-dfe9-2708-f2f65bd53656"
+              },
+              "tableid": "55d9374a-70fd-7ba4-381d-317a79fa2ad9"
+            }
+          ],
+          "joins": [
+            {
+              "id": {
+                "$oid": "a26d7256-9c05-dcc2-cf78-e32d0022b035"
+              },
+              "join": [
+                {
+                  "tableid": "fa139f35-afd7-4fd7-ed89-dd50fd4acd07",
+                  "attributes": [
+                    "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+                  ]
+                },
+                {
+                  "tableid": "5d37b3ae-23fb-dfe9-2708-f2f65bd53656",
+                  "attributes": [
+                    "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+                  ]
+                }
+              ]
+            }
+          ],
+          "projection": [
+            {
+              "tableid": "fa139f35-afd7-4fd7-ed89-dd50fd4acd07",
+              "attributeid": "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+            },
+            {
+              "tableid": "5d37b3ae-23fb-dfe9-2708-f2f65bd53656",
+              "attributeid": "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+            }
+          ],
+          "order": [],
+          "group": [
+            {
+              "tableid": "fa139f35-afd7-4fd7-ed89-dd50fd4acd07",
+              "attributeid": "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+            }
+          ],
+          "condition": [
+            {
+              "tableid": "fa139f35-afd7-4fd7-ed89-dd50fd4acd07",
+              "attributeid": "2ca8b930-434e-74de-8fdb-b8d282de7180",
+              "P": 0.04
+            },
+            {
+              "tableid": "5d37b3ae-23fb-dfe9-2708-f2f65bd53656",
+              "attributeid": "b4e2b7da-e101-edae-af6b-0a904cbb6400",
+              "P": 0.98
+            }
+          ],
+          "toggled": false,
+          "showing": false,
+          "valid": true,
+          "stepIndex": 2,
+          "aggregate": [
+            {
+              "name": "OCOUNT",
+              "size": 4
+            }
+          ],
+          "query_type": "complex"
+        },
+        {
+          "id": {
+            "$oid": "1cccc5f4-00be-b73e-74be-a82463ff0aad"
+          },
+          "name": "Q4",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "complex",
+          "tables": [
+            {
+              "pseudoname": "ORDERS",
+              "id": {
+                "$oid": "6009b870-b8c9-cf43-f814-33be30b1e4aa"
+              },
+              "tableid": "1f64d843-7c55-0f61-b457-05863292a8be"
+            },
+            {
+              "pseudoname": "TABLQ41",
+              "id": {
+                "$oid": "59d2330f-5673-14b4-21c1-5366cbd975b1"
+              },
+              "tableid": "10a08fc6-25cf-2339-702d-b7c0ad04ae47"
+            }
+          ],
+          "joins": [
+            {
+              "id": {
+                "$oid": "1be3bbc2-dc76-9473-7970-ed5dc5c2cd63"
+              },
+              "join": [
+                {
+                  "tableid": "6009b870-b8c9-cf43-f814-33be30b1e4aa",
+                  "attributes": [
+                    "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+                  ]
+                },
+                {
+                  "tableid": "59d2330f-5673-14b4-21c1-5366cbd975b1",
+                  "attributes": [
+                    "a77e74ba-7042-9734-8198-961376b86624"
+                  ]
+                }
+              ]
+            }
+          ],
+          "projection": [
+            {
+              "tableid": "6009b870-b8c9-cf43-f814-33be30b1e4aa",
+              "attributeid": "1390509b-65e1-eef3-97c1-7d213f89fe29"
+            }
+          ],
+          "order": [
+            {
+              "tableid": "6009b870-b8c9-cf43-f814-33be30b1e4aa",
+              "attributeid": "1390509b-65e1-eef3-97c1-7d213f89fe29"
+            }
+          ],
+          "group": [
+            {
+              "tableid": "6009b870-b8c9-cf43-f814-33be30b1e4aa",
+              "attributeid": "1390509b-65e1-eef3-97c1-7d213f89fe29"
+            }
+          ],
+          "condition": [
+            {
+              "tableid": "6009b870-b8c9-cf43-f814-33be30b1e4aa",
+              "attributeid": "2ca8b930-434e-74de-8fdb-b8d282de7180",
+              "P": 0.04
+            },
+            {
+              "tableid": "59d2330f-5673-14b4-21c1-5366cbd975b1",
+              "attributeid": "5ce465c1-a80f-f27b-a493-1a36433269a1",
+              "P": 1
+            }
+          ],
+          "toggled": true,
+          "showing": false,
+          "valid": true,
+          "stepIndex": 2,
+          "query_type": "complex",
+          "aggregate": [
+            {
+              "name": "ORDER_COUNT",
+              "size": 4
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "9d2dc696-01f7-88ca-aff1-548d256beb79"
+          },
+          "name": "Q71",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "complex",
+          "tables": [
+            {
+              "pseudoname": "SUPPLIER",
+              "id": {
+                "$oid": "2f8cdf23-03c0-e659-0358-b7ca3122448e"
+              },
+              "tableid": "ba2f10bd-14ca-041b-cfa0-494df04fda6d"
+            },
+            {
+              "pseudoname": "LINEITEM",
+              "id": {
+                "$oid": "dffadcac-1aa7-76f7-9429-f773a1129e46"
+              },
+              "tableid": "55d9374a-70fd-7ba4-381d-317a79fa2ad9"
+            },
+            {
+              "pseudoname": "ORDERS",
+              "id": {
+                "$oid": "ead4ea43-ad41-7d27-878b-d8dba1387b50"
+              },
+              "tableid": "1f64d843-7c55-0f61-b457-05863292a8be"
+            },
+            {
+              "pseudoname": "CUSTOMER",
+              "id": {
+                "$oid": "c580c607-2f1d-e96f-d367-a0fc1d439a97"
+              },
+              "tableid": "026e7ec5-a872-27de-7d78-5f862fa68376"
+            },
+            {
+              "pseudoname": "NATION N1",
+              "id": {
+                "$oid": "f50d276d-323a-6cc9-5107-07c598b03a99"
+              },
+              "tableid": "ae53d68f-a0c9-1a52-e2d5-6b28d6f37e5d"
+            },
+            {
+              "pseudoname": "NATION N2",
+              "id": {
+                "$oid": "49e1eef0-fe54-8bba-331e-1f1ee069a189"
+              },
+              "tableid": "ae53d68f-a0c9-1a52-e2d5-6b28d6f37e5d"
+            }
+          ],
+          "joins": [
+            {
+              "id": {
+                "$oid": "6b64e02f-495d-f96e-c8a6-76905cbbf184"
+              },
+              "join": [
+                {
+                  "tableid": "2f8cdf23-03c0-e659-0358-b7ca3122448e",
+                  "attributes": [
+                    "0e2dd883-a530-ded4-74c6-1b5b33c46cb1"
+                  ]
+                },
+                {
+                  "tableid": "dffadcac-1aa7-76f7-9429-f773a1129e46",
+                  "attributes": [
+                    "66fca9bc-5fd7-db1b-88e1-d608d8cc6f17"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "0c9ce60b-7c3c-8ac4-3099-6e33b0268e58"
+              },
+              "join": [
+                {
+                  "tableid": "ead4ea43-ad41-7d27-878b-d8dba1387b50",
+                  "attributes": [
+                    "0acb865d-1a4e-9886-cbf9-30365f40aa14"
+                  ]
+                },
+                {
+                  "tableid": "dffadcac-1aa7-76f7-9429-f773a1129e46",
+                  "attributes": [
+                    "9057fad9-8afa-69bc-cda8-24fe4db4423c"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "7754d944-f4bb-9036-3004-f9bfb78810ba"
+              },
+              "join": [
+                {
+                  "tableid": "c580c607-2f1d-e96f-d367-a0fc1d439a97",
+                  "attributes": [
+                    "ae04cafa-c612-dff3-4810-de57a46aa6d6"
+                  ]
+                },
+                {
+                  "tableid": "ead4ea43-ad41-7d27-878b-d8dba1387b50",
+                  "attributes": [
+                    "c2d35ac2-e277-520c-bad4-7067f97de2f3"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "6545a5be-ff87-fd63-6563-cceba3e66d2e"
+              },
+              "join": [
+                {
+                  "tableid": "2f8cdf23-03c0-e659-0358-b7ca3122448e",
+                  "attributes": [
+                    "5f3d61a8-f640-439c-a838-ab52b1648d3d"
+                  ]
+                },
+                {
+                  "tableid": "f50d276d-323a-6cc9-5107-07c598b03a99",
+                  "attributes": [
+                    "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": {
+                "$oid": "6bd180b6-efd1-d1cb-d400-814aa1b0d968"
+              },
+              "join": [
+                {
+                  "tableid": "c580c607-2f1d-e96f-d367-a0fc1d439a97",
+                  "attributes": [
+                    "45e368be-5e18-0098-eef6-edc7c9a30fe4"
+                  ]
+                },
+                {
+                  "tableid": "49e1eef0-fe54-8bba-331e-1f1ee069a189",
+                  "attributes": [
+                    "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+                  ]
+                }
+              ]
+            }
+          ],
+          "projection": [
+            {
+              "tableid": "f50d276d-323a-6cc9-5107-07c598b03a99",
+              "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+            },
+            {
+              "tableid": "49e1eef0-fe54-8bba-331e-1f1ee069a189",
+              "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e"
+            },
+            {
+              "tableid": "49e1eef0-fe54-8bba-331e-1f1ee069a189",
+              "attributeid": "ed5e13ee-d897-2e4b-4e2a-e316b3ea5f2e"
+            }
+          ],
+          "order": [],
+          "group": [],
+          "condition": [
+            {
+              "tableid": "f50d276d-323a-6cc9-5107-07c598b03a99",
+              "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e",
+              "P": 0.08
+            },
+            {
+              "tableid": "49e1eef0-fe54-8bba-331e-1f1ee069a189",
+              "attributeid": "b9d705e7-03f4-cf1c-34fa-9f729f87d21e",
+              "P": 0.04
+            },
+            {
+              "tableid": "dffadcac-1aa7-76f7-9429-f773a1129e46",
+              "attributeid": "c9ee3992-4e87-b8b7-e026-a853d9b9ea68",
+              "P": 0.29
+            }
+          ],
+          "toggled": true,
+          "showing": false,
+          "valid": true,
+          "stepIndex": 2,
+          "query_type": "complex",
+          "aggregate": [
+            {
+              "name": "VOLUME",
+              "size": 4
+            },
+            {
+              "name": "L_YEAR",
+              "size": 4
+            }
+          ]
+        },
+        {
+          "id": {
+            "$oid": "3d953471-1f2a-2d34-fa21-75f999d32334"
+          },
+          "name": "Q7",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "easy",
+          "tables": [
+            {
+              "pseudoname": "SHIPPING",
+              "id": {
+                "$oid": "978c974c-2659-3977-9cc2-5f892b2817b1"
+              },
+              "tableid": "4a3ceb3e-8727-847d-36c8-3b0210031fb3"
+            }
+          ],
+          "joins": [],
+          "projection": [
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "ec868f7a-d523-0dda-df75-9ce1c6c1e977"
+            },
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "5dadcde8-d7e4-8509-82da-73114dab7cc5"
+            },
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "78c600ab-40ef-6acc-a825-ba33f5021ad3"
+            }
+          ],
+          "order": [
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "ec868f7a-d523-0dda-df75-9ce1c6c1e977"
+            },
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "78c600ab-40ef-6acc-a825-ba33f5021ad3"
+            },
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "5dadcde8-d7e4-8509-82da-73114dab7cc5"
+            }
+          ],
+          "group": [
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "ec868f7a-d523-0dda-df75-9ce1c6c1e977"
+            },
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "78c600ab-40ef-6acc-a825-ba33f5021ad3"
+            },
+            {
+              "tableid": "978c974c-2659-3977-9cc2-5f892b2817b1",
+              "attributeid": "5dadcde8-d7e4-8509-82da-73114dab7cc5"
+            }
+          ],
+          "condition": [],
+          "toggled": false,
+          "showing": false,
+          "valid": true,
+          "stepIndex": 0,
+          "table": "4a3ceb3e-8727-847d-36c8-3b0210031fb3",
+          "query_type": "easy",
+          "aggregate": [
+            {
+              "name": "REVENUE",
+              "size": 4
+            }
+          ]
+        }
+      ],
+      "transactions": [
+        {
+          "id": {
+            "$oid": "c8e843f1-ebe5-4eaf-fc02-5299c98d27d8"
+          },
+          "name": "TR1",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "object_transaction",
+          "queries": [
+            {
+              "queryid": "4f168f20-d630-1c8f-b45c-06554fb6bb2a",
+              "rep": 1
+            },
+            {
+              "queryid": "1cccc5f4-00be-b73e-74be-a82463ff0aad",
+              "rep": 1
+            },
+            {
+              "queryid": "443a0533-b6be-64bd-2aa0-bfba64680707",
+              "rep": 1,
+              "sub": true
+            }
+          ],
+          "showing": false,
+          "valid": true,
+          "toggled": true
+        },
+        {
+          "id": {
+            "$oid": "049ae6a8-d02f-7563-a1c4-2064a77a97a0"
+          },
+          "name": "TR2",
+          "scheme": "077a88ea-b608-4f36-3d7a-ea51df88e1fb",
+          "type": "object_transaction",
+          "queries": [
+            {
+              "queryid": "f4a4b46c-c85a-32ba-f7fc-35806217ab18",
+              "rep": 1
+            },
+            {
+              "queryid": "3d953471-1f2a-2d34-fa21-75f999d32334",
+              "rep": 1,
+              "sub": false
+            },
+            {
+              "queryid": "9d2dc696-01f7-88ca-aff1-548d256beb79",
+              "rep": 1,
+              "sub": true
+            }
+          ],
+          "showing": false,
+          "valid": true
+        }
+      ]
+    }
+  ]
+}

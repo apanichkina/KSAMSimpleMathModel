@@ -194,6 +194,7 @@ func EvaluateQueries(params *parser.DataModel, C_filter float64, C_b float64, n_
 						}
 					}
 
+					T = math.Max(1, T)// T целое
 					// Оценка соединения
 					Z_x += Z
 					Z_io_x += Z_io
