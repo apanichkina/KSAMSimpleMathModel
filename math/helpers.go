@@ -27,7 +27,7 @@ func IndexScanRead(Table parser.Table, Query parser.Query, C_filter float64, C_b
 	var pkId = Table.PKAttribute.GetID()
 	var p float64 = 1
 	for _, c := range Query.Conditions {
-		if c.TableId == tableId && c.AttributeId == pkId {
+		if c.TableId == tableId && c.AttributeId == pkId && c.P > 0.0 {
 			p *= c.P
 		}
 	}
