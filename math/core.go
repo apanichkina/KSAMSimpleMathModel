@@ -5,6 +5,7 @@ import (
 
 	"github.com/apanichkina/KSAMSimpleMathModel/csv"
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
+	"context"
 )
 
 var GLOBALVARS parser.GlobalVariables
@@ -13,7 +14,7 @@ var TESTSEQUENCE []int
 var TESTQUERYNAME string
 var ALREADY_CALCULATED_DATA_MODEL QueryTimesCache
 
-func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVariables) ([]byte, error) {
+func Evaluate(ctx context.Context, inputParams parser.InputParams, globalVariables parser.GlobalVariables) ([]byte, error) {
 	fmt.Println("VERSION: ", 1.5)
 	//var output = parser.Errors{parser.Error{Message: "test"}}
 	GLOBALVARS = globalVariables
@@ -21,7 +22,7 @@ func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVaria
 	TESTSEQUENCE = []int{0, 1, 2, 3, 4, 5}
 	TESTQUERYNAME = "Q91"
 	ALREADY_CALCULATED_DATA_MODEL = make(QueryTimesCache)
-	resultByRequest, err := Increment(inputParams)
+	resultByRequest, err := Increment(ctx, inputParams)
 	// resultByRequest, err := EvaluateRequest(inputParams)
 	if err != nil {
 		return nil, err
@@ -31,7 +32,7 @@ func Evaluate(inputParams parser.InputParams, globalVariables parser.GlobalVaria
 	return csv.ToCSV(result) // []parser.CSVData{{TransactionsResults: resultByTransaction, QueriesMinTimes: resultByQuery}}, nil
 }
 
-func Increment(inputParams parser.InputParams) (parser.RequestsResultsInc, error) {
+func Increment(ctx context.Context, inputParams parser.InputParams) (parser.RequestsResultsInc, error) {
 	var incrementCount = len(inputParams.Increment)
 	var final parser.RequestsResultsInc
 	var sn = 0
@@ -55,6 +56,12 @@ func Increment(inputParams parser.InputParams) (parser.RequestsResultsInc, error
 
 	for Incr(0, inputParams.Increment, IncrementValues, incrIndex) {
 		// fmt.Println(IncrementValues, incrIndex)
+
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default:
+		}
 
 		var Inc = make(map[string]interface{})
 		for k, v := range IncrementValues {
