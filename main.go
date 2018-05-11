@@ -6,6 +6,7 @@ import (
 	"github.com/apanichkina/KSAMSimpleMathModel/helper"
 	"github.com/apanichkina/KSAMSimpleMathModel/math"
 	"github.com/apanichkina/KSAMSimpleMathModel/parser"
+	"context"
 )
 
 var fileInput = flag.String("in", "./data/popenkov.json", "in - input model file")
@@ -18,7 +19,7 @@ func main() {
 	helper.CheckError("parse error. ", err)
 
 	var globalVariables = parser.GlobalVariables{D: 18432, D_ind: 16384, K: 4}
-	result, err := math.Evaluate(inputparams, globalVariables)
+	result, err := math.Evaluate(context.Background(), inputparams, globalVariables)
 	helper.CheckError("math core error. ", err)
 
 	// генерация csv
