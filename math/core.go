@@ -117,7 +117,7 @@ func Incr(ind int, increments []*parser.Increment, IncrementValues parser.Increm
 			} else {
 				incrIndex[ind] = 0
 				incrIndex[ind+1] += 1
-				return Incr(ind, increments, IncrementValues, incrIndex)
+				return Incr(ind+1, increments, IncrementValues, incrIndex)
 			}
 		}
 	}
