@@ -339,7 +339,7 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 					QueriesSumTime += rq.Time * q.Count
 					QueriesSumTimeIO += rq.TimeIO * q.Count
 					if !q.Subquery { // поздапросы не влияют на объем
-						TransactionSize += rq.RowsCount * rq.RowSize
+						TransactionSize += rq.RowsCount * rq.RowSize // TODO * q.Count
 					}
 					break
 				}
@@ -421,11 +421,19 @@ func EvaluateRequest(inputParams parser.InputParams, Increment parser.IncrementV
 
 		result = append(result, parser.RequestResultInc{
 			sn,
-			parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: request.Transaction.Name, Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network, NetworkSpeed: helper.MbitToByte(NetworkSpeed)},
+			parser.RequestResult{TransactionResult: parser.TransactionResult{Transaction: getTransactionName(inputParams, request), Time: TransactionTime, DiscCharge: DiscCharge, ProcCharge: ProcCharge, Size: TransactionSize}, NetworkCharge: NetworkCharge, NetworkTime: T_network, NetworkSpeed: helper.MbitToByte(NetworkSpeed)},
 			IncrementForPrint,
 			QueriesForPrint,
 		}) // запись в массив минимального времени выполнение очередного запроса
 
 	}
 	return result, nil
+}
+
+func getTransactionName(input parser.InputParams, r parser.Request) string {
+	if len(input.Database) > 1 {
+		return fmt.Sprintf("%s_%s", r.Database.Name, r.Transaction.Name)
+	}
+
+	return r.Transaction.Name
 }
