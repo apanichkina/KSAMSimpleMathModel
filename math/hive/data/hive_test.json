@@ -1,0 +1,173 @@
+{
+  "name": "Hive_TEST",
+  "_id": {
+    "$oid": "34f67291-c4c1-8daf-ed0a-f35fe6d67172"
+  },
+  "increment": [],
+  "nodes": [],
+  "requests": [],
+  "networks": [],
+  "database": [],
+  "datamodel": [
+    {
+      "id": {
+        "$oid": "8440486f-353a-a905-6357-5a91bd40be62"
+      },
+      "name": "Apache test DB",
+      "type": "object_datamodel",
+      "toggled": true,
+      "showing": false,
+      "valid": true,
+      "tables": [
+        {
+          "id": {
+            "$oid": "b4e5b849-3cf7-c85e-90ea-d11bd3bd49e9"
+          },
+          "name": "Main table",
+          "type": "object_table",
+          "children": [
+            {
+              "id": {
+                "$oid": "0e76261c-0a0b-90d7-ef32-9e807d45e926"
+              },
+              "name": "name",
+              "type": "text",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 20,
+              "attr_I": 30000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "1690603a-cef7-053d-a48b-c7b7e2caceba"
+              },
+              "name": "age",
+              "type": "decimal",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "decimal",
+              "size": 4,
+              "attr_I": 68,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "915227c8-8220-0f21-d3a2-99e4ca669730"
+              },
+              "name": "gpu",
+              "type": "decimal",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "decimal",
+              "size": 8,
+              "attr_I": 400,
+              "pk": false
+            }
+          ],
+          "toggled": false,
+          "showing": false,
+          "valid": true,
+          "nrows": 30000,
+          "attributes": [
+            {
+              "id": {
+                "$oid": "0e76261c-0a0b-90d7-ef32-9e807d45e926"
+              },
+              "name": "name",
+              "type": "text",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "text",
+              "size": 20,
+              "attr_I": 30000,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "1690603a-cef7-053d-a48b-c7b7e2caceba"
+              },
+              "name": "age",
+              "type": "decimal",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "decimal",
+              "size": 4,
+              "attr_I": 68,
+              "pk": false
+            },
+            {
+              "id": {
+                "$oid": "915227c8-8220-0f21-d3a2-99e4ca669730"
+              },
+              "name": "gpu",
+              "type": "decimal",
+              "toggled": true,
+              "showing": false,
+              "valid": true,
+              "attr_type": "decimal",
+              "size": 8,
+              "attr_I": 400,
+              "pk": false
+            }
+          ]
+        }
+      ],
+      "queries": [
+        {
+          "id": {
+            "$oid": "0eafdf2f-1704-e961-2a25-67ca6cef40fe"
+          },
+          "name": "новый запрос",
+          "scheme": "8440486f-353a-a905-6357-5a91bd40be62",
+          "type": "easy",
+          "tables": [
+            {
+              "pseudoname": "Main table",
+              "id": {
+                "$oid": "a7f75171-bbd3-ee5e-ec22-50616adc4786"
+              },
+              "tableid": "b4e5b849-3cf7-c85e-90ea-d11bd3bd49e9"
+            }
+          ],
+          "joins": [],
+          "projection": [
+            {
+              "tableid": "a7f75171-bbd3-ee5e-ec22-50616adc4786",
+              "attributeid": "0e76261c-0a0b-90d7-ef32-9e807d45e926"
+            },
+            {
+              "tableid": "a7f75171-bbd3-ee5e-ec22-50616adc4786",
+              "attributeid": "1690603a-cef7-053d-a48b-c7b7e2caceba"
+            },
+            {
+              "tableid": "a7f75171-bbd3-ee5e-ec22-50616adc4786",
+              "attributeid": "915227c8-8220-0f21-d3a2-99e4ca669730"
+            }
+          ],
+          "order": [],
+          "group": [],
+          "condition": [
+            {
+              "tableid": "a7f75171-bbd3-ee5e-ec22-50616adc4786",
+              "attributeid": "1690603a-cef7-053d-a48b-c7b7e2caceba",
+              "P": 0.9
+            }
+          ],
+          "toggled": true,
+          "showing": true,
+          "valid": true,
+          "stepIndex": 2,
+          "table": "b4e5b849-3cf7-c85e-90ea-d11bd3bd49e9"
+        }
+      ],
+      "transactions": []
+    }
+  ]
+}
