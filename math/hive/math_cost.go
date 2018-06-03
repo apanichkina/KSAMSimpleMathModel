@@ -2,17 +2,24 @@
 // cost based optimisation funcs
 package hive
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 // TableScanCost
 //
 // CPU Usage = 0.
 //
 // IO Usage = Hr * T(R) * Tsz.
-func TableScanCost(t Table) Cost {
+func TableScanCost(t Table, numberOfMappers float64) Cost {
+	numberOfMappers = math.Min(numberOfMappers, MaxNumberOfMappers)
+
 	return NewCost(
 		0,
 		Hr*t.Tr*t.Tsz(),
+		0,
+		numberOfMappers,
 	)
 }
 
@@ -33,7 +40,8 @@ func TableScanCost(t Table) Cost {
 // R1, R2... Rm is the relations involved in join.
 // Tsz1, Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
 func CommonJoinCost(
-	tables ...Table,
+	resultSize float64,
+	tables ...*Table,
 ) Cost {
 	// cpu
 	var (
@@ -51,140 +59,14 @@ func CommonJoinCost(
 		mergeCost += v.Tr * CPUc
 
 		workingDataSize += v.Tr * v.Tsz()
+		fmt.Printf("SIZE: %f, %f\n", v.Tr, workingDataSize)
 	}
 
 	return NewCost(
 		sortCost+mergeCost,
-		Lw*workingDataSize+Lr*workingDataSize+NEt*workingDataSize,
-	)
-}
-
-// MapJoinCost
-//
-// CPU Usage = HashTable Construction cost + Cost of Join
-// = (T(R2) + ...+ T(Rm)) + (T(R1) + T(R2) + ...+ T(Rm)) * CPUc nano seconds
-//
-// IO Usage = Cost of transferring small tables to Join Operator Node * Parallelization of the join
-// = NEt * (T(R2) * Tsz2 + ... + T(Rm) * Tszm) * number of mappers
-//
-// R1, R2... Rm is the relations involved in join and R1 is the big table that will be streamed.
-// Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
-func MapJoinCost(
-	tables ...Table,
-) Cost {
-	if len(tables) == 0 {
-		return NewCost(0, 0)
-	}
-	ind, biggest := 0, tables[0]
-	for i, t := range tables {
-		if t.Tr > biggest.Tr {
-			biggest = t
-			ind = i
-		}
-	}
-
-	// CPU
-	var (
-		hashTableConstructionCost float64
-		joinCost                  float64
-	)
-
-	// IO
-	var transferingTablesCost float64
-
-	for i, v := range tables {
-		joinCost += v.Tr
-
-		if ind == i {
-			continue
-		}
-
-		hashTableConstructionCost += v.Tr
-		transferingTablesCost += v.Tr * v.Tsz()
-	}
-
-	return NewCost(
-		hashTableConstructionCost+joinCost*CPUc,
-		NEt*transferingTablesCost*NumberOfMappers,
-	)
-}
-
-// BucketMapJoinCost
-//
-// CPU Usage = Hash Table Construction cost
-// + Cost of Join
-// = (T(R2) + ...+ T(Rm)) * CPUc
-// + (T(R1) + T(R2) + ...+ T(Rm)) * CPUc nano seconds
-//
-// IO Usage = Cost of transferring small tables to Join Operator Node * Parallelization of the join
-// = NEt * (T(R2) * Tsz2 + ... + T(Rm) * Tszm) * number of mappers
-//
-// R1, R2... Rm is the relations involved in join and R1 is the big table that will be streamed.
-// Tsz2... Tszm are the average size of tuple in relations R1, R2...Rm.
-func BucketMapJoinCost(
-	tables ...Table,
-) Cost {
-	if len(tables) == 0 {
-		return NewCost(0, 0)
-	}
-	ind, biggest := 0, tables[0]
-	for i, t := range tables {
-		if t.Tr > biggest.Tr {
-			biggest = t
-			ind = i
-		}
-	}
-
-	// CPU
-	var (
-		hashTableConstructionCost float64
-		joinCost                  float64
-	)
-
-	// IO
-	var transferingTablesCost float64
-
-	for i, v := range tables {
-		joinCost += v.Tr
-
-		if ind == i {
-			continue
-		}
-
-		hashTableConstructionCost += v.Tr
-		transferingTablesCost += v.Tr * v.Tsz()
-	}
-
-	return NewCost(
-		hashTableConstructionCost*CPUc+joinCost*CPUc,
-		NEt*transferingTablesCost*NumberOfMappers,
-	)
-}
-
-// SMBJoinCost
-//
-// CPU Usage = Cost of Join
-// = (T(R1) + T(R2) + ...+ T(Rm)) * CPUc nano seconds
-//
-// IO Usage = Cost of transferring small tables to Join * Parallelization of the join
-// = NEt * (T(R2) * Tsz2 + ... + T(Rm) * Tszm) * number of mappers
-//
-// R1, R2... Rm is the relations involved in join.
-// Tsz2... Tszm are the average size of tuple in relations R2...Rm.
-func SMBJoinCost(
-	tables ...Table,
-) Cost {
-	var workingDataSize float64
-	var cpu float64
-
-	for _, v := range tables {
-		cpu += v.Tr * CPUc
-		workingDataSize += v.Tr * v.Tsz()
-	}
-
-	return NewCost(
-		cpu,
-		NEt*workingDataSize*NumberOfMappers,
+		Hw*resultSize+Lr*workingDataSize+Lw*workingDataSize,
+		(workingDataSize+resultSize)/NetSpeed,
+		NumberOfReducers,
 	)
 }
 
@@ -200,7 +82,9 @@ func SMBJoinCost(
 func DistinctOrGroupByCost(t Table) Cost {
 	return NewCost(
 		(t.Tr*math.Log(t.Tr)+t.Tr)*CPUc,
-		Lw*t.Tr*t.Tsz()+Lr*t.Tr*t.Tsz()+NEt*t.Tr*t.Tsz(),
+		Lw*t.Tr*t.Tsz()+Lr*t.Tr*t.Tsz(),
+		(t.Tr*t.Tsz())/NetSpeed,
+		1,
 	)
 }
 
@@ -211,10 +95,13 @@ func DistinctOrGroupByCost(t Table) Cost {
 // CPU Usage = T(R) * CPUc nano seconds
 //
 // IO Usage = 0
-func FilterCost(t Table) Cost {
+func FilterCost(t Table, numberOfMappers float64) Cost {
+	numberOfMappers = math.Min(numberOfMappers, MaxNumberOfMappers)
 	return NewCost(
 		t.Tr*CPUc,
 		0,
+		0,
+		numberOfMappers,
 	)
 }
 
@@ -224,5 +111,5 @@ func FilterCost(t Table) Cost {
 //
 // IO Usage = 0
 func SelectCost(t Table) Cost {
-	return NewCost(0, 0)
+	return NewCost(0, 0, 0, 1)
 }

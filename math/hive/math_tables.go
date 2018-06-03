@@ -1,6 +1,9 @@
 package hive
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 func TableScan(t Table) Table {
 	return t
@@ -28,33 +31,28 @@ func (j JoinTable) getFirstAttrV() float64 {
 	return j.Attributes[0].V
 }
 
+func (j JoinTable) getMaxAttrV() float64 {
+	var maxV float64 = 1
+
+	for _, v := range j.Attributes {
+		if v.V > maxV {
+			maxV = v.V
+		}
+	}
+
+	return maxV
+}
+
 func simpleJoinSelectivity(tables ...JoinTable) float64 {
-	maxV := tables[0].getFirstAttrV()
+	maxV := tables[0].getMaxAttrV()
 	for _, v := range tables[1:] {
-		maxV = math.Max(maxV, v.getFirstAttrV())
+		maxV = math.Max(maxV, v.getMaxAttrV())
 	}
 	return 1 / maxV
 }
 
 func joinSelectivity(tables ...JoinTable) float64 {
-	attrsCount := len(tables[0].Attributes)
-	for _, v := range tables[1:] {
-		if len(v.Attributes) != attrsCount {
-			return simpleJoinSelectivity(tables...)
-		}
-	}
-
-	var resultV float64 = 1
-	for i := 0; i < attrsCount; i++ {
-		maxV := tables[0].Attributes[i].V
-		for _, v := range tables[1:] {
-			maxV = math.Max(maxV, v.Attributes[i].V)
-		}
-
-		resultV *= maxV
-	}
-
-	return 1 / resultV
+	return simpleJoinSelectivity(tables...)
 }
 
 func Join(
@@ -62,6 +60,7 @@ func Join(
 	tables ...JoinTable,
 ) *Table {
 	tr := joinSelectivity(tables...)
+	fmt.Println(tr)
 	resultAttributes := []*Attribute{}
 
 	for _, t := range tables {
@@ -75,7 +74,14 @@ func Join(
 func Filter(t Table, selectivity float64) Table {
 	result := t
 	result.Tr *= selectivity
-	return t
+	for _, a := range result.attrs {
+		fmt.Println(a)
+		if a.V > result.Tr {
+			a.V = result.Tr
+		}
+	}
+
+	return result
 }
 
 func Select(t Table, a ...*Attribute) *Table {

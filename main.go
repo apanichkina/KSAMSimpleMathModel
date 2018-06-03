@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 
-	"github.com/apanichkina/KSAMSimpleMathModel/helper"
-	"github.com/apanichkina/KSAMSimpleMathModel/math"
-	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 	"context"
+
+	"github.com/apanichkina/KSAMSimpleMathModel/helper"
+	"github.com/apanichkina/KSAMSimpleMathModel/math/hive"
+	"github.com/apanichkina/KSAMSimpleMathModel/parser"
 )
 
-var fileInput = flag.String("in", "./data/popenkov.json", "in - input model file")
+var fileInput = flag.String("in", "./math/hive_runner/data/asd.json", "in - input model file")
 
 func main() {
 	flag.Parse()
@@ -19,7 +20,7 @@ func main() {
 	helper.CheckError("parse error. ", err)
 
 	var globalVariables = parser.GlobalVariables{D: 18432, D_ind: 16384, K: 4}
-	result, err := math.Evaluate(context.Background(), inputparams, globalVariables)
+	result, err := hive.Evaluate(context.Background(), inputparams, globalVariables)
 	helper.CheckError("math core error. ", err)
 
 	// генерация csv
