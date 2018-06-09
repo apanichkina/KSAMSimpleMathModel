@@ -1,7 +1,6 @@
 package hive
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -60,7 +59,7 @@ func Join(
 	tables ...JoinTable,
 ) *Table {
 	tr := joinSelectivity(tables...)
-	fmt.Println(tr)
+	//fmt.Println(tr)
 	resultAttributes := []*Attribute{}
 
 	for _, t := range tables {
@@ -75,7 +74,7 @@ func Filter(t Table, selectivity float64) Table {
 	result := t
 	result.Tr *= selectivity
 	for _, a := range result.attrs {
-		fmt.Println(a)
+		//fmt.Println(a)
 		if a.V > result.Tr {
 			a.V = result.Tr
 		}

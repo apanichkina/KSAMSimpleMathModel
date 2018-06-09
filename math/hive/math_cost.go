@@ -3,7 +3,6 @@
 package hive
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -59,13 +58,13 @@ func CommonJoinCost(
 		mergeCost += v.Tr * CPUc
 
 		workingDataSize += v.Tr * v.Tsz()
-		fmt.Printf("SIZE: %f, %f\n", v.Tr, workingDataSize)
+		//fmt.Printf("SIZE: %f, %f\n", v.Tr, workingDataSize)
 	}
 
 	return NewCost(
 		sortCost+mergeCost,
 		Hw*resultSize+Lr*workingDataSize+Lw*workingDataSize,
-		(workingDataSize+resultSize)/NetSpeed,
+		(workingDataSize+resultSize)*Net,
 		NumberOfReducers,
 	)
 }

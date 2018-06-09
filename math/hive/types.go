@@ -9,7 +9,8 @@ type Table struct {
 	Name string  // name of table in query
 	Tr   float64 // number of rows
 
-	attrs []*Attribute
+	attrs   []*Attribute
+	TszTemp *float64
 }
 
 // Attribute represents attribute of the table with estimate size in bytes
@@ -40,13 +41,17 @@ func NewTable(name string, tr float64, attrs ...*Attribute) *Table {
 }
 
 func (t Table) Tsz() float64 {
+	if t.TszTemp != nil {
+		return *t.TszTemp
+	}
+
 	var tsz float64
 
 	for _, a := range t.attrs {
 		tsz += a.Size
 	}
 
-	fmt.Printf("row size: %.0f\n", tsz)
+	//fmt.Printf("row size: %.0f\n", tsz)
 	return tsz
 }
 

@@ -12,12 +12,12 @@ import (
 
 func Evaluate(ctx context.Context, inputParams parser.InputParams, extra interface{}) ([]byte, error) {
 	result := []string{}
-	fmt.Println("evaluating")
+	//fmt.Println("evaluating")
 	for _, dataModel := range inputParams.DataModel {
 		for _, q := range dataModel.Queries {
-			fmt.Println(q.Name)
-			cost := evaluateQueryPlan(*q)
-			fmt.Printf("[RESULT] %s,%s,%+v\n", dataModel.Name, q.Name, cost)
+			//fmt.Println(q.Name)
+			cost := EvaluateQueryPlan(*q)
+			//fmt.Printf("[RESULT] %s,%s,%+v\n", dataModel.Name, q.Name, cost)
 			result = append(result, fmt.Sprintf("%.0f", cost.Seconds()))
 		}
 	}
@@ -127,19 +127,19 @@ func prepareInputQuery(query parser.Query) ([]*Table, []joinPresentation) {
 	return manager.getTables(), manager.getJoins()
 }
 
-func evaluateQueryPlan(query parser.Query) Cost {
+func EvaluateQueryPlan(query parser.Query) Cost {
 	tables, joins := prepareInputQuery(query)
 
 	var finalCost Cost
 	for i, t := range tables {
-		fmt.Printf("%+v\n", t)
+		//fmt.Printf("%+v\n", t)
 
 		mappers := t.Tr * t.Tsz() / BlockSize
 
 		tableScan := TableScanCost(*t, mappers)
 		filterCost := FilterCost(*t, mappers)
 
-		fmt.Printf("tableScan: %+v\n", tableScan)
+		//fmt.Printf("tableScan: %+v\n", tableScan)
 
 		finalCost = finalCost.Add(tableScan)
 
@@ -154,7 +154,7 @@ func evaluateQueryPlan(query parser.Query) Cost {
 			}
 		}
 		if hasFilter {
-			fmt.Printf("filterScan: %+v\n", filterCost)
+			//fmt.Printf("filterScan: %+v\n", filterCost)
 			finalCost = finalCost.Add(filterCost)
 		}
 
@@ -169,7 +169,7 @@ func evaluateQueryPlan(query parser.Query) Cost {
 		*tables[i] = *Select(*t, selectedAttrs...)
 	}
 
-	fmt.Println("final cost", finalCost)
+	//fmt.Println("final cost", finalCost)
 
 	for _, t := range tables {
 		for _, a := range t.attrs {
@@ -196,9 +196,9 @@ func evaluateQueryPlan(query parser.Query) Cost {
 			}
 		}
 
-		fmt.Println(newT)
+		//fmt.Println(newT)
 		joinsCost = joinsCost.Add(CommonJoinCost(newT.Tr, joinTables...))
-		fmt.Printf("join cost: %+v---%.2fs\n", joinsCost, joinsCost.Seconds())
+		//fmt.Printf("join cost: %+v---%.2fs\n", joinsCost, joinsCost.Seconds())
 	}
 	return finalCost.Add(joinsCost)
 }
