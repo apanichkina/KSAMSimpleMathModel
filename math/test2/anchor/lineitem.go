@@ -23,7 +23,7 @@ func kek(size float64, rowSize ...float64) hive.Cost {
 }
 
 func GetAnchor() hive.Cost {
-	return kek(29999809,
+	return kek(2999980,
 		42,
 		36,
 		24,
@@ -44,4 +44,17 @@ func GetAnchor() hive.Cost {
 		42,
 		64,
 		64)
+}
+
+func GetCustomer(size float64) hive.Cost {
+	return kek(size,
+		36,
+		36,
+		36,
+		36,
+		36,
+		36,
+		36,
+		36,
+		36)
 }

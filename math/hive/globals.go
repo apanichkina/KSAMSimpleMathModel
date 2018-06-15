@@ -7,7 +7,7 @@ var (
 	Lr                         = 21.468413
 	Hw                         = 455.143168
 	Hr                         = 75.082201
-	MaxNumberOfMappers float64 = 8
+	MaxNumberOfMappers float64 = 6
 
 	BlockSize = 64.0 * 1024.0 * 1024.0
 

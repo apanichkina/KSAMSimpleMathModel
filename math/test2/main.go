@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/apanichkina/KSAMSimpleMathModel/math/hive"
+	"github.com/apanichkina/KSAMSimpleMathModel/math/test2/anchor"
 )
 
 func kek(mappers float64, size float64, rowSize ...float64) hive.Cost {
@@ -22,25 +23,7 @@ func kek(mappers float64, size float64, rowSize ...float64) hive.Cost {
 }
 
 func main() {
-	fmt.Println(kek(12, 29999809,
-		42,
-		36,
-		24,
-		24,
-		24,
-		20,
-		25,
-		20,
-		24,
-		20,
-		24,
-		36,
-		36,
-		24,
-		44,
-		44,
-		42,
-		42,
-		64,
-		64))
+	for i := 0.0; i < 60; i++ {
+		fmt.Println(anchor.GetCustomer(750000 * (1 + i*0.01)))
+	}
 }
